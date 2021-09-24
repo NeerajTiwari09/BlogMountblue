@@ -1,4 +1,4 @@
-package com.example.model;
+package com.example.Blog.model;
 
 import java.sql.Timestamp;
 
@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name= "Posts")
+@Table(name = "Posts")
 public class Post {
 	
 	@Id

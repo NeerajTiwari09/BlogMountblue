@@ -1,4 +1,4 @@
-package com.example.model;
+package com.example.Blog.model;
 
 import java.sql.Timestamp;
 

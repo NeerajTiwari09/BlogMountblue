@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Homepage</title>
+    <style type="text/css">
+        tr,td{
+        border: 2px solid black;
+        padding: 10px;
+        text-align: left;
+        }
+        table {
+        border-spacing: 10px;
+        width: 100%;
+        border: 2px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+<h1>Blogs</h1>
+<div align="center">
+    <table>
+        <tr th:each="post: ${posts}">
+            <td>
+                <span th:text="${post.title}"> </span><br><br>
+                <span th:text="${post.author}"></span>&nbsp;
+                <span th:text="${post.createdAt}"></span><br><br>
+                <span th:text="${post.content}"></span><br>
+                <a herf="#" th:herf="@{/read/{id}(id=${post.id})}">Read more...</a>
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

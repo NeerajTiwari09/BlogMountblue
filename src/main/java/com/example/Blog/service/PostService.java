@@ -13,19 +13,19 @@ public class PostService {
     @Autowired
     private PostRepository postRepository;
 
-    public List<Post> listAll(){
+    public List<Post> listAll() {
         return postRepository.findAll();
     }
 
-    public void save(Post post){
+    public void save(Post post) {
         postRepository.save(post);
     }
 
-    public Optional<Post> get(Integer id){
+    public Optional<Post> get(Integer id) {
         return postRepository.findById(id);
     }
 
-    public  void delete(Integer id){
+    public void delete(Integer id) {
         postRepository.deleteById(id);
     }
 }

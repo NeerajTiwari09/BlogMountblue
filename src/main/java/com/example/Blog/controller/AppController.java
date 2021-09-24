@@ -5,6 +5,7 @@ import com.example.Blog.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
@@ -25,8 +26,12 @@ public class AppController {
     @RequestMapping("/new")
     public String createPost(Model model){
         Post post = new Post();
-        model.addAttribute("post", post);
+        model.addAttribute("blogPost", post);
         return "new-post";
     }
-
+    @RequestMapping("/publish")
+    public String publishPost(@ModelAttribute("blogPost") Post post){
+        postService.save(post);
+        return "redirect:/";
+    }
 }

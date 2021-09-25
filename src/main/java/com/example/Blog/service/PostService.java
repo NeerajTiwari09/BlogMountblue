@@ -21,11 +21,15 @@ public class PostService {
         postRepository.save(post);
     }
 
-    public Optional<Post> get(Integer id) {
+    public Optional<Post> getById(Integer id) {
         return postRepository.findById(id);
     }
 
     public void delete(Integer id) {
         postRepository.deleteById(id);
+    }
+
+    public List<Post> getBySearchString(String searchString){
+        return postRepository.getBySearchString(searchString);
     }
 }

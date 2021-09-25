@@ -8,11 +8,13 @@
         border: 2px solid black;
         padding: 10px;
         text-align: left;
+         z-index: 100;
         }
         table {
         border-spacing: 10px;
         width: 100%;
         border: 2px solid #ddd;
+         z-index: 100;
         }
     </style>
 </head>
@@ -26,7 +28,7 @@
                 <span th:text="${post.author}"></span>&nbsp;
                 <span th:text="${post.createdAt}"></span><br><br>
                 <span th:text="${post.content}"></span><br>
-                <a herf="#" th:herf="@{/read/{id}(id=${post.id})}">Read more...</a>
+                <a href="@{/read/{id}(id=${post.id})}">Read more...</a>
             </td>
         </tr>
     </table>

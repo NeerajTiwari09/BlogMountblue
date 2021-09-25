@@ -17,12 +17,16 @@ public class Post {
 	private String excerpt;
 	private String content;
 	private String author;
+
 	@Column(name="published_at")
 	private Timestamp publishedAt;
+
 	@Column(name="is_published")
 	private boolean isPublished;
+
 	@Column(name="created_at")
 	private Timestamp createdAt;
+
 	@Column(name="updated_at")
 	private Timestamp updatedAt;
 	

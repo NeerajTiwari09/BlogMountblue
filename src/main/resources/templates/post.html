@@ -2,12 +2,12 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Homepage</title>
+    <title>Blog</title>
     <style type="text/css">
         tr,td{
         border: 2px solid black;
         padding: 10px;
-        text-align: left;
+        text-align: center;
          z-index: 100;
         }
         table {
@@ -19,16 +19,15 @@
     </style>
 </head>
 <body>
-<h1>Blogs</h1>
+<h1>My Blog</h1>
 <div align="center">
     <table>
-        <tr th:each="post: ${posts}">
+        <tr>
             <td>
                 <span th:text="${post.title}"> </span><br><br>
                 <span th:text="${post.author}"></span>,&nbsp;&nbsp;
                 <span th:text="${post.createdAt}"></span><br><br>
                 <span th:text="${post.content}"></span><br>
-                <a href="@{/read/{id}(id=${post.id})}">Read more...</a>
             </td>
         </tr>
     </table>

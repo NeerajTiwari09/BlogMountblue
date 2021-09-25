@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class AppController {
@@ -25,10 +26,11 @@ public class AppController {
         return "first";
     }
 
-    @RequestMapping()
-    public String getPostById(@RequestParam("id") Integer id){
-
-        return "";
+    @RequestMapping("/id")
+    public String getPostById(@RequestParam("id") Integer id, Model model){
+        Optional<Post> post = postService.getById(id);
+        model.addAttribute("post", post.get());
+        return "post";
     }
 
     @RequestMapping("/new")

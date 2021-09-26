@@ -28,7 +28,10 @@
                 <span th:text="${post.author}"></span>,&nbsp;&nbsp;
                 <span th:text="${post.createdAt}"></span><br><br>
                 <span th:text="${post.content}"></span><br>
-                <a href="@{/read/{id}(id=${post.id})}">Read more...</a>
+                <form th:action="id">
+                    <input type="hidden" value="${post.id}" name="id">
+                    <input type="submit" value="Read more...">
+                </form>
             </td>
         </tr>
     </table>

@@ -3,11 +3,14 @@ package com.example.Blog.controller;
 import com.example.Blog.model.Post;
 import com.example.Blog.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -20,15 +23,17 @@ public class AppController {
     private PostService postService;
 
     @RequestMapping("/")
-    public String viewHomePage(Model model) {
-        List<Post> posts = postService.listAll();
+    public String viewHomePage(@RequestParam("start") int start, @RequestParam("limit") int limit, Model model) {
+//        List<Post> posts = postService.listAll();
+        Page<Post> posts = postService.getAllBlogs(start, limit);
         model.addAttribute("posts", posts);
+        model.addAttribute("start", start);
         return "first";
     }
 
     @RequestMapping("/id")
-    public String getPostById(@RequestParam("id") Integer id, Model model){
-        Optional<Post> post = postService.getById(id);
+    public String getPostById(@RequestParam("id") String id, Model model){
+        Optional<Post> post = postService.getById(Integer.valueOf(id));
         model.addAttribute("post", post.get());
         return "post";
     }
@@ -42,12 +47,6 @@ public class AppController {
 
     @RequestMapping("/publish")
     public String publishPost(@ModelAttribute("blogPost") Post post) {
-        post.setAuthor("Mahindra");
-        post.setPublished(true);
-        post.setPublishedAt(new Timestamp(System.currentTimeMillis()));
-        post.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-        post.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-        post.setId(4);
         postService.save(post);
         return "redirect:/";
     }
@@ -58,6 +57,14 @@ public class AppController {
         List<Post> posts = postService.getBySearchString(search);
         System.out.println(posts);
         model.addAttribute("posts", posts);
+        return "first";
+    }
+
+    @RequestMapping("/sort")
+    public String sort(/*@RequestParam("sortField") String sortField, @RequestParam("order") String order*/ Model model){
+        List<Post> posts = postService.findByOrderByPublishedAtAcs();
+        model.addAttribute("posts", posts);
+
         return "first";
     }
 }

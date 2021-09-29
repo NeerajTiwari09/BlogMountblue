@@ -16,11 +16,39 @@
         border: 2px solid #ddd;
          z-index: 100;
         }
+        a{
+        float: right;
+        margin-right: 50px;
+        }
+        .form1{
+        display: inline-block;
+        float: right;
+        }
     </style>
 </head>
 <body>
-<h1>Blogs</h1>
-<div align="center">
+<h1>My Blog Application</h1>
+<div align="right">
+    <form action="search" style="display: inline; margin-right: 50px;">
+        <input type="text" name="search" style="margin: 0px; width: 200px; height: 25px;" placeholder="Search">&nbsp;
+    </form>
+    <a href="#" th:href="login">Login</a>
+</div>
+<div align="right">
+    <form th:action="@{/sort}" class="form1">
+        <select>
+            <option th:value="PublishedAt" th:name="sortField">Publish Descending</option>
+            <option th:value="'publishedAt'" th:name="sortField">Publish Asc</option>
+            <option th:value="'Desc'" >"Publish Desc"</option>
+        </select>
+        <input type="submit" style="margin: 0px; width: 200px; height: 25px;" value="Sort" placeholder="Sort">&nbsp;&nbsp;
+    </form>
+    <form class="form1">
+        <input type="text" style="margin: 0px; width: 200px; height: 25px;" placeholder="Filter">&nbsp;&nbsp;
+    </form>
+</div>
+
+    <div align="center">
     <table>
         <tr th:each="post: ${posts}">
             <td>
@@ -29,12 +57,17 @@
                 <span th:text="${post.createdAt}"></span><br><br>
                 <span th:text="${post.content}"></span><br>
                 <form th:action="id">
-                    <input type="hidden" value="${post.id}" name="id">
+                    <input type="hidden" th:value="${post.id}" name="id">
                     <input type="submit" value="Read more...">
                 </form>
             </td>
         </tr>
     </table>
+        <ul>
+            <li style="display: inline; align: center" th:each="i: ${#numbers.sequence(0,posts.totalPages-1)}">
+                <a th:href="@{'/?start='+${i}+'&limit=5'}" th:text="${i+1}" class="nav-link"></a>
+            </li>
+        </ul>
 </div>
 </body>
 </html>

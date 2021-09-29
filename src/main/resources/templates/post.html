@@ -27,7 +27,34 @@
                 <span th:text="${post.title}"> </span><br><br>
                 <span th:text="${post.author}"></span>,&nbsp;&nbsp;
                 <span th:text="${post.createdAt}"></span><br><br>
+                <span th:each="tag: ${tags}" th:text="${tag.name}"></span><br><br>
                 <span th:text="${post.content}"></span><br>
+            </td>
+        </tr>
+    </table>
+</div>
+<div align="center">
+    <table>
+        <form action="#" th:action="@{/comment}" th:object="${newComment}" method="post">
+            <tr>
+                <td>
+                    <input type="text" th:field="*{comment}" th:name="comment" style="margin: 0px; width: 500px; height: 25px;" placeholder="Comment here.."></td>
+                    <input type="hidden" th:value="${post.id}" th:name="postId" style="margin: 0px; width: 500px; height: 25px;" placeholder="Comment here.."></td>
+
+            </tr>
+        </form>
+    </table>
+    <table>
+        <tr th:each="comment: ${comments}">
+            <td>
+                <span style="float: left" th:text="${comment.name}"> </span>
+                <span style="float: right" th:text="${comment.createdAt}"></span><br>
+                <span style="float: left" th:text="${comment.email}"></span><br>
+                <span style="float: left" th:text="${comment.comment}"></span><br>
+                <form th:action="editComment">
+                    <input type="hidden" th:value="${comment.id}" th:name="id">
+                    <input type="submit" value="Edit comment">
+                </form>
             </td>
         </tr>
     </table>

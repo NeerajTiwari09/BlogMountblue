@@ -1,11 +1,14 @@
 package com.example.Blog.service;
 
 import com.example.Blog.model.Post;
+import com.example.Blog.model.Tag;
 import com.example.Blog.repository.PostRepository;
+import com.example.Blog.repository.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -14,8 +17,12 @@ import java.util.Optional;
 
 @Service
 public class PostService {
+
     @Autowired
     private PostRepository postRepository;
+
+    @Autowired
+    private TagRepository tagRepository;
 
     public Page<Post> getAllBlogs(int start, int limit){
         Pageable firstPageWithTwoElements = PageRequest.of(start, limit);
@@ -27,7 +34,9 @@ public class PostService {
     }
 
     public void save(Post post) {
+        String excerpt = post.getContent().substring(0, post.getContent().indexOf("\n"));
         post.setAuthor("Mahindra");
+        post.setExcerpt(excerpt);
         post.setPublished(true);
         post.setPublishedAt(new Timestamp(System.currentTimeMillis()));
         post.setCreatedAt(new Timestamp(System.currentTimeMillis()));
@@ -47,10 +56,13 @@ public class PostService {
         return postRepository.getBySearchString(searchString);
     }
 
-//    public List<Post> sort(String sortField, String order) {
-//        return postRepository.sort(sortField, order);
-//    }
-    public  List<Post> findByOrderByPublishedAtAcs(){
-        return postRepository.findByOrderByPublishedAtAsc();
+    public List<Post> findPostWithSorting(String sortField, String order) {
+        if(order.equals("asc")){
+            return postRepository.findAll(Sort.by(Sort.Direction.ASC,sortField));
+        }
+        else{
+            return postRepository.findAll(Sort.by(Sort.Direction.DESC,sortField));
+        }
+
     }
 }

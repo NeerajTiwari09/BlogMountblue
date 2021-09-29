@@ -1,0 +1,32 @@
+package com.example.Blog.service;
+
+import com.example.Blog.model.Post;
+import com.example.Blog.model.PostTag;
+import com.example.Blog.model.Tag;
+import com.example.Blog.repository.PostTagRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+public class PostTagService {
+    @Autowired
+    private PostTagRepository postTagRepository;
+
+    public List<Integer> findAllTagIdByPostId(Integer postId) {
+        return postTagRepository.findAllByPostId(postId);
+    }
+
+    public void saveTagId(List<Tag> tags, Post post) {
+        List<PostTag> postTags = new ArrayList<>();
+        for (Tag tag: tags) {
+            PostTag postTag= new PostTag();
+            postTag.setPostId(post.getId());
+            postTag.setTagId(tag.getId());
+            postTags.add(postTag);
+        }
+        postTagRepository.saveAll(postTags);
+    }
+}

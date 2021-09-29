@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <style>
+        tr,td{
+        padding: 10px;
+        text-align: center;
+        }
+        #login {
+        border-spacing: 10px;
+        width: 100%;
+        border: 2px solid #ddd;
+        z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+
+<div align="center">
+    <table id="login">
+        <tr>
+            <th><h1></h1>Login</h1></th>
+        </tr>
+        <form action="#" th:action="@{login}" th:object="${login}" method="post">
+            <tr>
+                <td><input type="email" th:fileld="*{email}" name="email" style="margin: 0px; width: 200px; height: 25px;" placeholder="Email"></td>
+            </tr>
+            <tr>
+                <td><input type="password" th:field="*{password}" name="password" style="margin: 0px; width: 200px; height: 25px;" placeholder="Password"></td>
+            </tr>
+            <tr>
+                <td><input type="submit" style="margin: 0px; width: 200px; height: 25px;" value="Submit"></td>
+            </tr>
+        </form>
+        <tr>
+            <td>Doesn't have account?&nbsp;<a th:href="register" href="#">Create One</a></td>
+        </tr>
+    </table>
+</div>
+
+</body>
+</html>

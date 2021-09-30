@@ -27,7 +27,7 @@
                 <span th:text="${post.title}"> </span><br><br>
                 <span th:text="${post.author}"></span>,&nbsp;&nbsp;
                 <span th:text="${post.createdAt}"></span><br><br>
-                <span th:each="tag: ${tags}" th:text="${tag.name}"></span><br><br>
+                <span th:each="tag: ${tags}" th:text="${tag.name} +' '"></span><br><br>
                 <span th:text="${post.content}"></span><br>
             </td>
         </tr>

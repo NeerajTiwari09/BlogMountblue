@@ -37,7 +37,7 @@
 <div align="right">
     <form th:action="@{/sort}" class="form1">
         <select>
-            <option th:value="PublishedAt" th:name="sortField">Publish Descending</option>
+            <option th:value="'sortedField=publishedAt&order=desc'" th:name="sortField">Publish Descending</option>
             <option th:value="'publishedAt'" th:name="sortField">Publish Asc</option>
             <option th:value="'Desc'" >"Publish Desc"</option>
         </select>
@@ -55,7 +55,7 @@
                 <span th:text="${post.title}"> </span><br><br>
                 <span th:text="${post.author}"></span>,&nbsp;&nbsp;
                 <span th:text="${post.createdAt}"></span><br><br>
-                <span th:text="${post.content}"></span><br>
+                <span th:text="${post.excerpt}"></span><br>
                 <form th:action="id">
                     <input type="hidden" th:value="${post.id}" name="id">
                     <input type="submit" value="Read more...">
@@ -65,7 +65,7 @@
     </table>
         <ul>
             <li style="display: inline; align: center" th:each="i: ${#numbers.sequence(0,posts.totalPages-1)}">
-                <a th:href="@{'/?start='+${i}+'&limit=5'}" th:text="${i+1}" class="nav-link"></a>
+                <a th:href="@{'/?start='+${i}+'&limit=10'}" th:text="${i+1}" class="nav-link"></a>
             </li>
         </ul>
 </div>

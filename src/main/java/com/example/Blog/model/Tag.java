@@ -2,6 +2,8 @@ package com.example.Blog.model;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "Tags")
@@ -16,6 +18,9 @@ public class Tag {
 
     @Column(name="updated_at")
     private Timestamp updatedAt;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "tags")
+    private Set<Post> posts = new HashSet<>();
 
     public Integer getId() {
         return id;
@@ -47,5 +52,13 @@ public class Tag {
 
     public void setUpdatedAt(Timestamp updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Set<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(Set<Post> posts) {
+        this.posts = posts;
     }
 }

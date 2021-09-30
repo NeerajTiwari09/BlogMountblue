@@ -9,11 +9,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class PostService {
@@ -24,9 +24,9 @@ public class PostService {
     @Autowired
     private TagRepository tagRepository;
 
-    public Page<Post> getAllBlogs(int start, int limit){
-        Pageable firstPageWithTwoElements = PageRequest.of(start, limit);
-        return postRepository.findAll(firstPageWithTwoElements);
+    public Page<Post> getAllBlogs(int start, int limit) {
+        Pageable pageWithTenElements = PageRequest.of(start, limit);
+        return postRepository.findAll(pageWithTenElements);
     }
 
     public List<Post> listAll() {
@@ -41,6 +41,18 @@ public class PostService {
         post.setPublishedAt(new Timestamp(System.currentTimeMillis()));
         post.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         post.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+//        Set<Tag> tags = new HashSet<>();
+//        Set<Post> posts = new HashSet<>();
+//        String[] tagsData = tag.getName().split(",\\s*|\\s");
+//        for (String data : tagsData) {
+//            Tag tg = new Tag();
+//            tg.setName(data);
+////            posts.add(post);
+//            tg.getPosts().add(post);
+//            tg.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+//            tg.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+//            post.getTags().add(tg);
+//        }
         postRepository.save(post);
     }
 
@@ -48,21 +60,20 @@ public class PostService {
         return postRepository.findById(id);
     }
 
-    public void delete(Integer id) {
-        postRepository.deleteById(id);
-    }
-
-    public List<Post> getBySearchString(String searchString){
-        return postRepository.getBySearchString(searchString);
+    public List<Post> getBySearchString(String searchString, Set<Integer> postIds) {
+        return postRepository.getBySearchString(searchString, postIds);
     }
 
     public List<Post> findPostWithSorting(String sortField, String order) {
-        if(order.equals("asc")){
-            return postRepository.findAll(Sort.by(Sort.Direction.ASC,sortField));
+        if (order.equals("asc")) {
+            return postRepository.findAll(Sort.by(Sort.Direction.ASC, sortField));
+        } else {
+            return postRepository.findAll(Sort.by(Sort.Direction.DESC, sortField));
         }
-        else{
-            return postRepository.findAll(Sort.by(Sort.Direction.DESC,sortField));
-        }
-
     }
+
+    public List<Post> findByFiltering(String filterString, Set<Integer> postIds) {
+        return postRepository.findByFiltering(filterString, postIds);
+    }
+
 }

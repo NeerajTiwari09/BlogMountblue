@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Controller
 public class AppController {
@@ -36,7 +37,7 @@ public class AppController {
         List<Tag> tags = tagService.findAll();
         model.addAttribute("posts", posts);
         model.addAttribute("start", start);
-        model.addAttribute("i",posts.getSize());
+        model.addAttribute("i", posts.getSize());
         model.addAttribute("tags", tags);
         return "first";
     }
@@ -47,15 +48,14 @@ public class AppController {
         Optional<Post> post = postService.getById(Integer.valueOf(id));
         List<Comment> comments = commentService.findAllByPostIdOrderCreatedAtDesc(Integer.valueOf(id));
         List<Integer> postTags = postTagService.findAllTagIdByPostId(Integer.valueOf(id));
-        System.out.println(postTags);
         List<Tag> tags = tagService.findAllById(postTags);
-        System.out.println(tags.get(0).getName()+" "+tags.get(1).getName());
         model.addAttribute("post", post.get());
         model.addAttribute("tags", tags);
         model.addAttribute("newComment", newComment);
         model.addAttribute("comments", comments);
         return "post";
     }
+
 
     @RequestMapping("/new")
     public String createPost(Model model) {
@@ -76,9 +76,12 @@ public class AppController {
 
     @RequestMapping("/search")
     public String searchByString(@RequestParam("search") String search, Model model) {
-        List<Post> posts = postService.getBySearchString(search);
+        Set<Integer> postIds = postTagService.findPostIdsByTagName(search);
+        List<Post> posts = postService.getBySearchString(search, postIds);
         model.addAttribute("posts", posts);
-        return "first";
+//        model.addAttribute("start", start);
+//        model.addAttribute("i",posts.getSize());
+        return "";
     }
 
     @RequestMapping("/sort")
@@ -89,9 +92,9 @@ public class AppController {
     }
 
     @RequestMapping("/filter")
-    public String filterPosts(@RequestParam("authorId") int id, @RequestParam("tagId") List<Integer> tagId ) {
-
-
-        return "first";
+    public String filterPosts(@RequestParam("authorId") int authorId, @RequestParam("tagId") List<Integer> tagIds) {
+        Set<Integer> postIds = postTagService.findAllPostIdByTagId(tagIds);
+        List<Post> posts = postService.findByFiltering("", postIds);
+        return "";
     }
 }

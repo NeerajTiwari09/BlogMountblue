@@ -15,7 +15,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value = "/login")
+    @RequestMapping("/login")
     public String getLoginView(Model model){
         User user = new User();
         model.addAttribute("user", user);
@@ -26,7 +26,6 @@ public class UserController {
     public String getRegistrationView(Model model){
         User user = new User();
         model.addAttribute("user", user);
-        System.out.println("GET");
         return "register";
     }
 
@@ -35,14 +34,15 @@ public class UserController {
         boolean isRegistered = userService.registerUser(user);
         System.out.println("Post");
         if(isRegistered){
-            return "login";
+            return "redirect:/login";
         }
         return "register";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public String login(@ModelAttribute("login") Login login){
-        userService.checkUserAuthentication(login);
+        boolean isauthorised = userService.checkUserAuthentication(login);
+        System.out.println(isauthorised);
         return "first";
     }
 }

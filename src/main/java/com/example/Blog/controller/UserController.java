@@ -6,19 +6,17 @@ import com.example.Blog.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class UserController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping("/login")
+    @GetMapping("/login")
     public String getLoginView(Model model){
-        User user = new User();
-        model.addAttribute("user", user);
+        Login login = new Login();
+        model.addAttribute("login", login);
         return "login";
     }
 
@@ -39,10 +37,10 @@ public class UserController {
         return "register";
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public String login(@ModelAttribute("login") Login login){
-        boolean isauthorised = userService.checkUserAuthentication(login);
-        System.out.println(isauthorised);
-        return "first";
-    }
+//    @PostMapping("/authenticateUser")
+//    public String login(@ModelAttribute("login") Login login){
+////        boolean isauthorised = userService.checkUserAuthentication(login);
+////        System.out.println(isauthorised);
+//        return "login";
+//    }
 }

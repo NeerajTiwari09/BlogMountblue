@@ -9,7 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -33,7 +32,7 @@ public class PostService {
         return postRepository.findAll();
     }
 
-    public void save(Post post) {
+    public void save(Post post, Tag tag) {
         String excerpt = post.getContent().substring(0, post.getContent().indexOf("\n"));
         post.setAuthor("Mahindra");
         post.setExcerpt(excerpt);
@@ -41,13 +40,14 @@ public class PostService {
         post.setPublishedAt(new Timestamp(System.currentTimeMillis()));
         post.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         post.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-//        Set<Tag> tags = new HashSet<>();
-//        Set<Post> posts = new HashSet<>();
+//        List<String> tags = tagRepository.findName();
 //        String[] tagsData = tag.getName().split(",\\s*|\\s");
 //        for (String data : tagsData) {
-//            Tag tg = new Tag();
-//            tg.setName(data);
-////            posts.add(post);
+//            if(!tags.contains(data)){
+//                Tag tg = new Tag();
+//                tg.setName(data);
+//            }
+//            posts.add(post);
 //            tg.getPosts().add(post);
 //            tg.setCreatedAt(new Timestamp(System.currentTimeMillis()));
 //            tg.setUpdatedAt(new Timestamp(System.currentTimeMillis()));

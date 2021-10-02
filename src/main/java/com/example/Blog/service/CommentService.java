@@ -2,17 +2,20 @@ package com.example.Blog.service;
 
 import com.example.Blog.model.Comment;
 import com.example.Blog.repository.CommentRepository;
+import com.example.Blog.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.sql.Timestamp;
 import java.util.List;
 
 @Service
 public class CommentService {
 
+
     @Autowired
     private CommentRepository commentRepository;
+    @Autowired
+    private UserRepository userRepository;
 
 
 //    public List<Comment> findByPostId() {
@@ -24,8 +27,10 @@ public class CommentService {
     }
 
     public void saveComment(Comment comment) {
-        comment.setEmail("mahindra@gmail.com");
-        comment.setName("Mahindra");
+        String name = userRepository.findNameByUsername(comment.getEmail());
+        System.out.println(name+" Email");
+        System.out.println(name);
+        comment.setName(name);
         comment.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         comment.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
         commentRepository.save(comment);

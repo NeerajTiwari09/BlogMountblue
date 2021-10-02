@@ -27,6 +27,7 @@
     </style>
 </head>
 <body>
+<h3 th:inline="text">Welcome [[${#httpServletRequest.remoteUser}]]</h3>
 <h1>My Blog Application</h1>
 <div align="right">
     <form action="search" style="display: inline; margin-right: 50px;">
@@ -35,20 +36,23 @@
     <a href="#" th:href="login">Login</a>
 </div>
 <div align="right">
-    <form th:action="@{/sort}" class="form1">
-        <select>
-            <option th:value="'sortedField=publishedAt&order=desc'" th:name="sortField">Publish Descending</option>
-            <option th:value="'publishedAt'" th:name="sortField">Publish Asc</option>
-            <option th:value="'Desc'" >"Publish Desc"</option>
+    <form th:action="@{/sort}"  class="form1">
+        <label>Sort by Published Date</label>
+        <input type="hidden" th:value="publishedAt" th:name="sortField">
+        <select name="order">
+            <option th:each="s : ${sort}" th:value="*{s}" th:text="*{s}"></option>
         </select>
         <input type="submit" style="margin: 0px; width: 200px; height: 25px;" value="Sort" placeholder="Sort">&nbsp;&nbsp;
     </form>
+</div>
+<div>
     <form class="form1">
+        <input type="checkbox" th:each="user: ${users}" th:name="*{user.name}" th:value="*{user.name}">
+        <label  th:text="*{name}"> </label><br>
         <input type="text" style="margin: 0px; width: 200px; height: 25px;" placeholder="Filter">&nbsp;&nbsp;
     </form>
 </div>
-
-    <div align="center">
+    <div align="right">
     <table>
         <tr th:each="post: ${posts}">
             <td>

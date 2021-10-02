@@ -3,6 +3,7 @@ package com.example.Blog.controller;
 import com.example.Blog.model.Comment;
 import com.example.Blog.model.Post;
 import com.example.Blog.model.Tag;
+import com.example.Blog.model.User;
 import com.example.Blog.service.CommentService;
 import com.example.Blog.service.PostService;
 import com.example.Blog.service.PostTagService;
@@ -11,10 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -31,14 +34,27 @@ public class AppController {
     @Autowired
     private PostTagService postTagService;
 
-    @RequestMapping("/")
-    public String viewHomePage(@RequestParam(name = "start", defaultValue = "0") int start, @RequestParam("limit") int limit, Model model) {
+    @GetMapping("/")
+    public String viewHomePage(@RequestParam(name = "start", defaultValue = "0") int start, @RequestParam(value = "limit", defaultValue = "10") int limit, Model model) {
         Page<Post> posts = postService.getAllBlogs(start, limit);
         List<Tag> tags = tagService.findAll();
+
+        List<User> users = new ArrayList<>();
+        User user1 = new User();
+        user1.setName("Neeraj");
+        User user2 = new User();
+        user2.setName("Manish");
+        User user3 = new User();
+        user3.setName("Amit");
+        users.add(user1);users.add(user2);users.add(user3);
+        model.addAttribute("users", users);
+
         model.addAttribute("posts", posts);
         model.addAttribute("start", start);
         model.addAttribute("i", posts.getSize());
         model.addAttribute("tags", tags);
+        String[] data = new String[]{"asc", "desc"};
+        model.addAttribute("sort",data);
         return "first";
     }
 
@@ -68,7 +84,7 @@ public class AppController {
 
     @RequestMapping("/publish")
     public String publishPost(@ModelAttribute("blogPost") Post post, @ModelAttribute("tag") Tag tag) {
-        postService.save(post);
+        postService.save(post, tag);
         List<Tag> tags = tagService.findTagIds(tag);
         postTagService.saveTagId(tags, post);
         return "redirect:/?start=1&limit=10";

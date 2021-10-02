@@ -30,7 +30,10 @@ public class Post {
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST,
+            CascadeType.DETACH, CascadeType.MERGE,
+            CascadeType.REFRESH})
     @JoinTable(name = "post_tags",
             joinColumns = {@JoinColumn(name = "postId")},
             inverseJoinColumns = {@JoinColumn(name = "tagId")})

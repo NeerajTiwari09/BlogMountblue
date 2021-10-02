@@ -17,18 +17,19 @@
     </style>
 </head>
 <body>
-
 <div align="center">
     <table id="login">
         <tr>
             <th><h1>Login</h1></th>
         </tr>
-        <form action="#" th:action="@{login}" th:object="${user}" method="post">
+        <form action="#" th:action="@{/authenticateUser}" th:object="${login}" method="post">
+
+            <td><span th:if="${param.error != null}"><i>Invalid username and password</i></span></td>
             <tr>
-                <td><input type="email" th:field="*{email}" th:name="email" style="margin: 0px; width: 200px; height: 25px;" placeholder="Email"></td>
+                <td><input type="email" th:field="*{username}"  name="username" style="margin: 0px; width: 200px; height: 25px;" placeholder="Email"></td>
             </tr>
             <tr>
-                <td><input type="password" th:field="*{password}" th:name="password" style="margin: 0px; width: 200px; height: 25px;" placeholder="Password"></td>
+                <td><input type="password" th:field="*{password}"  name="password" style="margin: 0px; width: 200px; height: 25px;" placeholder="Password"></td>
             </tr>
             <tr>
                 <td><input type="submit" style="margin: 0px; width: 200px; height: 25px;" value="Submit"></td>

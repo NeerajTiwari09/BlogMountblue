@@ -14,7 +14,6 @@ public class CommentController {
 
     @RequestMapping("/comment")
     public String makeComment(@ModelAttribute("newComment") Comment comment){
-        System.out.println("Comment Request");
         commentService.saveComment(comment);
         return "redirect:/id?id="+ comment.getPostId();
     }

@@ -19,7 +19,14 @@ public class Tag {
     @Column(name="updated_at")
     private Timestamp updatedAt;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "tags")
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinTable( name = "post_tags",
+            joinColumns = @JoinColumn(name= "tagId"),
+            inverseJoinColumns = @JoinColumn(name = "postId")
+
+    )
     private Set<Post> posts = new HashSet<>();
 
     public Integer getId() {

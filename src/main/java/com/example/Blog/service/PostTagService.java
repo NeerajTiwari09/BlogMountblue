@@ -23,8 +23,8 @@ public class PostTagService {
 
     public void saveTagId(List<Tag> tags, Post post) {
         List<PostTag> postTags = new ArrayList<>();
-        for (Tag tag: tags) {
-            PostTag postTag= new PostTag();
+        for (Tag tag : tags) {
+            PostTag postTag = new PostTag();
             postTag.setPostId(post.getId());
             postTag.setTagId(tag.getId());
             postTag.setCreatedAt(new Timestamp(System.currentTimeMillis()));

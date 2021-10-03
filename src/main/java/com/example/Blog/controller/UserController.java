@@ -20,17 +20,16 @@ public class UserController {
         return "login";
     }
 
-    @RequestMapping(value = "/register", method = RequestMethod.GET)
-    public String getRegistrationView(Model model){
+    @GetMapping("/register")
+    public String getRegistrationPage(Model model){
         User user = new User();
         model.addAttribute("user", user);
         return "register";
     }
 
-    @RequestMapping("/register")
+    @RequestMapping(value = "/register" , method = RequestMethod.POST)
     public String registerUser(@ModelAttribute("user") User user){
         boolean isRegistered = userService.registerUser(user);
-        System.out.println("Post");
         if(isRegistered){
             return "redirect:/login";
         }

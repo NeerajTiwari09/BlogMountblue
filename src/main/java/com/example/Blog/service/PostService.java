@@ -2,6 +2,7 @@ package com.example.Blog.service;
 
 import com.example.Blog.model.Post;
 import com.example.Blog.model.Tag;
+import com.example.Blog.model.User;
 import com.example.Blog.repository.PostRepository;
 import com.example.Blog.repository.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,6 +75,10 @@ public class PostService {
 
     public List<Post> findByFiltering(String filterString, Set<Integer> postIds) {
         return postRepository.findByFiltering(filterString, postIds);
+    }
+
+    public void deletePostById(Integer id) {
+        postRepository.deleteById(id);
     }
 
 }

@@ -18,18 +18,12 @@ public class CommentService {
     private UserRepository userRepository;
 
 
-//    public List<Comment> findByPostId() {
-//        return commentRepository.findAllByPostId();
-//    }
-
     public List<Comment> findAllByPostIdOrderCreatedAtDesc(Integer postId) {
         return commentRepository.findAllByPostIdOrderByCreatedAtDesc(postId);
     }
 
     public void saveComment(Comment comment) {
         String name = userRepository.findNameByUsername(comment.getEmail());
-        System.out.println(name+" Email");
-        System.out.println(name);
         comment.setName(name);
         comment.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         comment.setUpdatedAt(new Timestamp(System.currentTimeMillis()));

@@ -1,15 +1,39 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Create a blog</title>
 </head>
 <body>
+
+
+<div sec:authorize="hasRole('[ROLE_USER]')">Text visible to user.</div>
+<!--<div sec:authorize="hasRole('ADMIN')">Text visible to admin.</div>-->
+<!--<div sec:authorize="isAuthenticated()">-->
+<!--    Text visible only to authenticated users.-->
+<!--</div>-->
+<div th:if="${#authorization.expression('hasRole(''USER'')')}">
+    This will only be displayed if authenticated user has role ROLE_USER.
+</div>
+
+
+<!--<div sec:authentication="name"></div>-->
+<!--<div sec:authentication="principal.authorities"></div>-->
+<div th:each="authority : ${#authentication.getAuthorities()}"
+   th:if="${authority.getAuthority().equals('USER')}">
+    <input type="">
+</div>
+<div sec:authorize="hasRole('ROLE_USER')">
+    This will only be displayed if authenticated user has role_ADMIN.
+</div>
+
+
+
 <div align="center">
-    <h1>Create/Edit your blog...</h1>
+    <h1>Create your blog...</h1>
 </div>
 <div align="center">
-    <form action="#" th:action="@{/publish}" th:object="${blogPost}" method="post">
+    <form action="#" th:action="@{/blog/publish}" th:object="${blogPost}" method="post">
         <table>
             <tr>
                 <td><input type="text" th:field="*{title}" name="title" style="margin: 0px; width: 500px; height: 25px;" placeholder="Title"></td>
@@ -21,6 +45,7 @@
                 <td><textarea type="text" th:field="*{content}" name="content" style="margin: 0px; width: 500px; height: 200px;" row="20" column= "50" placeholder="Type here..."></textarea></td>
             </tr>
         </table><br>
+        <input type="hidden"  th:value="${#httpServletRequest.remoteUser}" th:name="name">
         <input type ="submit" value="Publish">
     </form>
 </div>

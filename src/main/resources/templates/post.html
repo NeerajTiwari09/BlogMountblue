@@ -20,6 +20,17 @@
 </head>
 <body>
 <h1>My Blog</h1>
+<div th:each="authority : ${#authentication.getAuthorities()}"
+     th:if="${authority.getAuthority().equals('ADMIN')}">
+    <form action="#" th:action="@{/blog/delete}">
+        <input type="hidden" th:value="${post.id}" name="id">
+        <input type="submit" th:value="Delete">
+    </form>
+    <form action="#" th:action="@{/blog/update}" method="get">
+        <input type="hidden" th:value="${post.id}" th:name="id">
+        <input type="submit" th:value="Update">
+    </form>
+</div>
 <div align="center">
     <table>
         <tr>
@@ -44,6 +55,7 @@
             </tr>
         </form>
     </table>
+
     <table>
         <tr th:each="comment: ${comments}">
             <td>

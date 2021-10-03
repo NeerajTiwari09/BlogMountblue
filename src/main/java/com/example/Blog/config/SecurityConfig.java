@@ -34,6 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
+                .antMatchers("/","/id","/sort","/search","/register","/filter").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -43,5 +44,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout()
                     .permitAll();
+        http.exceptionHandling().accessDeniedPage("/access-denied");
     }
 }

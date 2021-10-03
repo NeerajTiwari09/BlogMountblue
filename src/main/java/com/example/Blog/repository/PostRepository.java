@@ -1,6 +1,7 @@
 package com.example.Blog.repository;
 
 import com.example.Blog.model.Post;
+import com.example.Blog.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,4 +21,6 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     //      TODO- add publishedAt and authorId filter
     @Query("select p from Post as p where p.author = ?1 or p.id in ?2")
     List<Post> findByFiltering(@Param("filterString") String filterString, @Param("ids") Set<Integer> ids);
+
+
 }

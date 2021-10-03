@@ -28,7 +28,13 @@
 </head>
 <body>
 <h3 th:inline="text">Welcome [[${#httpServletRequest.remoteUser}]]</h3>
+
 <h1>My Blog Application</h1>
+<div th:each="authority : ${#authentication.getAuthorities()}"
+     th:if="${authority.getAuthority().equals('ADMIN')}">
+    <a href="#" th:href="@{/blog/new}">Create a blog</a>
+    </form>
+</div>
 <div align="right">
     <form action="search" style="display: inline; margin-right: 50px;">
         <input type="text" name="search" style="margin: 0px; width: 200px; height: 25px;" placeholder="Search">&nbsp;
@@ -46,10 +52,12 @@
     </form>
 </div>
 <div>
-    <form class="form1">
-        <input type="checkbox" th:each="user: ${users}" th:name="*{user.name}" th:value="*{user.name}">
-        <label  th:text="*{name}"> </label><br>
-        <input type="text" style="margin: 0px; width: 200px; height: 25px;" placeholder="Filter">&nbsp;&nbsp;
+    <form class="form1" th:action="@{/filter}">
+        <div th:each="user: ${users}">
+        <input type="checkbox" name="authorId" th:value="*{user.id}">
+        <label  th:text="${user.name}"> </label><br>
+        </div>
+        <input type="submit" style="margin: 0px; width: 200px; height: 25px;" placeholder="Filter">&nbsp;&nbsp;
     </form>
 </div>
     <div align="right">
@@ -67,11 +75,14 @@
             </td>
         </tr>
     </table>
-        <ul>
-            <li style="display: inline; align: center" th:each="i: ${#numbers.sequence(0,posts.totalPages-1)}">
-                <a th:href="@{'/?start='+${i}+'&limit=10'}" th:text="${i+1}" class="nav-link"></a>
-            </li>
-        </ul>
+    </div>
+<div align="center">
+    <ul>
+        <li style="display: inline; text-align: center;" th:each="i: ${#numbers.sequence(0,posts.totalPages-1)}">
+            <a style="text-align: center;" th:href="@{'/?start='+${i}+'&limit=10'}" th:text="${i+1}" class="nav-link"></a>
+        </li>
+    </ul>
 </div>
+
 </body>
 </html>

@@ -20,9 +20,12 @@ public class UserService implements UserDetailsService {
 
     public boolean registerUser(User user){
         user.setRole("USER");
-        User isRegistered = userRepository.save(user);
-        if(isRegistered != null){
-            return true;   
+        boolean isAlreadyExist = userRepository.existsByUsername(user.getUsername());
+        if(!isAlreadyExist) {
+            User isRegistered = userRepository.save(user);
+            if (isRegistered != null) {
+                return true;
+            }
         }
         return false;
     }
@@ -46,6 +49,7 @@ public class UserService implements UserDetailsService {
         return new MyUserDetails(user);
     }
 
+    // display the author/admin to filter the posts
     public List<User> findAllAuthors() {
         List<String> authors = new ArrayList<>();
         authors.add("ADMIN");
@@ -53,7 +57,12 @@ public class UserService implements UserDetailsService {
         return userRepository.findAllByRole(authors);
     }
 
+    // to save the author name in Post relation
     public Optional<User> findAuthorById(int authorId) {
         return userRepository.findById(authorId);
+    }
+
+    public String findNameByEmail(String email) {
+        return userRepository.findNameByUsername(email);
     }
 }

@@ -18,6 +18,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public UserDetailsService userDetailsService() {
         return new UserService();
     }
+
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -34,15 +35,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/","/id","/sort","/search","/register","/filter").permitAll()
-                .anyRequest().authenticated()
+                .antMatchers("/", "/id", "/sort", "/search", "/register", "/filter").permitAll()
+                .antMatchers("/blog/new", "/blog/update").hasAnyAuthority("ADMIN", "AUTHOR")
+                .antMatchers("/blog/publish").hasAnyAuthority("ADMIN", "AUTHOR")
                 .and()
                 .formLogin()
                     .loginPage("/login")
                     .loginProcessingUrl("/authenticateUser")
                     .permitAll()
                 .and()
-                .logout()
+                    .logout()
                     .permitAll();
         http.exceptionHandling().accessDeniedPage("/access-denied");
     }

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
     <title>Create a blog</title>
@@ -25,6 +26,7 @@
                 <td><textarea type="text" th:field="*{content}" name="content" style="margin: 0px; width: 500px; height: 200px;" row="20" column= "50" placeholder="Type here..."></textarea></td>
             </tr>
         </table><br>
+        <input type="hidden"  th:value="${#httpServletRequest.remoteUser}" name="email">
         <input type ="submit" value="Update">
     </form>
 </div>

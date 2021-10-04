@@ -1,31 +1,28 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
     <title>Create a blog</title>
 </head>
 <body>
+<h3 th:inline="text">[[${#httpServletRequest.remoteUser}]]</h3>
 
+<!--<hr>-->
+<!--<div sec:authorize="hasRole('ADMIN')">Text visible to user.</div>-->
+<!--<hr>-->
+<!--&lt;!&ndash;<div sec:authorize="hasRole('ADMIN')">Text visible to admin.</div>&ndash;&gt;-->
+<div sec:authorize="isAuthenticated()">
+    Text visible only to authenticated users.
+</div>
 
-<div sec:authorize="hasRole('[ROLE_USER]')">Text visible to user.</div>
-<!--<div sec:authorize="hasRole('ADMIN')">Text visible to admin.</div>-->
-<!--<div sec:authorize="isAuthenticated()">-->
-<!--    Text visible only to authenticated users.-->
+<!--<hr>-->
+<div sec:authentication="name"></div>
+<div sec:authentication="principal.authorities"></div>
+<!--<div th:each="authority : ${#authentication.getAuthorities()}"-->
+<!--   th:if="${authority.getAuthority().equals('USER')}">-->
+
 <!--</div>-->
-<div th:if="${#authorization.expression('hasRole(''USER'')')}">
-    This will only be displayed if authenticated user has role ROLE_USER.
-</div>
-
-
-<!--<div sec:authentication="name"></div>-->
-<!--<div sec:authentication="principal.authorities"></div>-->
-<div th:each="authority : ${#authentication.getAuthorities()}"
-   th:if="${authority.getAuthority().equals('USER')}">
-    <input type="">
-</div>
-<div sec:authorize="hasRole('ROLE_USER')">
-    This will only be displayed if authenticated user has role_ADMIN.
-</div>
 
 
 

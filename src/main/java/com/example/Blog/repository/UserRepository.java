@@ -18,4 +18,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     @Query("SELECT u FROM User u WHERE u.role in :authors")
     List<User> findAllByRole(@Param("authors") List<String> authors);
+
+    boolean existsByUsername(String username);
 }

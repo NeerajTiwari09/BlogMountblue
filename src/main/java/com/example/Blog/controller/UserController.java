@@ -36,10 +36,9 @@ public class UserController {
         return "register";
     }
 
-//    @PostMapping("/authenticateUser")
-//    public String login(@ModelAttribute("login") Login login){
-////        boolean isauthorised = userService.checkUserAuthentication(login);
-////        System.out.println(isauthorised);
-//        return "login";
-//    }
+    @RequestMapping("/access-denied")
+    public String showAccessDeniedPage(){
+        return "access-denied";
+    }
+
 }

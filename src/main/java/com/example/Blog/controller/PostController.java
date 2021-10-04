@@ -20,7 +20,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Controller
-public class AppController {
+public class PostController {
 
     @Autowired
     private PostService postService;
@@ -38,7 +38,6 @@ public class AppController {
         Page<Post> posts = postService.getAllBlogs(start, limit);
         List<Tag> tags = tagService.findAll();
         List<User> users = userService.findAllAuthors();
-
         model.addAttribute("users", users);
         model.addAttribute("posts", posts);
         model.addAttribute("start", start);
@@ -50,12 +49,20 @@ public class AppController {
     }
 
     @RequestMapping("/id")
-    public String getPostById(@RequestParam("id") String id, Model model) {
+    public String getPostById(@RequestParam(name = "username", required = false) String email, @RequestParam("id") String id, Model model) {
         Comment newComment = new Comment();
+        boolean isAuthorsPost = false;
+        String name = userService.findNameByEmail(email);
+        System.out.println(email+" "+name);
         Optional<Post> post = postService.getById(Integer.valueOf(id));
+        if(post.get().getAuthor().equals(name)){
+            isAuthorsPost=true;
+        }
+        System.out.println(isAuthorsPost);
         List<Comment> comments = commentService.findAllByPostIdOrderCreatedAtDesc(Integer.valueOf(id));
         List<Integer> postTags = postTagService.findAllTagIdByPostId(Integer.valueOf(id));
         List<Tag> tags = tagService.findAllById(postTags);
+        model.addAttribute("isAuthorsPost", isAuthorsPost);
         model.addAttribute("post", post.get());
         model.addAttribute("tags", tags);
         model.addAttribute("newComment", newComment);
@@ -101,30 +108,42 @@ public class AppController {
         Set<Integer> postIds = postTagService.findPostIdsByTagName(search);
         List<Post> posts = postService.getBySearchString(search, postIds);
         model.addAttribute("posts", posts);
+        List<Tag> tags = tagService.findAll();
+        List<User> users = userService.findAllAuthors();
+        model.addAttribute("users", users);
+        model.addAttribute("tags", tags);
 //        model.addAttribute("start", start);
 //        model.addAttribute("i",posts.getSize());
         String[] data = new String[]{"asc", "desc"};
         model.addAttribute("sort",data);
-        return "first";
+        return "first-page";
     }
 
     @RequestMapping("/sort")
     public String getPostWithSorting(@RequestParam("sortField") String sortField, @RequestParam("order") String order, Model model) {
         List<Post> posts = postService.findPostWithSorting(sortField, order);
         model.addAttribute("posts", posts);
+        List<Tag> tags = tagService.findAll();
+        List<User> users = userService.findAllAuthors();
+        model.addAttribute("users", users);
+        model.addAttribute("tags", tags);
         String[] data = new String[]{"asc", "desc"};
         model.addAttribute("sort",data);
-        return "first";
+        return "first-page";
     }
 
     @RequestMapping("/filter")
-    public String filterPosts(@RequestParam("authorId") int authorId, @RequestParam("tagId") List<Integer> tagIds, Model model) {
+    public String filterPosts(@RequestParam(value = "authorId", required = false) int authorId, @RequestParam(name = "tagId", required = false) List<Integer> tagIds, Model model) {
         Set<Integer> postIds = postTagService.findAllPostIdByTagId(tagIds);
         Optional<User> user = userService.findAuthorById(authorId);
         List<Post> posts = postService.findByFiltering(user.get().getName(), postIds);
+        List<Tag> tags = tagService.findAll();
+        List<User> users = userService.findAllAuthors();
+        model.addAttribute("users", users);
         model.addAttribute("posts", posts);
+        model.addAttribute("tags", tags);
         String[] data = new String[]{"asc", "desc"};
         model.addAttribute("sort",data);
-        return "first";
+        return "first-page";
     }
 }

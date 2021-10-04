@@ -38,8 +38,6 @@
     </form>
 </div>
 <h1>My Blog Application</h1>
-<!--<div th:each="authority : ${#authentication.getAuthorities()}"-->
-<!--     th:if="${authority.getAuthority().equals('ADMIN')}">-->
 <div sec:authorize="hasAnyAuthority('AUTHOR','ADMIN')">
     <a href="#" th:href="@{/blog/new}">Create a blog</a>
     </form>
@@ -94,11 +92,11 @@
     </table>
     </div>
 <div align="center">
-    <ul>
-        <li style="display: inline; text-align: center;" th:each="i: ${#numbers.sequence(0,posts.totalPages-1)}">
-            <a style="text-align: center;" th:href="@{'/?start='+${i}+'&limit=10'}" th:text="${i+1}" class="nav-link"></a>
-        </li>
-    </ul>
+<!--    <ul>-->
+<!--        <li style="display: inline; text-align: center;" th:each="i: ${#numbers.sequence(0,posts.totalPages-1)}">-->
+<!--            <a style="text-align: center;" th:href="@{'/?start='+${i}+'&limit=10'}" th:text="${i+1}" class="nav-link"></a>-->
+<!--        </li>-->
+<!--    </ul>-->
 </div>
 
 </body>

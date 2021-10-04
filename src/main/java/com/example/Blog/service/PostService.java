@@ -2,7 +2,6 @@ package com.example.Blog.service;
 
 import com.example.Blog.model.Post;
 import com.example.Blog.model.Tag;
-import com.example.Blog.model.User;
 import com.example.Blog.repository.PostRepository;
 import com.example.Blog.repository.TagRepository;
 import com.example.Blog.repository.UserRepository;
@@ -46,7 +45,7 @@ public class PostService {
         post.setPublishedAt(new Timestamp(System.currentTimeMillis()));
         post.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         post.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-//        List<String> tags = tagRepository.findName();
+//        List<Tag> tags = tagRepository.findAll();
 //        String[] tagsData = tag.getName().split(",\\s*|\\s");
 //        for (String data : tagsData) {
 //            if(!tags.contains(data)){

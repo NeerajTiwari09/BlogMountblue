@@ -5,6 +5,7 @@ import com.example.Blog.model.Tag;
 import com.example.Blog.model.User;
 import com.example.Blog.repository.PostRepository;
 import com.example.Blog.repository.TagRepository;
+import com.example.Blog.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +25,9 @@ public class PostService {
     @Autowired
     private TagRepository tagRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     public Page<Post> getAllBlogs(int start, int limit) {
         Pageable pageWithTenElements = PageRequest.of(start, limit);
         return postRepository.findAll(pageWithTenElements);
@@ -33,9 +37,10 @@ public class PostService {
         return postRepository.findAll();
     }
 
-    public void save(Post post, Tag tag) {
+    public void save(String email, Post post, Tag tag) {
         String excerpt = post.getContent().substring(0, post.getContent().indexOf("\n"));
-        post.setAuthor("Mahindra");
+        String author = userRepository.findNameByUsername(email);
+        post.setAuthor(author);
         post.setExcerpt(excerpt);
         post.setPublished(true);
         post.setPublishedAt(new Timestamp(System.currentTimeMillis()));

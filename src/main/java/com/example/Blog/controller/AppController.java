@@ -73,9 +73,8 @@ public class AppController {
     }
 
     @RequestMapping("/blog/publish")
-    public String publishPost(@ModelAttribute("blogPost") Post post, @ModelAttribute("tag") Tag tag) {
-        System.out.println("PostId: " + post.getId());
-        postService.save(post, tag);
+    public String publishPost(@RequestParam(name = "email") String email, @ModelAttribute("blogPost") Post post, @ModelAttribute("tag") Tag tag) {
+        postService.save(email, post, tag);
         List<Tag> tags = tagService.findTagIds(tag);
         postTagService.saveTagId(tags, post);
         return "redirect:/?start=1&limit=10";
@@ -119,7 +118,7 @@ public class AppController {
     }
 
     @RequestMapping("/filter")
-    public String filterPosts(@RequestParam("authorId") int authorId, @RequestParam("tagId", ) List<Integer> tagIds, Model model) {
+    public String filterPosts(@RequestParam("authorId") int authorId, @RequestParam("tagId") List<Integer> tagIds, Model model) {
         Set<Integer> postIds = postTagService.findAllPostIdByTagId(tagIds);
         Optional<User> user = userService.findAuthorById(authorId);
         List<Post> posts = postService.findByFiltering(user.get().getName(), postIds);

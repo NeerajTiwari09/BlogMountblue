@@ -18,27 +18,15 @@ public class UserService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
-    public boolean registerUser(User user){
+    public boolean registerUser(User user) {
         user.setRole("USER");
         boolean isAlreadyExist = userRepository.existsByUsername(user.getUsername());
-        if(!isAlreadyExist) {
-            User isRegistered = userRepository.save(user);
-            if (isRegistered != null) {
-                return true;
-            }
+        if (!isAlreadyExist) {
+            userRepository.save(user);
+            return true;
         }
         return false;
     }
-
-//    public boolean checkUserAuthentication(Login login){
-//        User user = userRepository.findByUsername(login.getUsername());
-//        if(user != null){
-//            if(user.getPassword().equals(login.getPassword())){
-//                return true;
-//            }
-//        }
-//        return  false;
-//    }
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
@@ -49,7 +37,6 @@ public class UserService implements UserDetailsService {
         return new MyUserDetails(user);
     }
 
-    // display the author/admin to filter the posts
     public List<User> findAllAuthors() {
         List<String> authors = new ArrayList<>();
         authors.add("ADMIN");
@@ -57,7 +44,6 @@ public class UserService implements UserDetailsService {
         return userRepository.findAllByRole(authors);
     }
 
-    // to save the author name in Post relation
     public Optional<User> findAuthorById(int authorId) {
         return userRepository.findById(authorId);
     }

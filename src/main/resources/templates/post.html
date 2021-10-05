@@ -22,7 +22,6 @@
 <body>
 <h3 th:inline="text">[[${#httpServletRequest.remoteUser}]]</h3>
 <h1>My Blog</h1>
-<!--<div sec:authorize="&{hasAnyAuthority('ADMIN', 'AUTHOR')}">-->
 <div  th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'')') ||
             (#authorization.expression('hasAnyAuthority(''AUTHOR'')') && isAuthorsPost) }">
     <form style="display:inline;" action="#" th:action="@{/blog/delete}">
@@ -66,10 +65,17 @@
                 <span style="float: right" th:text="${comment.createdAt}"></span><br>
                 <span style="float: left" th:text="${comment.email}"></span><br>
                 <span style="float: left" th:text="${comment.comment}"></span><br>
-                <form th:action="editComment">
-                    <input type="hidden" th:value="${comment.id}" th:name="id">
-                    <input type="submit" value="Edit comment">
-                </form>
+                <div th:if="${#httpServletRequest.remoteUser == comment.email}">
+                    <form th:action="@{/updateComment}" style="display:inline">
+                        <input type="hidden" th:value="${comment.id}" th:name="id">
+                        <input type="submit" value="Edit comment">
+                    </form>
+                    <form th:action="@{/deleteComment}" style="display:inline">
+                        <input type="hidden" th:value="${post.id}" th:name="postId">
+                        <input type="hidden" th:value="${comment.id}" th:name="commentId">
+                        <input type="submit" value="Delete comment">
+                    </form>
+                </div>
             </td>
         </tr>
     </table>

@@ -42,9 +42,11 @@ public class PostService {
         post.setAuthor(author);
         post.setExcerpt(excerpt);
         post.setPublished(true);
-        post.setPublishedAt(new Timestamp(System.currentTimeMillis()));
-        post.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-        post.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+        if(post.getUpdatedAt() == null) {
+            post.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+            post.setPublishedAt(new Timestamp(System.currentTimeMillis()));
+            post.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        }
 //        List<Tag> tags = tagRepository.findAll();
 //        String[] tagsData = tag.getName().split(",\\s*|\\s");
 //        for (String data : tagsData) {
@@ -52,7 +54,7 @@ public class PostService {
 //                Tag tg = new Tag();
 //                tg.setName(data);
 //            }
-//            posts.add(post);
+////            .add(post);
 //            tg.getPosts().add(post);
 //            tg.setCreatedAt(new Timestamp(System.currentTimeMillis()));
 //            tg.setUpdatedAt(new Timestamp(System.currentTimeMillis()));

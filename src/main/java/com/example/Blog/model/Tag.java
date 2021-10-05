@@ -21,12 +21,11 @@ public class Tag {
 
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH})
-    @JoinTable( name = "post_tags",
+            CascadeType.DETACH, CascadeType.REFRESH}, mappedBy = "tags")
+    /*@JoinTable( name = "post_tags",
             joinColumns = @JoinColumn(name= "tagId"),
             inverseJoinColumns = @JoinColumn(name = "postId")
-
-    )
+    )*/
     private Set<Post> posts = new HashSet<>();
 
     public Integer getId() {

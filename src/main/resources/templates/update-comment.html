@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div align="center">
+    <table>
+        <form action="#" th:action="@{/updateComment}" th:object="${updateComment}" method="post">
+            <tr>
+                <td>
+                    <input type="hidden" th:value="*{id}" name="id">
+                    <input type="hidden" th:filed="*{createdAt}">
+                    <input type="text" th:field="*{comment}" th:name="comment"
+                           style="margin: 0px; width: 500px; height: 25px;" placeholder="Comment here.."></td>
+                <input type="hidden" th:value="*{postId}" th:name="postId"
+                       style="margin: 0px; width: 500px; height: 25px;" placeholder="Comment here.."></td>
+                <input type="hidden" th:value="${#httpServletRequest.remoteUser}" th:name="email">
+            </tr>
+        </form>
+    </table>
+</div>
+</body>
+</html>

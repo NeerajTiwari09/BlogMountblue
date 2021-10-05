@@ -7,16 +7,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CommentService {
 
-
     @Autowired
     private CommentRepository commentRepository;
+
     @Autowired
     private UserRepository userRepository;
-
 
     public List<Comment> findAllByPostIdOrderCreatedAtDesc(Integer postId) {
         return commentRepository.findAllByPostIdOrderByCreatedAtDesc(postId);
@@ -28,5 +28,13 @@ public class CommentService {
         comment.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         comment.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
         commentRepository.save(comment);
+    }
+
+    public Optional<Comment> findCommentById(Integer id) {
+        return commentRepository.findById(id);
+    }
+
+    public void deleteCommentById(Integer commentId) {
+        commentRepository.deleteById(commentId);
     }
 }

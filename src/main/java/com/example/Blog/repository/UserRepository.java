@@ -1,6 +1,5 @@
 package com.example.Blog.repository;
 
-
 import com.example.Blog.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

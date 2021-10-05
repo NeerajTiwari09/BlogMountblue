@@ -40,7 +40,6 @@
 <h1>My Blog Application</h1>
 <div sec:authorize="hasAnyAuthority('AUTHOR','ADMIN')">
     <a href="#" th:href="@{/blog/new}">Create a blog</a>
-    </form>
 </div>
 <div align="right">
     <form action="search" style="display: inline; margin-right: 10px;">
@@ -83,7 +82,7 @@
                 <span th:text="${post.createdAt}"></span><br><br>
                 <span th:text="${post.excerpt}"></span><br>
                 <form th:action="id">
-                    <input sec:authorize="isAuthenticated()" type="hidden" th:value="${#httpServletRequest.remoteUser}" name="username">
+<!--                    <input sec:authorize="isAuthenticated()" type="hidden" th:value="${#httpServletRequest.remoteUser}" name="username">-->
                     <input type="hidden" th:value="${post.id}" name="id">
                     <input type="submit" value="Read more...">
                 </form>

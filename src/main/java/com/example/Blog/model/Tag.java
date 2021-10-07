@@ -22,10 +22,10 @@ public class Tag {
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH}, mappedBy = "tags")
-    /*@JoinTable( name = "post_tags",
-            joinColumns = @JoinColumn(name= "tagId"),
-            inverseJoinColumns = @JoinColumn(name = "postId")
-    )*/
+//    @JoinTable( name = "post_tags",
+//            joinColumns = @JoinColumn(name= "tagId"),
+//            inverseJoinColumns = @JoinColumn(name = "postId")
+//    )
     private Set<Post> posts = new HashSet<>();
 
     public Integer getId() {
@@ -60,11 +60,11 @@ public class Tag {
         this.updatedAt = updatedAt;
     }
 
-    public Set<Post> getPosts() {
-        return posts;
-    }
+//    public Set<Post> getPosts() {
+//        return posts;
+//    }
 
-    public void setPosts(Set<Post> posts) {
-        this.posts = posts;
-    }
+//    public void setPosts(Set<Post> posts) {
+//        this.posts = posts;
+//    }
 }

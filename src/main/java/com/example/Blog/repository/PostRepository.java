@@ -22,5 +22,4 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query("select p from Post as p where p.author = ?1 or p.id in ?2")
     List<Post> findByFiltering(@Param("filterString") String filterString, @Param("ids") Set<Integer> ids);
 
-
 }

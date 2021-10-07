@@ -7,22 +7,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.util.Optional;
 
-@Controller
+@RestController
 public class CommentController {
+
     @Autowired
     private CommentService commentService;
 
-    @RequestMapping("/comment")
-    public String makeComment(@ModelAttribute("newComment") Comment comment){
+    @PostMapping("/comment")
+    public String makeComment(@RequestBody Comment comment){
         commentService.saveComment(comment);
         return "redirect:/id?id="+ comment.getPostId();
     }
+
     @GetMapping("/updateComment")
     public String viewUpdateCommentPage(@RequestParam("id") Integer id, Model model){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -35,16 +37,20 @@ public class CommentController {
         model.addAttribute("updateComment", comment.get());
         return "update-comment";
     }
-    @PostMapping("/updateComment")
-    public String updateComment(@ModelAttribute("updateComment") Comment comment){
+    @PutMapping("/updateComment")
+    public String updateComment(@RequestBody Comment comment){
+        comment.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
         commentService.saveComment(comment);
         return "redirect:/id?id="+ comment.getPostId();
     }
 
-    @GetMapping("/deleteComment")
+    @DeleteMapping("/deleteComment")
     public String deleteComment(@RequestParam("commentId") Integer commentId, @RequestParam("postId") Integer postId){
-        System.out.println(commentId + " "+ postId);
-        commentService.deleteCommentById(commentId);
-        return "redirect:/id?id="+ postId;
+        Optional<Comment> comment = commentService.findCommentById(commentId);
+        if(comment.get() != null) {
+            commentService.deleteCommentById(commentId);
+            return "Deleted comment id- " + commentId;
+        }
+        return "Comment not found.";
     }
 }

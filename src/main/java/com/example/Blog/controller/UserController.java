@@ -7,11 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 public class UserController {
 
     @Autowired
@@ -35,16 +34,16 @@ public class UserController {
         return "register";
     }
 
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public String registerUser(@ModelAttribute("user") User user) {
+    @PostMapping("/register")
+    public String registerUser(@RequestBody User user) {
         boolean isRegistered = userService.registerUser(user);
         if (isRegistered) {
-            return "redirect:/login";
+            return "User registered";
         }
-        return "register";
+        return "Something error";
     }
 
-    @RequestMapping("/access-denied")
+    @GetMapping("/access-denied")
     public String showAccessDeniedPage() {
         return "access-denied";
     }

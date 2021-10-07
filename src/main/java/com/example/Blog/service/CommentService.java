@@ -25,8 +25,10 @@ public class CommentService {
     public void saveComment(Comment comment) {
         String name = userRepository.findNameByUsername(comment.getEmail());
         comment.setName(name);
-        comment.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-        comment.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+        if(comment.getUpdatedAt() == null) {
+            comment.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+            comment.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+        }
         commentRepository.save(comment);
     }
 

@@ -36,10 +36,10 @@ public class PostService {
         return postRepository.findAll();
     }
 
-    public void save(String email, Post post, Tag tag) {
+    public void save(String email, Post post) {
         String excerpt = post.getContent().substring(0, post.getContent().indexOf("\n"));
         String author = userRepository.findNameByUsername(email);
-        post.setAuthor(author);
+        post.setAuthor(author+"Author1");
         post.setExcerpt(excerpt);
         post.setPublished(true);
         if(post.getUpdatedAt() == null) {
@@ -47,18 +47,14 @@ public class PostService {
             post.setPublishedAt(new Timestamp(System.currentTimeMillis()));
             post.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         }
-//        List<Tag> tags = tagRepository.findAll();
 //        String[] tagsData = tag.getName().split(",\\s*|\\s");
 //        for (String data : tagsData) {
-//            if(!tags.contains(data)){
-//                Tag tg = new Tag();
-//                tg.setName(data);
-//            }
-////            .add(post);
-//            tg.getPosts().add(post);
-//            tg.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-//            tg.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-//            post.getTags().add(tg);
+//            Tag tag1 = new Tag();
+//            tag1.setName(data);
+//            tag1.getPosts().add(post);
+//            tag1.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+//            tag1.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+//            post.getTags().add(tag1);
 //        }
         postRepository.save(post);
     }

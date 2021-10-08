@@ -37,10 +37,6 @@ public class PostService {
         return postRepository.findAll(pageWithTenElements);
     }
 
-    public List<Post> listAll() {
-        return postRepository.findAll();
-    }
-
     public void saveOrUpdatePost(Post post) {
         if (post.getId() == null) {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

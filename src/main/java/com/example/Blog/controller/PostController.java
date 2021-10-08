@@ -31,7 +31,9 @@ public class PostController {
     private UserService userService;
 
     @GetMapping("/")
-    public Page<Post> viewHomePage(@RequestParam(name = "start", defaultValue = "0") int start, @RequestParam(value = "limit", defaultValue = "10") int limit, Model model) {
+    public Page<Post> viewHomePage(@RequestParam(name = "start", defaultValue = "0") int start,
+                                   @RequestParam(value = "limit", defaultValue = "10") int limit,
+                                   Model model) {
         return postService.getAllBlogs(start, limit);
     }
 
@@ -89,7 +91,8 @@ public class PostController {
     }
 
     @GetMapping("/sort")
-    public List<Post> getPostWithSorting(@RequestParam("sortField") String sortField, @RequestParam("order") String order) {
+    public List<Post> getPostWithSorting(@RequestParam("sortField") String sortField,
+                                         @RequestParam("order") String order) {
         return postService.findPostWithSorting(sortField, order);
     }
 

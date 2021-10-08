@@ -23,14 +23,21 @@ public class CommentService {
         return commentRepository.findAllByPostIdOrderByCreatedAtDesc(postId);
     }
 
-    public void saveComment(Comment comment) {
-        String name = userRepository.findNameByUsername(comment.getEmail());
-        comment.setName(name);
-        if (comment.getUpdatedAt() == null) {
+    public void saveOrUpdateComment(Comment comment) {
+        if (comment.getId() != null) {
+            Optional<Comment> preComment = commentRepository.findById(comment.getId());
+            if (preComment.isPresent()) {
+                preComment.get().setComment(comment.getComment());
+                preComment.get().setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+                commentRepository.save(preComment.get());
+            }
+        } else {
+            String name = userRepository.findNameByUsername(comment.getEmail());
+            comment.setName(name);
             comment.setCreatedAt(new Timestamp(System.currentTimeMillis()));
             comment.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+            commentRepository.save(comment);
         }
-        commentRepository.save(comment);
     }
 
     public Optional<Comment> findCommentById(Integer id) {

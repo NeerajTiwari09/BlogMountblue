@@ -8,12 +8,10 @@ import com.example.Blog.model.User;
 import com.example.Blog.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -58,20 +56,16 @@ public class PostController {
 
     @PostMapping("/blog/publish")
     public String publishPost(@RequestBody Post post) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        postService.save(email, post);
         List<Tag> tags = tagService.findTagIds(post.getTagString());
-        postTagService.saveTagId(tags, post);
+        post.setTags(new HashSet<>(tags));
+        postService.saveOrUpdatePost(post);
+//        postTagService.saveTagId(tags, post);
         return "Post published";
     }
 
     @PutMapping("/blog/update")
     public String updatePost(@RequestBody Post post) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        post.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-        postService.save(email, post);
+        postService.saveOrUpdatePost(post);
         List<Tag> tags = tagService.findTagIds(post.getTagString());
         postTagService.saveTagId(tags, post);
         return "Post updated";

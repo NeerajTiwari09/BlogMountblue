@@ -16,7 +16,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/login")
-    public String viewLoginPage(Model model) {
+    public String viewLoginPage() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
             return "login";

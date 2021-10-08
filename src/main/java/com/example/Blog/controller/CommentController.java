@@ -6,10 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Timestamp;
 import java.util.Optional;
 
 @RestController
@@ -25,7 +23,7 @@ public class CommentController {
             return "Please login first...";
         }
         comment.setEmail(authentication.getName());
-        commentService.saveComment(comment);
+        commentService.saveOrUpdateComment(comment);
         return "Comment is: " + comment.getComment();
     }
 
@@ -45,9 +43,7 @@ public class CommentController {
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
             return "Please login first...";
         }
-        comment.setEmail(authentication.getName());
-        comment.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-        commentService.saveComment(comment);
+        commentService.saveOrUpdateComment(comment);
         return "New updated comment: " + comment.getComment();
     }
 

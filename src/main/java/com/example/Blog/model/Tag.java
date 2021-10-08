@@ -13,19 +13,15 @@ public class Tag {
     private Integer id;
     private String name;
 
-    @Column(name="created_at")
+    @Column(name = "created_at")
     private Timestamp createdAt;
 
-    @Column(name="updated_at")
+    @Column(name = "updated_at")
     private Timestamp updatedAt;
 
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH}, mappedBy = "tags")
-//    @JoinTable( name = "post_tags",
-//            joinColumns = @JoinColumn(name= "tagId"),
-//            inverseJoinColumns = @JoinColumn(name = "postId")
-//    )
+                    CascadeType.DETACH, CascadeType.REFRESH}, mappedBy = "tags")
     private Set<Post> posts = new HashSet<>();
 
     public Integer getId() {
@@ -60,11 +56,4 @@ public class Tag {
         this.updatedAt = updatedAt;
     }
 
-//    public Set<Post> getPosts() {
-//        return posts;
-//    }
-
-//    public void setPosts(Set<Post> posts) {
-//        this.posts = posts;
-//    }
 }

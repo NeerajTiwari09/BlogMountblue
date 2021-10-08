@@ -35,7 +35,6 @@ public class PostTagService {
     }
 
     public Set<Integer> findAllPostIdByTagId(List<Integer> tagId) {
-
         return postTagRepository.findPostIdByTagId(tagId);
     }
 

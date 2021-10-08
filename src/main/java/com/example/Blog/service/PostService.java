@@ -39,23 +39,14 @@ public class PostService {
     public void save(String email, Post post) {
         String excerpt = post.getContent().substring(0, post.getContent().indexOf("\n"));
         String author = userRepository.findNameByUsername(email);
-        post.setAuthor(author+"Author1");
+        post.setAuthor(author);
         post.setExcerpt(excerpt);
         post.setPublished(true);
-        if(post.getUpdatedAt() == null) {
+        if (post.getUpdatedAt() == null) {
             post.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
             post.setPublishedAt(new Timestamp(System.currentTimeMillis()));
             post.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         }
-//        String[] tagsData = tag.getName().split(",\\s*|\\s");
-//        for (String data : tagsData) {
-//            Tag tag1 = new Tag();
-//            tag1.setName(data);
-//            tag1.getPosts().add(post);
-//            tag1.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-//            tag1.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-//            post.getTags().add(tag1);
-//        }
         postRepository.save(post);
     }
 

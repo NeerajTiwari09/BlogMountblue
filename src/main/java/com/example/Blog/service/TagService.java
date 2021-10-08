@@ -15,11 +15,11 @@ public class TagService {
     @Autowired
     private TagRepository tagRepository;
 
-    public List<Tag> findAll(){
+    public List<Tag> findAll() {
         return tagRepository.findAll();
     }
 
-    public List<Tag> findAllById(List<Integer> ids){
+    public List<Tag> findAllById(List<Integer> ids) {
         return tagRepository.findAllById(ids);
     }
 

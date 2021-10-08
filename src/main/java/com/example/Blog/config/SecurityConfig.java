@@ -4,7 +4,6 @@ import com.example.Blog.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -44,20 +43,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable();
         http.authorizeRequests()
                 .antMatchers("/", "/id", "/sort", "/search", "/register", "/filter").permitAll()
+                .antMatchers("/comment", "/updateComment", "/deleteComment").hasAnyAuthority("ADMIN", "AUTHOR", "USER")
                 .antMatchers("/blog/new", "/blog/update").hasAnyAuthority("ADMIN", "AUTHOR")
                 .antMatchers("/blog/publish").hasAnyAuthority("ADMIN", "AUTHOR")
-                .antMatchers(HttpMethod.DELETE,"/blog/delete/{postId}").access("@userSecurity.hasUserId(authentication, #postId)")
+                .antMatchers(HttpMethod.DELETE, "/blog/delete/{postId}").access("@userSecurity.hasUserId(authentication, #postId)")
+                .antMatchers(HttpMethod.GET, "/blog/update/{postId}").access("@userSecurity.hasUserId(authentication, #postId)")
+                .antMatchers(HttpMethod.GET, "/updateComment/{commentId}").access("@userSecurity.hasCommentId(authentication, #commentId)")
+                .antMatchers(HttpMethod.DELETE, "/deleteComment/{commentId}").access("@userSecurity.hasCommentId(authentication, #commentId)")
                 .and()
                 .httpBasic()
                 .and()
                 .formLogin()
-//                    .loginPage("/login")
                 .loginProcessingUrl("/authenticateUser")
                 .defaultSuccessUrl("/")
-                    .permitAll()
+                .permitAll()
                 .and()
-                    .logout()
-                    .permitAll();
+                .logout()
+                .permitAll();
         http.exceptionHandling().accessDeniedPage("/access-denied");
     }
 }

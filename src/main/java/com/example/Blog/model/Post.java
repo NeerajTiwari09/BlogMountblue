@@ -32,8 +32,8 @@ public class Post {
 
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST,
-            CascadeType.DETACH, CascadeType.MERGE,
-            CascadeType.REFRESH})
+                    CascadeType.DETACH, CascadeType.MERGE,
+                    CascadeType.REFRESH})
     @JoinTable(name = "post_tags",
             joinColumns = {@JoinColumn(name = "postId")},
             inverseJoinColumns = {@JoinColumn(name = "tagId")})

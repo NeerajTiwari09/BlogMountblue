@@ -1,6 +1,5 @@
 package com.example.Blog.controller;
 
-import com.example.Blog.model.Login;
 import com.example.Blog.model.User;
 import com.example.Blog.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +17,6 @@ public class UserController {
 
     @GetMapping("/login")
     public String viewLoginPage(Model model) {
-        Login login = new Login();
-        model.addAttribute("login", login);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
             return "login";

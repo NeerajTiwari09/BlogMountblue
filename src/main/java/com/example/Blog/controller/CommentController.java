@@ -1,7 +1,6 @@
 package com.example.Blog.controller;
 
 import com.example.Blog.model.Comment;
-import com.example.Blog.model.Login;
 import com.example.Blog.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -20,34 +19,42 @@ public class CommentController {
     private CommentService commentService;
 
     @PostMapping("/comment")
-    public String makeComment(@RequestBody Comment comment){
-        commentService.saveComment(comment);
-        return "redirect:/id?id="+ comment.getPostId();
-    }
-
-    @GetMapping("/updateComment")
-    public String viewUpdateCommentPage(@RequestParam("id") Integer id, Model model){
+    public String makeComment(@RequestBody Comment comment) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
-            Login login = new Login();
-            model.addAttribute("login", login);
-            return "login";
+            return "Please login first...";
         }
-        Optional<Comment> comment = commentService.findCommentById(id);
-        model.addAttribute("updateComment", comment.get());
-        return "update-comment";
-    }
-    @PutMapping("/updateComment")
-    public String updateComment(@RequestBody Comment comment){
-        comment.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+        comment.setEmail(authentication.getName());
         commentService.saveComment(comment);
-        return "redirect:/id?id="+ comment.getPostId();
+        return "Comment is: " + comment.getComment();
     }
 
-    @DeleteMapping("/deleteComment")
-    public String deleteComment(@RequestParam("commentId") Integer commentId, @RequestParam("postId") Integer postId){
+    @GetMapping("/updateComment/{commentId}")
+    public Comment viewUpdateCommentPage(@PathVariable Integer commentId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+            return null;
+        }
         Optional<Comment> comment = commentService.findCommentById(commentId);
-        if(comment.get() != null) {
+        return comment.get();
+    }
+
+    @PutMapping("/updateComment")
+    public String updateComment(@RequestBody Comment comment) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+            return "Please login first...";
+        }
+        comment.setEmail(authentication.getName());
+        comment.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+        commentService.saveComment(comment);
+        return "New updated comment: " + comment.getComment();
+    }
+
+    @DeleteMapping("/deleteComment/{commentId}")
+    public String deleteComment(@PathVariable Integer commentId) {
+        Optional<Comment> comment = commentService.findCommentById(commentId);
+        if (comment.isPresent()) {
             commentService.deleteCommentById(commentId);
             return "Deleted comment id- " + commentId;
         }

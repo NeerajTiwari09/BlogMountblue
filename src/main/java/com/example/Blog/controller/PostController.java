@@ -82,7 +82,7 @@ public class PostController {
         List<Tag> tags = tagService.findTagIds(post.getTagString());
         post.setTags(new HashSet<>(tags));
         postService.saveOrUpdatePost(post);
-        postTagService.saveTagId(post);
+
         return "redirect:/?start=1&limit=10";
     }
 
@@ -91,7 +91,6 @@ public class PostController {
         List<Tag> tags = tagService.findTagIds(post.getTagString());
         post.setTags(new HashSet<>(tags));
         postService.saveOrUpdatePost(post);
-        postTagService.saveTagId(post);
         return "redirect:/?start=1&limit=10";
     }
 

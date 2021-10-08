@@ -29,6 +29,9 @@ public class PostService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PostTagService postTagService;
+
     public Page<Post> getAllBlogs(int start, int limit) {
         Pageable pageWithTenElements = PageRequest.of(start, limit);
         return postRepository.findAll(pageWithTenElements);
@@ -46,7 +49,8 @@ public class PostService {
             post.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
             post.setPublishedAt(new Timestamp(System.currentTimeMillis()));
             post.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-            postRepository.save(post);
+            Post newPost = postRepository.save(post);
+            postTagService.saveTagId(newPost);
         } else {
             Optional<Post> prePost = postRepository.findById(post.getId());
             if (prePost.isPresent()) {
@@ -55,7 +59,8 @@ public class PostService {
                 prePost.get().setTitle(post.getTitle());
                 prePost.get().setUpdatedAt(new Timestamp(System.currentTimeMillis()));
                 prePost.get().setContent(post.getContent());
-                postRepository.save(prePost.get());
+                Post newPost = postRepository.save(prePost.get());
+                postTagService.saveTagId(newPost);
             }
         }
     }
@@ -65,7 +70,7 @@ public class PostService {
         StringBuilder tags = new StringBuilder("");
         if (post.isPresent()) {
             for (Tag tag : post.get().getTags()) {
-                tags.append(tag.getName());
+                tags.append(tag.getName()+" ");
             }
             post.get().setTagString(tags.toString());
         }

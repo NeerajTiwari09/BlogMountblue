@@ -2,13 +2,11 @@ package com.example.Blog.service;
 
 import com.example.Blog.model.Post;
 import com.example.Blog.model.PostTag;
-import com.example.Blog.model.Tag;
 import com.example.Blog.repository.PostTagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -24,7 +22,6 @@ public class PostTagService {
     public void saveTagId(Post post) {
         List<PostTag> postTags = postTagRepository.findPostTagByPostId(post.getId());
         for (PostTag postTag : postTags){
-            System.out.println(postTag.getPostId() + " " +postTags.size());
             postTag.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
             postTag.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         }

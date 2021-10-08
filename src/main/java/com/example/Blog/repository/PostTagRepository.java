@@ -21,6 +21,6 @@ public interface PostTagRepository extends JpaRepository<PostTag, Integer> {
             nativeQuery = true)
     Set<Integer> findAllPostIdByTagName(@Param("searchString") String searchString);
 
-    @Query("SELECT p from PostTag p WHERE p.tagId = ?1")
+    @Query("SELECT p from PostTag p WHERE p.postId = ?1")
     List<PostTag> findPostTagByPostId(Integer id);
 }

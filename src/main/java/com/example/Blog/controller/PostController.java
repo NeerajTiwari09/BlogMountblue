@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -41,13 +39,14 @@ public class PostController {
         Page<Post> posts = postService.getAllBlogs(start, limit);
         List<Tag> tags = tagService.findAll();
         List<User> users = userService.findAllAuthors();
+        String[] order = new String[]{"asc", "desc"};
+
         model.addAttribute("users", users);
         model.addAttribute("posts", posts);
         model.addAttribute("start", start);
         model.addAttribute("i", posts.getSize());
         model.addAttribute("tags", tags);
-        String[] data = new String[]{"asc", "desc"};
-        model.addAttribute("sort",data);
+        model.addAttribute("sort",order);
         return "first";
     }
 
@@ -63,11 +62,8 @@ public class PostController {
             isAuthorsPost=true;
         }
         List<Comment> comments = commentService.findAllByPostIdOrderCreatedAtDesc(Integer.valueOf(id));
-        List<Integer> postTags = postTagService.findAllTagIdByPostId(Integer.valueOf(id));
-        List<Tag> tags = tagService.findAllById(postTags);
         model.addAttribute("isAuthorsPost", isAuthorsPost);
         model.addAttribute("post", post.get());
-        model.addAttribute("tags", tags);
         model.addAttribute("newComment", newComment);
         model.addAttribute("comments", comments);
         return "post";
@@ -76,29 +72,22 @@ public class PostController {
     @RequestMapping("/blog/new")
     public String createNewPost(Model model) {
         Post post = new Post();
-        Tag tag = new Tag();
         model.addAttribute("blogPost", post);
-        model.addAttribute("tag", tag);
         return "new-post";
     }
 
     @RequestMapping("/blog/publish")
-    public String publishPost(@ModelAttribute("blogPost") Post post, @ModelAttribute("tag") Tag tag) {
-        Authentication authentication  = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        postService.save(email, post, tag);
-        List<Tag> tags = tagService.findTagIds(tag);
+    public String publishPost(@ModelAttribute("blogPost") Post post) {
+        postService.saveOrUpdatePost(post);
+        List<Tag> tags = tagService.findTagIds(post.getTagString());
         postTagService.saveTagId(tags, post);
         return "redirect:/?start=1&limit=10";
     }
 
     @RequestMapping("/blog/update")
-    public String updatePost(@ModelAttribute("blogPost") Post post, @ModelAttribute("tag") Tag tag) {
-        Authentication authentication  = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        postService.save(email, post, tag);
-        post.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-        List<Tag> tags = tagService.findTagIds(tag);
+    public String updatePost(@ModelAttribute("blogPost") Post post) {
+        postService.saveOrUpdatePost(post);
+        List<Tag> tags = tagService.findTagIds(post.getTagString());
         postTagService.saveTagId(tags, post);
         return "redirect:/?start=1&limit=10";
     }
@@ -106,35 +95,27 @@ public class PostController {
     @GetMapping("/blog/update")
     public String showUpdatePostPage(@RequestParam("id") String id, Model model){
         Optional<Post> post = postService.getById(Integer.valueOf(id));
-        List<Integer> postTags = postTagService.findAllTagIdByPostId(Integer.valueOf(id));
-        List<Tag> tags = tagService.findAllById(postTags);
-
         model.addAttribute("blogPost", post.get());
-        if(tags.size()!=0) {
-            model.addAttribute("tag", tags.get(0));
-        }
-        else{
-            model.addAttribute("tag",new Tag());
-        }
         return "update-post";
     }
 
     @GetMapping("/blog/delete")
     public String deletePost(@RequestParam("id") Integer id){
         postService.deletePostById(id);
-        return "redirect:/";
+        return "redirect:/?start=1&limit=10";
     }
 
     @RequestMapping("/search")
     public String searchByString(@RequestParam("search") String search, Model model) {
         Set<Integer> postIds = postTagService.findPostIdsByTagName(search);
         List<Post> posts = postService.getBySearchString(search, postIds);
-        model.addAttribute("posts", posts);
         List<Tag> tags = tagService.findAll();
         List<User> users = userService.findAllAuthors();
+        String[] data = new String[]{"asc", "desc"};
+
+        model.addAttribute("posts", posts);
         model.addAttribute("users", users);
         model.addAttribute("tags", tags);
-        String[] data = new String[]{"asc", "desc"};
         model.addAttribute("sort",data);
         return "first-page";
     }
@@ -142,12 +123,13 @@ public class PostController {
     @RequestMapping("/sort")
     public String getPostWithSorting(@RequestParam("sortField") String sortField, @RequestParam("order") String order, Model model) {
         List<Post> posts = postService.findPostWithSorting(sortField, order);
-        model.addAttribute("posts", posts);
         List<Tag> tags = tagService.findAll();
         List<User> users = userService.findAllAuthors();
+        String[] data = new String[]{"asc", "desc"};
+
+        model.addAttribute("posts", posts);
         model.addAttribute("users", users);
         model.addAttribute("tags", tags);
-        String[] data = new String[]{"asc", "desc"};
         model.addAttribute("sort",data);
         return "first-page";
     }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -22,13 +23,18 @@ public class TagService {
         return tagRepository.findAllById(ids);
     }
 
-    public List<Tag> findTagIds(Tag tag) {
-        boolean isExist = tagRepository.existsByName(tag.getName());
-        if (!isExist) {
-            tag.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-            tag.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-            tagRepository.save(tag);
+    public List<Tag> findTagIds(String tags) {
+        String[] tagsData = tags.trim().split(",\\s*|\\s");
+        for (String data : tagsData) {
+            boolean isExist = tagRepository.existsByName(data);
+            if (!isExist) {
+                Tag tag = new Tag();
+                tag.setName(data);
+                tag.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+                tag.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+                tagRepository.save(tag);
+            }
         }
-        return tagRepository.findAllByName(tag.getName());
+        return tagRepository.findAllByName(Arrays.asList(tagsData));
     }
 }

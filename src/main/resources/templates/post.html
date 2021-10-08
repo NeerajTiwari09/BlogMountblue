@@ -40,7 +40,7 @@
                 <span th:text="${post.title}"> </span><br><br>
                 <span th:text="${post.author}"></span>,&nbsp;&nbsp;
                 <span th:text="${post.createdAt}"></span><br><br>
-                <span th:each="tag: ${tags}" th:text="${tag.name} +' '"></span><br><br>
+                <span th:text="${post.tagString}"></span><br><br>
                 <span th:text="${post.content}"></span><br>
             </td>
         </tr>
@@ -65,7 +65,9 @@
                 <span style="float: right" th:text="${comment.createdAt}"></span><br>
                 <span style="float: left" th:text="${comment.email}"></span><br>
                 <span style="float: left" th:text="${comment.comment}"></span><br>
-                <div th:if="${#httpServletRequest.remoteUser == comment.email}">
+                <div th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'')') ||
+                              (#authorization.expression('hasAnyAuthority(''AUTHOR'')') && isAuthorsPost) ||
+                              #httpServletRequest.remoteUser == comment.email}">
                     <form th:action="@{/updateComment}" style="display:inline">
                         <input type="hidden" th:value="${comment.id}" th:name="id">
                         <input type="submit" value="Edit comment">

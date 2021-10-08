@@ -39,6 +39,17 @@ public class Post {
             inverseJoinColumns = {@JoinColumn(name = "tagId")})
     private Set<Tag> tags = new HashSet<>();
 
+    @Transient
+    private String tagString;
+
+    public String getTagString() {
+        return tagString;
+    }
+
+    public void setTagString(String tagString) {
+        this.tagString = tagString;
+    }
+
     public Integer getId() {
         return id;
     }

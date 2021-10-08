@@ -20,7 +20,7 @@ public class CommentController {
 
     @RequestMapping("/comment")
     public String makeComment(@ModelAttribute("newComment") Comment comment){
-        commentService.saveComment(comment);
+        commentService.saveOrUpdateComment(comment);
         return "redirect:/id?id="+ comment.getPostId();
     }
     @GetMapping("/updateComment")
@@ -37,13 +37,12 @@ public class CommentController {
     }
     @PostMapping("/updateComment")
     public String updateComment(@ModelAttribute("updateComment") Comment comment){
-        commentService.saveComment(comment);
+        commentService.saveOrUpdateComment(comment);
         return "redirect:/id?id="+ comment.getPostId();
     }
 
     @GetMapping("/deleteComment")
     public String deleteComment(@RequestParam("commentId") Integer commentId, @RequestParam("postId") Integer postId){
-        System.out.println(commentId + " "+ postId);
         commentService.deleteCommentById(commentId);
         return "redirect:/id?id="+ postId;
     }

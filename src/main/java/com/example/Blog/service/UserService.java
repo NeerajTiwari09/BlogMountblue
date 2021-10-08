@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,12 +23,17 @@ public class UserService implements UserDetailsService {
     @Autowired
     private RoleRepository roleRepository;
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
     public boolean registerUser(User user) {
         user.setRole("AUTHOR");
         Role role = roleRepository.findByName("AUTHOR");
         user.getRoles().add(role);
         boolean isAlreadyExist = userRepository.existsByUsername(user.getUsername());
         if (!isAlreadyExist) {
+            String encode = passwordEncoder.encode(user.getPassword());
+            user.setPassword(encode);
             userRepository.save(user);
             return true;
         }

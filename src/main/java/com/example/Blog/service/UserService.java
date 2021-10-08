@@ -1,7 +1,9 @@
 package com.example.Blog.service;
 
 import com.example.Blog.MyUserDetails;
+import com.example.Blog.model.Role;
 import com.example.Blog.model.User;
+import com.example.Blog.repository.RoleRepository;
 import com.example.Blog.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,8 +20,13 @@ public class UserService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private RoleRepository roleRepository;
+
     public boolean registerUser(User user) {
-        user.setRole("USER");
+        user.setRole("AUTHOR");
+        Role role = roleRepository.findByName("AUTHOR");
+        user.getRoles().add(role);
         boolean isAlreadyExist = userRepository.existsByUsername(user.getUsername());
         if (!isAlreadyExist) {
             userRepository.save(user);
@@ -38,10 +45,7 @@ public class UserService implements UserDetailsService {
     }
 
     public List<User> findAllAuthors() {
-        List<String> authors = new ArrayList<>();
-        authors.add("ADMIN");
-        authors.add("AUTHOR");
-        return userRepository.findAllByRole(authors);
+        return userRepository.findAll();
     }
 
     public Optional<User> findAuthorById(int authorId) {

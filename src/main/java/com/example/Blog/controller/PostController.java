@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -51,7 +52,7 @@ public class PostController {
     }
 
     @RequestMapping("/id")
-    public String getPostById(@RequestParam(name = "username", required = false) String email, @RequestParam("id") String id, Model model) {
+    public String getPostById(@RequestParam("id") String id, Model model) {
         Comment newComment = new Comment();
         Authentication authentication  = SecurityContextHolder.getContext().getAuthentication();
         System.out.println(authentication.getName());
@@ -78,17 +79,19 @@ public class PostController {
 
     @RequestMapping("/blog/publish")
     public String publishPost(@ModelAttribute("blogPost") Post post) {
-        postService.saveOrUpdatePost(post);
         List<Tag> tags = tagService.findTagIds(post.getTagString());
-        postTagService.saveTagId(tags, post);
+        post.setTags(new HashSet<>(tags));
+        postService.saveOrUpdatePost(post);
+        postTagService.saveTagId(post);
         return "redirect:/?start=1&limit=10";
     }
 
     @RequestMapping("/blog/update")
     public String updatePost(@ModelAttribute("blogPost") Post post) {
-        postService.saveOrUpdatePost(post);
         List<Tag> tags = tagService.findTagIds(post.getTagString());
-        postTagService.saveTagId(tags, post);
+        post.setTags(new HashSet<>(tags));
+        postService.saveOrUpdatePost(post);
+        postTagService.saveTagId(post);
         return "redirect:/?start=1&limit=10";
     }
 

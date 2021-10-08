@@ -34,10 +34,6 @@ public class PostService {
         return postRepository.findAll(pageWithTenElements);
     }
 
-    public List<Post> listAll() {
-        return postRepository.findAll();
-    }
-
     public void saveOrUpdatePost(Post post) {
         if (post.getId() == null) {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -66,12 +62,12 @@ public class PostService {
 
     public Optional<Post> getById(Integer id) {
         Optional<Post> post = postRepository.findById(id);
-        String tags = "";
+        StringBuilder tags = new StringBuilder("");
         if (post.isPresent()) {
             for (Tag tag : post.get().getTags()) {
-                tags = tag.getName() + " ";
+                tags.append(tag.getName());
             }
-            post.get().setTagString(tags);
+            post.get().setTagString(tags.toString());
         }
         return post;
     }

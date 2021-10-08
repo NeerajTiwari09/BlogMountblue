@@ -21,15 +21,11 @@ public class PostTagService {
         return postTagRepository.findAllByPostId(postId);
     }
 
-    public void saveTagId(List<Tag> tags, Post post) {
-        List<PostTag> postTags = new ArrayList<>();
-        for (Tag tag : tags) {
-            PostTag postTag = new PostTag();
-            postTag.setPostId(post.getId());
-            postTag.setTagId(tag.getId());
-            postTag.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+    public void saveOrUpdatePostTag(Post post) {
+        List<PostTag> postTags = postTagRepository.findPostIdByPostId(post.getId());
+        for(PostTag postTag : postTags){
             postTag.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-            postTags.add(postTag);
+            postTag.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         }
         postTagRepository.saveAll(postTags);
     }

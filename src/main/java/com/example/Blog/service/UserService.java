@@ -1,7 +1,9 @@
 package com.example.Blog.service;
 
 import com.example.Blog.MyUserDetails;
+import com.example.Blog.model.Role;
 import com.example.Blog.model.User;
+import com.example.Blog.repository.RoleRepository;
 import com.example.Blog.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,9 +19,13 @@ import java.util.Optional;
 public class UserService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private RoleRepository roleRepository;
 
     public boolean registerUser(User user) {
         user.setRole("USER");
+        Role role = roleRepository.findByName("AUTHOR");
+        user.getRoles().add(role);
         boolean isAlreadyExist = userRepository.existsByUsername(user.getUsername());
         if (!isAlreadyExist) {
             userRepository.save(user);

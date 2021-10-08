@@ -1,6 +1,7 @@
 package com.example.Blog.service;
 
 import com.example.Blog.model.Post;
+import com.example.Blog.model.PostTag;
 import com.example.Blog.repository.PostRepository;
 import com.example.Blog.repository.TagRepository;
 import com.example.Blog.repository.UserRepository;
@@ -28,6 +29,9 @@ public class PostService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PostTagService postTagService;
+
     public Page<Post> getAllBlogs(int start, int limit) {
         Pageable pageWithTenElements = PageRequest.of(start, limit);
         return postRepository.findAll(pageWithTenElements);
@@ -49,7 +53,8 @@ public class PostService {
             post.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
             post.setPublishedAt(new Timestamp(System.currentTimeMillis()));
             post.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-            postRepository.save(post);
+            Post newPost = postRepository.save(post);
+            postTagService.saveOrUpdatePostTag(newPost);
         } else {
             Optional<Post> prePost = postRepository.findById(post.getId());
             if (prePost.isPresent()) {
@@ -58,7 +63,8 @@ public class PostService {
                 prePost.get().setTitle(post.getTitle());
                 prePost.get().setUpdatedAt(new Timestamp(System.currentTimeMillis()));
                 prePost.get().setContent(post.getContent());
-                postRepository.save(prePost.get());
+                Post newPost = postRepository.save(prePost.get());
+                postTagService.saveOrUpdatePostTag(newPost);
             }
         }
     }

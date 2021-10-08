@@ -59,15 +59,14 @@ public class PostController {
         List<Tag> tags = tagService.findTagIds(post.getTagString());
         post.setTags(new HashSet<>(tags));
         postService.saveOrUpdatePost(post);
-//        postTagService.saveTagId(tags, post);
         return "Post published";
     }
 
     @PutMapping("/blog/update")
     public String updatePost(@RequestBody Post post) {
-        postService.saveOrUpdatePost(post);
         List<Tag> tags = tagService.findTagIds(post.getTagString());
-        postTagService.saveTagId(tags, post);
+        post.setTags(new HashSet<>(tags));
+        postService.saveOrUpdatePost(post);
         return "Post updated";
     }
 

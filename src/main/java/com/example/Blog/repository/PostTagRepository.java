@@ -20,4 +20,7 @@ public interface PostTagRepository extends JpaRepository<PostTag, Integer> {
             " tags.id = post_tags.tag_id where tags.name like :searchString",
             nativeQuery = true)
     Set<Integer> findAllPostIdByTagName(@Param("searchString") String searchString);
+
+    @Query("SELECT p FROM PostTag p where p.postId = :postId")
+    List<PostTag> findPostIdByPostId(@Param("postId") Integer id);
 }

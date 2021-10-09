@@ -5,18 +5,21 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "User")
+@Table(name = "Users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @Column(name = "author_name")
     private String name;
 
     @Column(name = "email")
     private String username;
-    private String password;
 
+    private String password;
+    @Column(name = "roles")
     private String role;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

@@ -122,8 +122,9 @@ public class PostController {
     }
 
     @RequestMapping("/sort")
-    public String getPostWithSorting(@RequestParam("sortField") String sortField, @RequestParam("order") String order, Model model) {
-        List<Post> posts = postService.findPostWithSorting(sortField, order);
+    public String getPostWithSorting(@RequestParam("sortField") String sortField,
+                                     @RequestParam("order") String order, Model model) {
+        Page<Post> posts = postService.findPostWithSorting(sortField, order, 0, 10);
         List<Tag> tags = tagService.findAll();
         List<User> users = userService.findAllAuthors();
         String[] data = new String[]{"asc", "desc"};
@@ -141,7 +142,7 @@ public class PostController {
                               @RequestParam(name = "tagId", required = false) List<Integer> tagIds, Model model) {
         Set<Integer> postIds = postTagService.findAllPostIdByTagId(tagIds);
         String authorName = userService.findAuthorById(authorId);
-        List<Post> posts = postService.findByFiltering(publishedAt, authorName, postIds);
+        Page<Post> posts = postService.findByFiltering(publishedAt, authorName, postIds, 0, 10);
         List<Tag> tags = tagService.findAll();
         List<User> users = userService.findAllAuthors();
         String[] data = new String[]{"asc", "desc"};

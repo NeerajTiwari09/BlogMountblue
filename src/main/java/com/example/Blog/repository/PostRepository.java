@@ -2,6 +2,8 @@ package com.example.Blog.repository;
 
 import com.example.Blog.model.Post;
 import com.example.Blog.model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,7 +21,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     List<Post> getBySearchString(@Param("searchString") String searchString, @Param("postIds") Set<Integer> postIds);
 
     @Query("select p from Post as p where p.publishedAt like CONCAT(:publishedAt,'%') or p.author = :author or p.id in :ids")
-    List<Post> findByFiltering(@Param("publishedAt") String filterString, @Param("author") String author, @Param("ids") Set<Integer> ids);
+    Page<Post> findByFiltering(@Param("publishedAt") String filterString, @Param("author") String author, @Param("ids") Set<Integer> ids, Pageable pageable);
 
 
 }

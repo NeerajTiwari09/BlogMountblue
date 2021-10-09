@@ -1,5 +1,9 @@
 package com.example.Blog.model;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -12,7 +16,12 @@ public class PostTag {
     @Id
     private Integer postId;
     private Integer tagId;
+    @Column(name = "created_at")
+    @CreationTimestamp
     private Timestamp createdAt;
+
+    @Column(name = "updated_at")
+    @UpdateTimestamp
     private Timestamp updatedAt;
 
     public Integer getPostId() {

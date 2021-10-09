@@ -84,16 +84,20 @@ public class PostService {
         return postRepository.getBySearchString(searchString, postIds);
     }
 
-    public List<Post> findPostWithSorting(String sortField, String order) {
+    public Page<Post> findPostWithSorting(String sortField, String order, int offSet, int pageSize) {
+
         if (order.equals("asc")) {
-            return postRepository.findAll(Sort.by(Sort.Direction.ASC, sortField));
+            Pageable pageable = PageRequest.of(offSet, pageSize, Sort.by(Sort.Direction.ASC, sortField));
+            return postRepository.findAll(pageable);
         } else {
-            return postRepository.findAll(Sort.by(Sort.Direction.DESC, sortField));
+            Pageable pageable = PageRequest.of(offSet, pageSize, Sort.by(Sort.Direction.DESC, sortField));
+            return postRepository.findAll(pageable);
         }
     }
 
-    public List<Post> findByFiltering(String publishedAt, String authorName, Set<Integer> postIds) {
-        return postRepository.findByFiltering(publishedAt, authorName, postIds);
+    public Page<Post> findByFiltering(String publishedAt, String authorName, Set<Integer> postIds, int offSet, int pageSize) {
+        Pageable pageable = PageRequest.of(offSet, pageSize);
+        return postRepository.findByFiltering(publishedAt, authorName, postIds, pageable);
     }
 
     public void deletePostById(Integer id) {

@@ -57,15 +57,12 @@
     </form>
 </div>
 <div style="align:left; float:left">
-    <label>Filter by Author or Tags</label><br>
+    <label>Filter by Published date or Author or Tags</label><br>
     <form class="form1" th:action="@{/filter}">
+        <input type="text" name="publishedAt" placeholder="yyyy-mm-dd"><br>
         <select name="authorId">
             <option th:each="user : ${users}" th:value="*{user.id}" th:text="*{user.name}"></option>
         </select>
-<!--        <div th:each="user: ${users}">-->
-<!--        <input type="checkbox" name="authorId" th:value="*{user.id}">-->
-<!--        <label  th:text="${user.name}"> </label><br>-->
-<!--        </div>-->
         <div th:each="tag: ${tags}">
             <input type="checkbox" name="tagId" th:value="*{tag.id}">
             <label  th:text="${tag.name}"> </label><br>
@@ -82,8 +79,7 @@
                 <span th:text="${post.createdAt}"></span><br><br>
                 <span th:text="${post.excerpt}"></span><br>
                 <form th:action="id">
-<!--                    <input sec:authorize="isAuthenticated()" type="hidden" th:value="${#httpServletRequest.remoteUser}" name="username">-->
-                    <input type="hidden" th:value="${post.id}" name="id">
+                <input type="hidden" th:value="${post.id}" name="id">
                     <input type="submit" value="Read more...">
                 </form>
             </td>
@@ -97,6 +93,5 @@
 <!--        </li>-->
 <!--    </ul>-->
 </div>
-
 </body>
 </html>

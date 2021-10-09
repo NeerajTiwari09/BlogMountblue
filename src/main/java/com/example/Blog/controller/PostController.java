@@ -81,17 +81,16 @@ public class PostController {
     public String publishPost(@ModelAttribute("blogPost") Post post) {
         List<Tag> tags = tagService.findTagIds(post.getTagString());
         post.setTags(new HashSet<>(tags));
-        postService.saveOrUpdatePost(post);
-
-        return "redirect:/?start=1&limit=10";
+        Post newPost = postService.saveOrUpdatePost(post);
+        return "redirect:/id/?id="+newPost.getId();
     }
 
     @RequestMapping("/blog/update")
     public String updatePost(@ModelAttribute("blogPost") Post post) {
         List<Tag> tags = tagService.findTagIds(post.getTagString());
         post.setTags(new HashSet<>(tags));
-        postService.saveOrUpdatePost(post);
-        return "redirect:/?start=1&limit=10";
+        Post newPost = postService.saveOrUpdatePost(post);
+        return "redirect:/id/?id="+newPost.getId();
     }
 
     @GetMapping("/blog/update")
@@ -137,10 +136,12 @@ public class PostController {
     }
 
     @RequestMapping("/filter")
-    public String filterPosts(@RequestParam(value = "authorId", required = false) int authorId, @RequestParam(name = "tagId", required = false) List<Integer> tagIds, Model model) {
+    public String filterPosts(@RequestParam(name = "publishedAt", required = false, defaultValue = "") String publishedAt,
+                              @RequestParam(name = "authorId", required = false, defaultValue = "0") int authorId,
+                              @RequestParam(name = "tagId", required = false) List<Integer> tagIds, Model model) {
         Set<Integer> postIds = postTagService.findAllPostIdByTagId(tagIds);
-        Optional<User> user = userService.findAuthorById(authorId);
-        List<Post> posts = postService.findByFiltering(user.get().getName(), postIds);
+        String authorName = userService.findAuthorById(authorId);
+        List<Post> posts = postService.findByFiltering(publishedAt, authorName, postIds);
         List<Tag> tags = tagService.findAll();
         List<User> users = userService.findAllAuthors();
         String[] data = new String[]{"asc", "desc"};

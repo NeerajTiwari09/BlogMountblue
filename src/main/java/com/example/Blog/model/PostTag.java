@@ -40,10 +40,10 @@ public class PostTag {
     }
 
     public Timestamp getUpdatedAt() {
-        return new Timestamp(System.currentTimeMillis());
+        return updatedAt;
     }
 
     public void setUpdatedAt(Timestamp updatedAt) {
-        this.updatedAt =updatedAt;
+        this.updatedAt = updatedAt;
     }
 }

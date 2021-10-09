@@ -53,8 +53,9 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
-    public Optional<User> findAuthorById(int authorId) {
-        return userRepository.findById(authorId);
+    public String findAuthorById(int authorId) {
+        Optional<User> user = userRepository.findById(authorId);
+        return user.isPresent()?user.get().getName():"";
     }
 
     public String findNameByEmail(String email) {

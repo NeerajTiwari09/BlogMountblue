@@ -24,8 +24,8 @@ public class PostTagService {
         for (PostTag postTag : postTags){
             postTag.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
             postTag.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+            postTagRepository.savePostTag(postTag.getPostId(), postTag.getTagId(), postTag.getCreatedAt(), postTag.getUpdatedAt());
         }
-        postTagRepository.saveAll(postTags);
     }
 
     public Set<Integer> findAllPostIdByTagId(List<Integer> tagId) {

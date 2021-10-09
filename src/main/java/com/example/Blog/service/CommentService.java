@@ -33,6 +33,9 @@ public class CommentService {
             }
         } else {
             String name = userRepository.findNameByUsername(comment.getEmail());
+            if(name == null){
+                name="anonymousUser";
+            }
             comment.setName(name);
             comment.setCreatedAt(new Timestamp(System.currentTimeMillis()));
             comment.setUpdatedAt(new Timestamp(System.currentTimeMillis()));

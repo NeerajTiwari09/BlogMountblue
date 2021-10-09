@@ -37,7 +37,8 @@ public class PostService {
         return postRepository.findAll(pageWithTenElements);
     }
 
-    public void saveOrUpdatePost(Post post) {
+    public Post saveOrUpdatePost(Post post) {
+        Post newPost = null;
         if (post.getId() == null) {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String email = authentication.getName();
@@ -49,8 +50,9 @@ public class PostService {
             post.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
             post.setPublishedAt(new Timestamp(System.currentTimeMillis()));
             post.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-            Post newPost = postRepository.save(post);
-            postTagService.saveTagId(newPost);
+            newPost = postRepository.save(post);
+//            postTagService.saveTagId(newPost);
+            return newPost;
         } else {
             Optional<Post> prePost = postRepository.findById(post.getId());
             if (prePost.isPresent()) {
@@ -59,18 +61,19 @@ public class PostService {
                 prePost.get().setTitle(post.getTitle());
                 prePost.get().setUpdatedAt(new Timestamp(System.currentTimeMillis()));
                 prePost.get().setContent(post.getContent());
-                Post newPost = postRepository.save(prePost.get());
-                postTagService.saveTagId(newPost);
+                newPost = postRepository.save(prePost.get());
+//                postTagService.saveTagId(newPost);
             }
         }
+        return  newPost;
     }
 
     public Optional<Post> getById(Integer id) {
         Optional<Post> post = postRepository.findById(id);
-        StringBuilder tags = new StringBuilder("");
+        StringBuilder tags = new StringBuilder();
         if (post.isPresent()) {
             for (Tag tag : post.get().getTags()) {
-                tags.append(tag.getName()+" ");
+                tags.append(tag.getName()).append(" ");
             }
             post.get().setTagString(tags.toString());
         }
@@ -89,8 +92,8 @@ public class PostService {
         }
     }
 
-    public List<Post> findByFiltering(String filterString, Set<Integer> postIds) {
-        return postRepository.findByFiltering(filterString, postIds);
+    public List<Post> findByFiltering(String publishedAt, String authorName, Set<Integer> postIds) {
+        return postRepository.findByFiltering(publishedAt, authorName, postIds);
     }
 
     public void deletePostById(Integer id) {

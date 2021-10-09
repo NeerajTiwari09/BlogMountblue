@@ -32,8 +32,7 @@ public class PostController {
 
     @GetMapping("/")
     public Page<Post> viewHomePage(@RequestParam(name = "start", defaultValue = "0") int start,
-                                   @RequestParam(value = "limit", defaultValue = "10") int limit,
-                                   Model model) {
+                                   @RequestParam(value = "limit", defaultValue = "10") int limit) {
         return postService.getAllBlogs(start, limit);
     }
 
@@ -45,15 +44,6 @@ public class PostController {
         post.ifPresent(postWithComment::setPost);
         postWithComment.setComments(comments);
         return postWithComment;
-    }
-
-    @GetMapping("/blog/new")
-    public String createNewPost(Model model) {
-        Post post = new Post();
-        Tag tag = new Tag();
-        model.addAttribute("blogPost", post);
-        model.addAttribute("tag", tag);
-        return "new-post";
     }
 
     @PostMapping("/blog/publish")
@@ -68,7 +58,8 @@ public class PostController {
     public String updatePost(@RequestBody Post post) {
         List<Tag> tags = tagService.findTagIds(post.getTagString());
         post.setTags(new HashSet<>(tags));
-        postService.saveOrUpdatePost(post);
+        Post newPost = postService.saveOrUpdatePost(post);
+        postTagService.updatePostTag(newPost, tags);
         return "Post updated";
     }
 
@@ -97,14 +88,15 @@ public class PostController {
     }
 
     @GetMapping("/filter")
-    public List<Post> filterPosts(@RequestParam(value = "authorId", required = false) int authorId,
+    public List<Post> filterPosts(@RequestParam(name = "publishedAt", required = false) String publishedAt,
+                                  @RequestParam(name = "authorId", required = false, defaultValue = "0") int authorId,
                                   @RequestParam(name = "tagId", required = false) List<Integer> tagIds) {
         Set<Integer> postIds = postTagService.findAllPostIdByTagId(tagIds);
         Optional<User> user = userService.findAuthorById(authorId);
         if (user.isPresent()) {
-            return postService.findByFiltering(user.get().getName(), postIds);
+            return postService.findByFiltering(publishedAt, user.get().getName(), postIds);
         } else {
-            return postService.findByFiltering("", postIds);
+            return postService.findByFiltering(publishedAt, "", postIds);
         }
     }
 }

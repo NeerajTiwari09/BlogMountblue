@@ -8,23 +8,9 @@
 <body>
 <h3 th:inline="text">[[${#httpServletRequest.remoteUser}]]</h3>
 
-<!--<hr>-->
-<!--<div sec:authorize="hasRole('ADMIN')">Text visible to user.</div>-->
-<!--<hr>-->
-<!--&lt;!&ndash;<div sec:authorize="hasRole('ADMIN')">Text visible to admin.</div>&ndash;&gt;-->
 <div sec:authorize="isAuthenticated()">
-    Text visible only to authenticated users.
+    <div sec:authentication="principal.authorities"></div>
 </div>
-
-<!--<hr>-->
-<!--<div sec:authentication="name"></div>-->
-<!--<div sec:authentication="principal.authorities"></div>-->
-<!--<div th:each="authority : ${#authentication.getAuthorities()}"-->
-<!--   th:if="${authority.getAuthority().equals('USER')}">-->
-
-<!--</div>-->
-
-
 
 <div align="center">
     <h1>Create your blog...</h1>
@@ -42,7 +28,6 @@
                 <td><textarea type="text" th:field="*{content}" name="content" style="margin: 0px; width: 500px; height: 200px;" row="20" column= "50" placeholder="Type here..."></textarea></td>
             </tr>
         </table><br>
-<!--        <input type="hidden"  th:value="${#httpServletRequest.remoteUser}" name="email">-->
         <input type ="submit" value="Publish">
     </form>
 </div>

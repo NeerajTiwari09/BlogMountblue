@@ -31,13 +31,11 @@ public class Post {
     private Timestamp updatedAt;
 
     @ManyToMany(fetch = FetchType.LAZY,
-            cascade = {CascadeType.PERSIST,
-                    CascadeType.DETACH, CascadeType.MERGE,
-                    CascadeType.REFRESH})
+            cascade = {CascadeType.MERGE})
     @JoinTable(name = "post_tags",
             joinColumns = {@JoinColumn(name = "postId")},
             inverseJoinColumns = {@JoinColumn(name = "tagId")})
-    private Set<Tag> tags = new HashSet<>();
+    private Set<Tag> tags;
 
     @Transient
     private String tagString;

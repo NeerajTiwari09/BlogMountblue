@@ -4,6 +4,7 @@ import com.example.Blog.model.PostTag;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -23,4 +24,7 @@ public interface PostTagRepository extends JpaRepository<PostTag, Integer> {
 
     @Query("SELECT p FROM PostTag p where p.postId = :postId")
     List<PostTag> findPostIdByPostId(@Param("postId") Integer id);
+
+    @Transactional
+    void deleteAllByPostId(Integer id);
 }

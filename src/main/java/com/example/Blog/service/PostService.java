@@ -15,7 +15,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class PostService {
@@ -95,9 +100,11 @@ public class PostService {
         }
     }
 
-    public Page<Post> findByFiltering(String publishedAt, String authorName, Set<Integer> postIds, int offSet, int pageSize) {
+    public Page<Post> findByFiltering(String publishedAt, String authorName, Set<Integer> postIds, int offSet, int pageSize) throws ParseException {
         Pageable pageable = PageRequest.of(offSet, pageSize);
-        return postRepository.findByFiltering(publishedAt, authorName, postIds, pageable);
+        Date date=new SimpleDateFormat("yyyy-mm-dd").parse(publishedAt);
+        System.out.println(date.toString());
+        return postRepository.findByFiltering(date, authorName, postIds, pageable);
     }
 
     public void deletePostById(Integer id) {

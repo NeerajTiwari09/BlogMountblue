@@ -11,11 +11,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -85,7 +83,7 @@ public class PostController {
         return "redirect:/id/?id="+newPost.getId();
     }
 
-    @RequestMapping("/blog/update")
+    @PostMapping("/blog/update")
     public String updatePost(@ModelAttribute("blogPost") Post post) {
         List<Tag> tags = tagService.findTagIds(post.getTagString());
         post.setTags(new HashSet<>(tags));
@@ -139,7 +137,7 @@ public class PostController {
     @RequestMapping("/filter")
     public String filterPosts(@RequestParam(name = "publishedAt", required = false, defaultValue = "") String publishedAt,
                               @RequestParam(name = "authorId", required = false, defaultValue = "0") int authorId,
-                              @RequestParam(name = "tagId", required = false) List<Integer> tagIds, Model model) {
+                              @RequestParam(name = "tagId", required = false) List<Integer> tagIds, Model model) throws ParseException {
         Set<Integer> postIds = postTagService.findAllPostIdByTagId(tagIds);
         String authorName = userService.findAuthorById(authorId);
         Page<Post> posts = postService.findByFiltering(publishedAt, authorName, postIds, 0, 10);

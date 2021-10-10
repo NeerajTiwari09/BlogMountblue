@@ -18,8 +18,11 @@ public class Post {
     private String content;
     private String author;
 
+    @Transient
+    private String tagString;
+
     @Column(name = "published_at")
-    private Timestamp publishedAt;
+    private String publishedAt;
 
     @Column(name = "is_published")
     private boolean isPublished;
@@ -36,9 +39,6 @@ public class Post {
             joinColumns = {@JoinColumn(name = "postId")},
             inverseJoinColumns = {@JoinColumn(name = "tagId")})
     private Set<Tag> tags;
-
-    @Transient
-    private String tagString;
 
     public Integer getId() {
         return id;
@@ -80,11 +80,11 @@ public class Post {
         this.author = author;
     }
 
-    public Timestamp getPublishedAt() {
+    public String getPublishedAt() {
         return publishedAt;
     }
 
-    public void setPublishedAt(Timestamp publishedAt) {
+    public void setPublishedAt(String publishedAt) {
         this.publishedAt = publishedAt;
     }
 

@@ -48,6 +48,7 @@ public class PostController {
 
     @PostMapping("/blog/publish")
     public String publishPost(@RequestBody Post post) {
+        System.out.println(post.getTitle());
         List<Tag> tags = tagService.findTagIds(post.getTagString());
         post.setTags(new HashSet<>(tags));
         postService.saveOrUpdatePost(post);
@@ -56,6 +57,7 @@ public class PostController {
 
     @PutMapping("/blog/update")
     public String updatePost(@RequestBody Post post) {
+        System.out.println(post.getTagString());
         List<Tag> tags = tagService.findTagIds(post.getTagString());
         post.setTags(new HashSet<>(tags));
         Post newPost = postService.saveOrUpdatePost(post);

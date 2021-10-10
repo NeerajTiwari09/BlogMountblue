@@ -47,7 +47,7 @@ public class PostService {
             post.setExcerpt(excerpt);
             post.setPublished(true);
             post.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-            post.setPublishedAt(new Timestamp(System.currentTimeMillis()));
+            post.setPublishedAt((new Timestamp(System.currentTimeMillis())).toString());
             post.setCreatedAt(new Timestamp(System.currentTimeMillis()));
             newPost = postRepository.save(post);
             postTagService.saveOrUpdatePostTag(newPost);

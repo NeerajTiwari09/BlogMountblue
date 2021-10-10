@@ -24,13 +24,6 @@ public class UserController {
         return "redirect:/";
     }
 
-    @GetMapping("/register")
-    public String viewRegistrationPage(Model model) {
-        User user = new User();
-        model.addAttribute("user", user);
-        return "register";
-    }
-
     @PostMapping("/register")
     public String registerUser(@RequestBody User user) {
         boolean isRegistered = userService.registerUser(user);

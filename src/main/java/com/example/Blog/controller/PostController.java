@@ -88,6 +88,7 @@ public class PostController {
         List<Tag> tags = tagService.findTagIds(post.getTagString());
         post.setTags(new HashSet<>(tags));
         Post newPost = postService.saveOrUpdatePost(post);
+        postTagService.updatePostTag(newPost, tags);
         return "redirect:/id/?id="+newPost.getId();
     }
 
@@ -121,12 +122,18 @@ public class PostController {
 
     @RequestMapping("/sort")
     public String getPostWithSorting(@RequestParam("sortField") String sortField,
-                                     @RequestParam("order") String order, Model model) {
-        Page<Post> posts = postService.findPostWithSorting(sortField, order, 0, 10);
+                                     @RequestParam("order") String order,
+                                     @RequestParam(value = "start", required = false, defaultValue = "0") int start,
+                                     @RequestParam(value = "limit", required = false, defaultValue = "10") int limit,
+                                     Model model) {
+        Page<Post> posts = postService.findPostWithSorting(sortField, order, start, limit);
         List<Tag> tags = tagService.findAll();
         List<User> users = userService.findAllAuthors();
         String[] data = new String[]{"asc", "desc"};
 
+        model.addAttribute("start", start);
+        model.addAttribute("i", posts.getSize());
+        model.addAttribute("order", order);
         model.addAttribute("posts", posts);
         model.addAttribute("users", users);
         model.addAttribute("tags", tags);
@@ -137,14 +144,18 @@ public class PostController {
     @RequestMapping("/filter")
     public String filterPosts(@RequestParam(name = "publishedAt", required = false, defaultValue = "") String publishedAt,
                               @RequestParam(name = "authorId", required = false, defaultValue = "0") int authorId,
-                              @RequestParam(name = "tagId", required = false) List<Integer> tagIds, Model model) throws ParseException {
+                              @RequestParam(name = "tagId", required = false) List<Integer> tagIds,
+                              @RequestParam(name = "start", required = false, defaultValue = "0") int start,
+                              @RequestParam(value = "limit", required = false, defaultValue = "10") int limit, Model model) {
         Set<Integer> postIds = postTagService.findAllPostIdByTagId(tagIds);
         String authorName = userService.findAuthorById(authorId);
-        Page<Post> posts = postService.findByFiltering(publishedAt, authorName, postIds, 0, 10);
+        Page<Post> posts = postService.findByFiltering(publishedAt, authorName, postIds, start, limit);
         List<Tag> tags = tagService.findAll();
         List<User> users = userService.findAllAuthors();
         String[] data = new String[]{"asc", "desc"};
 
+        model.addAttribute("start", start);
+        model.addAttribute("i", posts.getSize());
         model.addAttribute("users", users);
         model.addAttribute("posts", posts);
         model.addAttribute("tags", tags);

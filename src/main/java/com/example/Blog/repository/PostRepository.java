@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -21,7 +22,5 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     List<Post> getBySearchString(@Param("searchString") String searchString, @Param("postIds") Set<Integer> postIds);
 
     @Query("select p from Post as p where p.publishedAt like CONCAT(:publishedAt,'%') or p.author = :author or p.id in :ids")
-    Page<Post> findByFiltering(@Param("publishedAt") Date date, @Param("author") String author, @Param("ids") Set<Integer> ids, Pageable pageable);
-
-
+    Page<Post> findByFiltering(@Param("publishedAt") String date, @Param("author") String author, @Param("ids") Set<Integer> ids, Pageable pageable);
 }

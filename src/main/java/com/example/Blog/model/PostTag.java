@@ -3,10 +3,7 @@ package com.example.Blog.model;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
@@ -14,6 +11,8 @@ import java.sql.Timestamp;
 public class PostTag {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
     private Integer postId;
     private Integer tagId;
     @Column(name = "created_at")
@@ -23,6 +22,14 @@ public class PostTag {
     @Column(name = "updated_at")
     @UpdateTimestamp
     private Timestamp updatedAt;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public Integer getPostId() {
         return postId;

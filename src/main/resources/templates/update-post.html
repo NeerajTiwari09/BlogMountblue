@@ -7,8 +7,7 @@
 </head>
 <body>
 
-<div sec:authentication="name"></div>
-<!--<div sec:authentication="principal.authorities"></div>-->
+<h3 th:inline="text">[[${#httpServletRequest.remoteUser}]]</h3>
 <div align="center">
     <h1>Update your blog...</h1>
 </div>

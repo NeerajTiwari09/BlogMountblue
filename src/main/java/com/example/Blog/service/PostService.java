@@ -15,9 +15,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -53,10 +50,10 @@ public class PostService {
             post.setExcerpt(excerpt);
             post.setPublished(true);
             post.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-            post.setPublishedAt(new Timestamp(System.currentTimeMillis()));
+            post.setPublishedAt((new Timestamp(System.currentTimeMillis())).toString());
             post.setCreatedAt(new Timestamp(System.currentTimeMillis()));
             newPost = postRepository.save(post);
-//            postTagService.saveTagId(newPost);
+            postTagService.saveTagId(newPost);
             return newPost;
         } else {
             Optional<Post> prePost = postRepository.findById(post.getId());
@@ -67,7 +64,6 @@ public class PostService {
                 prePost.get().setUpdatedAt(new Timestamp(System.currentTimeMillis()));
                 prePost.get().setContent(post.getContent());
                 newPost = postRepository.save(prePost.get());
-//                postTagService.saveTagId(newPost);
             }
         }
         return  newPost;
@@ -100,11 +96,9 @@ public class PostService {
         }
     }
 
-    public Page<Post> findByFiltering(String publishedAt, String authorName, Set<Integer> postIds, int offSet, int pageSize) throws ParseException {
+    public Page<Post> findByFiltering(String publishedAt, String authorName, Set<Integer> postIds, int offSet, int pageSize) {
         Pageable pageable = PageRequest.of(offSet, pageSize);
-        Date date=new SimpleDateFormat("yyyy-mm-dd").parse(publishedAt);
-        System.out.println(date.toString());
-        return postRepository.findByFiltering(date, authorName, postIds, pageable);
+        return postRepository.findByFiltering(publishedAt, authorName, postIds, pageable);
     }
 
     public void deletePostById(Integer id) {

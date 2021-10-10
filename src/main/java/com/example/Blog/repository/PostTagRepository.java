@@ -27,11 +27,6 @@ public interface PostTagRepository extends JpaRepository<PostTag, Integer> {
     @Query("SELECT p from PostTag p WHERE p.postId = ?1")
     List<PostTag> findPostTagByPostId(Integer id);
 
-    @Modifying
     @Transactional
-    @Query(value = "UPDATE post_tags set post_tags.createdAt = :createdAt, post_tags.updatedAt = :updatedAt where post_tags.post_id = :postId and post_tags.tag_id = :tagId", nativeQuery = true)
-    void savePostTag(@Param("postId") Integer postId,
-                     @Param("tagId") Integer tagId,
-                     @Param("createdAt") Timestamp createdAt,
-                     @Param("updatedAt") Timestamp updatedAt);
+    void deleteAllByPostId(Integer id);
 }

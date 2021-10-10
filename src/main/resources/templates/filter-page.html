@@ -29,6 +29,9 @@
 </head>
 <body>
 <h3 th:inline="text">Welcome! [[${#httpServletRequest.remoteUser}]]</h3>
+<div sec:authorize="isAuthenticated()">
+    <div sec:authentication="principal.authorities"></div>
+</div>
 <div sec:authorize="!isAuthenticated()" style="float:right">
     <a href="#" th:href="login">Login</a>
 </div>
@@ -70,7 +73,7 @@
         <input type="submit" style="margin: 0px; width: 200px; height: 25px;" placeholder="Filter">&nbsp;&nbsp;
     </form>
 </div>
-    <div align="right">
+<div align="right">
     <table>
         <tr th:each="post: ${posts}">
             <td>
@@ -79,19 +82,20 @@
                 <span th:text="${post.createdAt}"></span><br><br>
                 <span th:text="${post.excerpt}"></span><br>
                 <form th:action="id">
-                <input type="hidden" th:value="${post.id}" name="id">
+                    <input type="hidden" th:value="${post.id}" name="id">
                     <input type="submit" value="Read more...">
                 </form>
             </td>
         </tr>
     </table>
-    </div>
-<div align="center">
-    <ul>
-        <li style="display: inline; text-align: center;" th:each="i: ${#numbers.sequence(0,posts.totalPages-1)}">
-            <a style="text-align: center;" th:href="@{'/sort/?sortField=publishedAt&order='+${order}+'start='+${i}+'&limit=10'}" th:text="${i+1}" class="nav-link"></a>
-        </li>
-    </ul>
 </div>
+<!--<div align="center">-->
+<!--    <ul>-->
+<!--        <li style="display: inline; text-align: center;" th:each="i: ${#numbers.sequence(0,posts.totalPages-1)}">-->
+<!--            <a style="text-align: center;" th:href="@{'/?start='+${i}+'&limit=10'}" th:text="${i+1}" class="nav-link"></a>-->
+<!--        </li>-->
+<!--    </ul>-->
+<!--</div>-->
+
 </body>
 </html>

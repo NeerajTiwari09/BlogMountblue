@@ -19,7 +19,7 @@ public class Post {
     private String author;
 
     @Column(name = "published_at")
-    private Timestamp publishedAt;
+    private String publishedAt;
 
     @Column(name = "is_published")
     private boolean isPublished;
@@ -90,11 +90,11 @@ public class Post {
         this.author = author;
     }
 
-    public Timestamp getPublishedAt() {
+    public String getPublishedAt() {
         return publishedAt;
     }
 
-    public void setPublishedAt(Timestamp publishedAt) {
+    public void setPublishedAt(String publishedAt) {
         this.publishedAt = publishedAt;
     }
 

@@ -66,10 +66,6 @@
         <select name="authorId">
             <option th:each="user : ${users}" th:value="*{user.id}" th:text="*{user.name}"></option>
         </select>
-<!--        <div th:each="user: ${users}">-->
-<!--        <input type="checkbox" name="authorId" th:value="*{user.id}">-->
-<!--        <label  th:text="${user.name}"> </label><br>-->
-<!--        </div>-->
         <div th:each="tag: ${tags}">
             <input type="checkbox" name="tagId" th:value="*{tag.id}">
             <label  th:text="${tag.name}"> </label><br>

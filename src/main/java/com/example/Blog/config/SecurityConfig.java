@@ -49,8 +49,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable();
         http.authorizeRequests()
-                .antMatchers("/", "/id", "/sort", "/search", "/register", "/filter").permitAll()
-                .antMatchers("/comment", "/updateComment", "/deleteComment").hasAnyAuthority("ADMIN", "AUTHOR", "USER")
+                .antMatchers("/", "/id", "/sort", "/search", "/register", "/filter","/comment").permitAll()
+                .antMatchers( "/updateComment", "/deleteComment").hasAnyAuthority("ADMIN", "AUTHOR", "USER")
                 .antMatchers("/blog/new", "/blog/update").hasAnyAuthority("ADMIN", "AUTHOR")
                 .antMatchers("/blog/publish").hasAnyAuthority("ADMIN", "AUTHOR")
                 .antMatchers(HttpMethod.DELETE, "/blog/delete/{postId}")

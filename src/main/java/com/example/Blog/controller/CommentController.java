@@ -18,11 +18,6 @@ public class CommentController {
 
     @PostMapping("/comment")
     public String makeComment(@RequestBody Comment comment) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
-            return "Please login first...";
-        }
-        comment.setEmail(authentication.getName());
         commentService.saveOrUpdateComment(comment);
         return "Comment is: " + comment.getComment();
     }

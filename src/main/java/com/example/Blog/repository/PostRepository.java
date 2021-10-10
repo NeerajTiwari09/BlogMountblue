@@ -22,5 +22,5 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     List<Post> getBySearchString(@Param("searchString") String searchString, @Param("postIds") Set<Integer> postIds);
 
     @Query("select p from Post as p where p.publishedAt like CONCAT(:publishedAt,'%') or p.author = :author or p.id in :ids")
-    Page<Post> findByFiltering(@Param("publishedAt") String date, @Param("author") String author, @Param("ids") Set<Integer> ids, Pageable pageable);
+    List<Post> findByFiltering(@Param("publishedAt") String date, @Param("author") String author, @Param("ids") Set<Integer> ids);
 }

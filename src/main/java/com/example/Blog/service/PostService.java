@@ -96,9 +96,8 @@ public class PostService {
         }
     }
 
-    public Page<Post> findByFiltering(String publishedAt, String authorName, Set<Integer> postIds, int offSet, int pageSize) {
-        Pageable pageable = PageRequest.of(offSet, pageSize);
-        return postRepository.findByFiltering(publishedAt, authorName, postIds, pageable);
+    public List<Post> findByFiltering(String publishedAt, String authorName, Set<Integer> postIds) {
+        return postRepository.findByFiltering(publishedAt, authorName, postIds);
     }
 
     public void deletePostById(Integer id) {

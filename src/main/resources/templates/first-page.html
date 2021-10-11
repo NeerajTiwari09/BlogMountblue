@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title>Homepage</title>
+    <style type="text/css">
+        tr,td{
+        border: 2px solid black;
+        padding: 10px;
+        text-align: left;
+         z-index: 100;
+        }
+        table {
+        border-spacing: 10px;
+        width: 100%;
+        border: 2px solid #ddd;
+         z-index: 100;
+        }
+        a{
+        float: right;
+        margin-right: 50px;
+        }
+        .form1{
+        display: inline-block;
+        float: right;
+        }
+    </style>
+</head>
+<body>
+<h3 th:inline="text">Welcome! [[${#httpServletRequest.remoteUser}]]</h3>
+<div sec:authorize="!isAuthenticated()" style="float:right">
+    <a href="#" th:href="login">Login</a>
+</div>
+<div sec:authorize="isAuthenticated()" style="float:right">
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" value="Logout" />
+    </form>
+</div>
+<h1>My Blog Application</h1>
+<div sec:authorize="hasAnyAuthority('AUTHOR','ADMIN')">
+    <a href="#" th:href="@{/blog/new}">Create a blog</a>
+</div>
+<div align="right">
+    <form action="search" style="display: inline; margin-right: 10px;">
+        <input type="text" name="search" style="margin: 0px; width: 200px; height: 25px;" placeholder="Search">&nbsp;
+    </form>
+</div><br>
+<div align="right" style="margin-right: 10px">
+    <form th:action="@{/sort}"  class="form1">
+        <label>Sort by Published Date</label>
+        <input type="hidden" th:value="publishedAt" th:name="sortField">
+        <select name="order">
+            <option th:each="s : ${sort}" th:value="*{s}" th:text="*{s}"></option>
+        </select><br>
+        <input type="submit" style="margin: 0px; width: 150px; height: 25px;" value="Sort" placeholder="Sort">&nbsp;&nbsp;
+    </form>
+</div>
+<div style="align:left; float:left">
+    <label>Filter by Published date or Author or Tags</label><br>
+    <form class="form1" th:action="@{/filter}">
+        <input type="text" name="publishedAt" placeholder="yyyy-mm-dd"><br>
+        <select name="authorId">
+            <option th:each="user : ${users}" th:value="*{user.id}" th:text="*{user.name}"></option>
+        </select>
+        <div th:each="tag: ${tags}">
+            <input type="checkbox" name="tagId" th:value="*{tag.id}">
+            <label  th:text="${tag.name}"> </label><br>
+        </div>
+        <input type="submit" style="margin: 0px; width: 200px; height: 25px;" placeholder="Filter">&nbsp;&nbsp;
+    </form>
+</div>
+    <div align="right">
+    <table>
+        <tr th:each="post: ${posts}">
+            <td>
+                <span th:text="${post.title}"> </span><br><br>
+                <span th:text="${post.author}"></span>,&nbsp;&nbsp;
+                <span th:text="${post.createdAt}"></span><br><br>
+                <span th:text="${post.excerpt}"></span><br>
+                <form th:action="id">
+                <input type="hidden" th:value="${post.id}" name="id">
+                    <input type="submit" value="Read more...">
+                </form>
+            </td>
+        </tr>
+    </table>
+    </div>
+<div align="center">
+    <ul>
+        <li style="display: inline; text-align: center;" th:each="i: ${#numbers.sequence(0,posts.totalPages-1)}">
+            <a style="text-align: center;" th:href="@{'/sort/?sortField=publishedAt&order='+${order}+'start='+${i}+'&limit=10'}" th:text="${i+1}" class="nav-link"></a>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

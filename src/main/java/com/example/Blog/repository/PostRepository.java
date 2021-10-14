@@ -16,11 +16,14 @@ import java.util.Set;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Integer> {
 
-    @Query("select p from Post as p where p.id in :postIds or p.title like ('%',:searchString,'%') or " +
-            "p.content like CONCAT('%',:searchString,'%') or p.author like CONCAT('%',:searchString,'%') or " +
-            "p.excerpt like CONCAT('%',:searchString,'%')")
+    @Query("select p from Post as p where p.id in :postIds or lower(p.title) like lower(CONCAT('%',:searchString,'%')) or " +
+            "lower(p.content) like lower(CONCAT('%',:searchString,'%')) or lower(p.author) like lower(CONCAT('%',:searchString,'%')) or " +
+            "lower(p.excerpt) like lower(CONCAT('%',:searchString,'%'))")
     List<Post> getBySearchString(@Param("searchString") String searchString, @Param("postIds") Set<Integer> postIds);
 
     @Query("select p from Post as p where p.publishedAt like CONCAT(:publishedAt,'%') or p.author = :author or p.id in :ids")
     List<Post> findByFiltering(@Param("publishedAt") String date, @Param("author") String author, @Param("ids") Set<Integer> ids);
+
+    @Query("SELECT p FROM Post as p WHERE lower(p.author) = :author or p.id in :ids")
+    List<Post> findByFilteringWithoutPublishedAt(@Param("author") String authorName, @Param("ids") Set<Integer> postIds);
 }

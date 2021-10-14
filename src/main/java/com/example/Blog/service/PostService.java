@@ -97,6 +97,9 @@ public class PostService {
     }
 
     public List<Post> findByFiltering(String publishedAt, String authorName, Set<Integer> postIds) {
+        if(publishedAt.isEmpty()){
+            return postRepository.findByFilteringWithoutPublishedAt(authorName, postIds);
+        }
         return postRepository.findByFiltering(publishedAt, authorName, postIds);
     }
 

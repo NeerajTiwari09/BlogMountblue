@@ -5,6 +5,8 @@ heroku:
   script:
     - git config --global user.email "neeraj.tiwari.17.1@mountblue.tech"
     - git config --global user.name "NeerajTiwari17"
+    - rm -rf .git
+    - git init
     - git add .
     - git commit -m "deployed"
     - git remote add heroku https://heroku:$HEROKU_API_KEY@git.heroku.com/test-auto-deploy.git

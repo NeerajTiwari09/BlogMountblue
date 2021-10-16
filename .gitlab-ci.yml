@@ -9,5 +9,6 @@ heroku:
     - git init
     - git add .
     - git commit -m "deployed"
+    - heroku auth:token 34234de9-83e1-4377-b6eb-4f196c3f54ce
     - git remote add heroku https://heroku:$HEROKU_API_KEY@git.heroku.com/test-auto-deploy.git
     - git push -f heroku master

@@ -6,7 +6,6 @@ heroku:
     - git config --local user.email "neeraj.tiwari.17.1@mountblue.tech"
     - git config --global user.name "NeerajTiwari17"
     - rm -rf .git
-    - heroku login
     - git init
     - git add .
     - git commit -m "deployed"

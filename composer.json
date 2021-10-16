@@ -1,1 +1,11 @@
-{}
+{
+  "name": "test-auto-deploy",
+  "addons": [
+    "logentries"
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/java"
+    }
+  ]
+}

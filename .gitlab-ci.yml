@@ -3,7 +3,7 @@ heroku:
   only:
     - master
   script:
-    - git config --global user.email "neeraj.tiwari.17.1@mountblue.tech"
+    - git config --local user.email "neeraj.tiwari.17.1@mountblue.tech"
     - git config --global user.name "NeerajTiwari17"
     - rm -rf .git
     - heroku login

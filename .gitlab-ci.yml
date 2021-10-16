@@ -3,5 +3,7 @@ heroku:
   only:
     - master
   script:
+    - git add .
+    - git commit -m "deployed"
     - git remote add heroku https://heroku:$HEROKU_API_KEY@git.heroku.com/test-auto-deploy.git
-    - git push heroku master
+    - git push -f heroku master

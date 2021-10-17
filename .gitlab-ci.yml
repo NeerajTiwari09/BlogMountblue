@@ -12,6 +12,7 @@
 #    - git remote add heroku https://heroku:$HEROKU_API_KEY@git.heroku.com/test-auto-deploy.git
 #    - git push -f heroku master
 deploy_heroku:
+  variables: {"$HEROKU_API_KEY"}
   image: centos
   stage: deploy
   environment: heroku
@@ -19,6 +20,7 @@ deploy_heroku:
     - master
   script:
     - echo "Deploying for Heroku Cloud Platform"
+    - echo "$HEROKU_API_KEY"
     - yum install git -y
     - git remote add heroku https://heroku:$HEROKU_API_KEY@git.heroku.com/test-auto-deploy.git
     - git config --global user.email "neeraj.tiwari.17.1@mountblue.tech"
@@ -27,4 +29,3 @@ deploy_heroku:
     - git checkout master
     - git commit --allow-empty -m "Heroku build trigger notification"
     - git push -f heroku HEAD:master
-  when: manual

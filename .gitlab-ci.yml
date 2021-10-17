@@ -1,14 +1,30 @@
-heroku:
+#heroku:
+#  stage: deploy
+#  only:
+#    - master
+#  script:
+#    - git config --global user.email "neeraj.tiwari.17.1@mountblue.tech"
+#    - git config --global user.name "NeerajTiwari17"
+#    - rm -rf .git
+#    - git init
+#    - git add .
+#    - git commit -m "deployed"
+#    - git remote add heroku https://heroku:$HEROKU_API_KEY@git.heroku.com/test-auto-deploy.git
+#    - git push -f heroku master
+deploy_heroku:
+  image: centos
   stage: deploy
+  environment: heroku
   only:
     - master
   script:
+    - echo "Deploying for Heroku Cloud Platform"
+    - yum install git -y
+    - git remote add heroku https://heroku:$HEROKU_TOKEN@git.heroku.com/mark-servicesapp.git
     - git config --global user.email "neeraj.tiwari.17.1@mountblue.tech"
     - git config --global user.name "NeerajTiwari17"
-    - rm -rf .git
-    - git init
-    - git add .
-    - git commit -m "deployed"
-    - heroku auth:token 34234de9-83e1-4377-b6eb-4f196c3f54ce
-    - git remote add heroku https://heroku:$HEROKU_API_KEY@git.heroku.com/test-auto-deploy.git
-    - git push -f heroku master
+    - git config --global push.default matching
+    - git checkout master
+    - git commit --allow-empty -m "Heroku build trigger notification"
+    - git push -f heroku HEAD:master
+  when: manual

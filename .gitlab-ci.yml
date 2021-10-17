@@ -27,4 +27,3 @@ deploy_heroku:
     - git checkout master
     - git commit --allow-empty -m "Heroku build trigger notification"
     - git push -f heroku HEAD:master
-  when: manual

@@ -25,5 +25,6 @@ deploy_heroku:
     - git config --global user.name "NeerajTiwari17"
     - git config --global push.default matching
     - git checkout master
+    - heroku auth:token
     - git commit --allow-empty -m "Heroku build trigger notification"
     - git push -f heroku HEAD:master

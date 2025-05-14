@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title>Create a blog</title>
+</head>
+<body>
+
+<h3 th:inline="text">[[${#httpServletRequest.remoteUser}]]</h3>
+<div align="center">
+    <h1>Update your blog...</h1>
+</div>
+<div align="center">
+    <form action="#" th:action="@{/blog/update}" th:object="${blogPost}" method="post">
+        <input type="hidden" th:value="*{id}" name="id">
+        <table>
+            <tr>
+                <td><input type="text"  th:field="*{title}" name="title" style="margin: 0px; width: 500px; height: 25px;" placeholder="Title"></td>
+            </tr>
+            <tr>
+                <td><input type="text" th:field="*{tagString}" th:name="tagsString" style="margin: 0px; width: 500px; height: 25px;" placeholder="Tags"></td>
+            </tr>
+            <tr>
+                <td><textarea type="text" th:field="*{content}" name="content" style="margin: 0px; width: 500px; height: 200px;" row="20" column= "50" placeholder="Type here..."></textarea></td>
+            </tr>
+        </table><br>
+        <input type="hidden" th:field="*{createdAt}">
+        <input type="hidden"  th:value="${#httpServletRequest.remoteUser}" name="email">
+        <input type ="submit" value="Update">
+    </form>
+</div>
+</body>
+</html>

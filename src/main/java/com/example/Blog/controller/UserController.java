@@ -43,10 +43,4 @@ public class UserController {
         }
         return "register";
     }
-
-    @RequestMapping("/access-denied")
-    public String showAccessDeniedPage() {
-        return "access-denied";
-    }
-
 }

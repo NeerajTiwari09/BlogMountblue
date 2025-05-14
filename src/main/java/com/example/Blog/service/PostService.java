@@ -44,7 +44,7 @@ public class PostService {
         if (post.getId() == null) {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String email = authentication.getName();
-            String excerpt = post.getContent().substring(0, post.getContent().indexOf("\n"));
+            String excerpt = post.getContent().substring(0, 50);
             String author = userRepository.findNameByUsername(email);
             post.setAuthor(author);
             post.setExcerpt(excerpt);
@@ -86,21 +86,27 @@ public class PostService {
     }
 
     public Page<Post> findPostWithSorting(String sortField, String order, int offSet, int pageSize) {
-
+        Pageable pageable;
         if (order.equals("asc")) {
-            Pageable pageable = PageRequest.of(offSet, pageSize, Sort.by(Sort.Direction.ASC, sortField));
-            return postRepository.findAll(pageable);
+            pageable = PageRequest.of(offSet, pageSize, Sort.by(Sort.Direction.ASC, sortField));
         } else {
-            Pageable pageable = PageRequest.of(offSet, pageSize, Sort.by(Sort.Direction.DESC, sortField));
-            return postRepository.findAll(pageable);
+            pageable = PageRequest.of(offSet, pageSize, Sort.by(Sort.Direction.DESC, sortField));
         }
+        return postRepository.findAll(pageable);
     }
 
-    public List<Post> findByFiltering(String publishedAt, String authorName, Set<Integer> postIds) {
-        if(publishedAt.isEmpty()){
-            return postRepository.findByFilteringWithoutPublishedAt(authorName, postIds);
+    public Page<Post> findByFiltering(String publishedAt, String authorName, Set<Integer> postIds, int start, int limit,
+                                      String sortField, String order) {
+        Pageable pageable;
+        if (order.equals("asc")) {
+            pageable = PageRequest.of(start, limit, Sort.by(Sort.Direction.ASC, sortField));
+        } else {
+            pageable = PageRequest.of(start, limit, Sort.by(Sort.Direction.DESC, sortField));
         }
-        return postRepository.findByFiltering(publishedAt, authorName, postIds);
+        if(publishedAt.isEmpty()){
+            return postRepository.findByFilteringWithoutPublishedAt(authorName, postIds, pageable);
+        }
+        return postRepository.findByFiltering(publishedAt, authorName, postIds, pageable);
     }
 
     public void deletePostById(Integer id) {

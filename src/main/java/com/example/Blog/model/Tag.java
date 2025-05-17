@@ -1,10 +1,13 @@
 package com.example.Blog.model;
 
+import lombok.Data;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
+@Data
 @Entity
 @Table(name = "Tags")
 public class Tag {
@@ -18,45 +21,4 @@ public class Tag {
 
     @Column(name="updated_at")
     private Timestamp updatedAt;
-
-//    @ManyToMany(fetch = FetchType.LAZY,
-//            cascade = {CascadeType.PERSIST, CascadeType.MERGE,
-//            CascadeType.DETACH, CascadeType.REFRESH}, mappedBy = "tags")
-    /*@JoinTable( name = "post_tags",
-            joinColumns = @JoinColumn(name= "tagId"),
-            inverseJoinColumns = @JoinColumn(name = "postId")
-    )*/
-//    private Set<Post> posts = new HashSet<>();
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Timestamp getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Timestamp getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Timestamp updatedAt) {
-        this.updatedAt = updatedAt;
-    }
 }

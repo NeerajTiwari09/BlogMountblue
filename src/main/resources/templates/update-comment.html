@@ -16,7 +16,7 @@
                     <h5>Update Your Comment</h5>
                 </div>
                 <div class="card-body">
-                    <form th:action="@{/updateComment}" th:object="${updateComment}" method="post">
+                    <form th:action="@{/update-comment}" th:object="${updateComment}" method="post">
                         <input type="hidden" th:field="*{id}"/>
                         <input type="hidden" th:field="*{postId}"/>
                         <input type="hidden" th:name="email" th:value="${#httpServletRequest.remoteUser}"/>

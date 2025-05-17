@@ -1,115 +1,29 @@
 package com.example.Blog.service;
 
+import com.example.Blog.dto.input_dto.PostDto;
+import com.example.Blog.dto.input_dto.SearchDto;
 import com.example.Blog.model.Post;
 import com.example.Blog.model.Tag;
-import com.example.Blog.repository.PostRepository;
-import com.example.Blog.repository.TagRepository;
-import com.example.Blog.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.Blog.model.User;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
-@Service
-public class PostService {
+public interface PostService {
+    Page<Post> getAllBlogs(int start, int limit);
 
-    @Autowired
-    private PostRepository postRepository;
+    Optional<Post> getById(Integer id);
 
-    @Autowired
-    private TagRepository tagRepository;
+    Post publishPost(PostDto postDto);
 
-    @Autowired
-    private UserRepository userRepository;
+    void deletePostById(Integer id);
 
-    @Autowired
-    private PostTagService postTagService;
+    Page<Post> getAllBlogsByAuthor(User user, SearchDto searchDto);
 
-    public Page<Post> getAllBlogs(int start, int limit) {
-        Pageable pageWithTenElements = PageRequest.of(start, limit);
-        return postRepository.findAll(pageWithTenElements);
-    }
+    Page<Post> findByFiltering(SearchDto searchDto);
 
-    public Post saveOrUpdatePost(Post post) {
-        Post newPost = null;
-        if (post.getId() == null) {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String email = authentication.getName();
-            String excerpt = post.getContent().substring(0, 50);
-            String author = userRepository.findNameByUsername(email);
-            post.setAuthor(author);
-            post.setExcerpt(excerpt);
-            post.setPublished(true);
-            post.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-            post.setPublishedAt((new Timestamp(System.currentTimeMillis())).toString());
-            post.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-            newPost = postRepository.save(post);
-            postTagService.saveTagId(newPost);
-            return newPost;
-        } else {
-            Optional<Post> prePost = postRepository.findById(post.getId());
-            if (prePost.isPresent()) {
-                String excerpt = post.getContent().substring(0, post.getContent().indexOf("\n"));
-                prePost.get().setExcerpt(excerpt);
-                prePost.get().setTitle(post.getTitle());
-                prePost.get().setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-                prePost.get().setContent(post.getContent());
-                newPost = postRepository.save(prePost.get());
-            }
-        }
-        return  newPost;
-    }
+    Page<Post> getBySearchString(SearchDto searchDto);
 
-    public Optional<Post> getById(Integer id) {
-        Optional<Post> post = postRepository.findById(id);
-        StringBuilder tags = new StringBuilder();
-        if (post.isPresent()) {
-            for (Tag tag : post.get().getTags()) {
-                tags.append(tag.getName()).append(" ");
-            }
-            post.get().setTagString(tags.toString());
-        }
-        return post;
-    }
-
-    public List<Post> getBySearchString(String searchString, Set<Integer> postIds) {
-        return postRepository.getBySearchString(searchString, postIds);
-    }
-
-    public Page<Post> findPostWithSorting(String sortField, String order, int offSet, int pageSize) {
-        Pageable pageable;
-        if (order.equals("asc")) {
-            pageable = PageRequest.of(offSet, pageSize, Sort.by(Sort.Direction.ASC, sortField));
-        } else {
-            pageable = PageRequest.of(offSet, pageSize, Sort.by(Sort.Direction.DESC, sortField));
-        }
-        return postRepository.findAll(pageable);
-    }
-
-    public Page<Post> findByFiltering(String publishedAt, String authorName, Set<Integer> postIds, int start, int limit,
-                                      String sortField, String order) {
-        Pageable pageable;
-        if (order.equals("asc")) {
-            pageable = PageRequest.of(start, limit, Sort.by(Sort.Direction.ASC, sortField));
-        } else {
-            pageable = PageRequest.of(start, limit, Sort.by(Sort.Direction.DESC, sortField));
-        }
-        if(publishedAt.isEmpty()){
-            return postRepository.findByFilteringWithoutPublishedAt(authorName, postIds, pageable);
-        }
-        return postRepository.findByFiltering(publishedAt, authorName, postIds, pageable);
-    }
-
-    public void deletePostById(Integer id) {
-        postRepository.deleteById(id);
-    }
+    List<Tag> getCurrentAuthorTags();
 }

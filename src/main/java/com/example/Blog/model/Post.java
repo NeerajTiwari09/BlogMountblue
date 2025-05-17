@@ -1,11 +1,16 @@
 package com.example.Blog.model;
 
+import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.*;
 
+@Data
 @Entity
 @Table(name = "Posts")
 public class Post {
@@ -15,118 +20,27 @@ public class Post {
     private Integer id;
     private String title;
     private String excerpt;
+    @Column(name = "content", columnDefinition = "text")
     private String content;
-    private String author;
+    @ManyToOne
+    private User author;
 
     @Column(name = "published_at")
     private String publishedAt;
-
     @Column(name = "is_published")
     private boolean isPublished;
 
     @Column(name = "created_at")
+    @CreationTimestamp
     private Timestamp createdAt;
-
     @Column(name = "updated_at")
+    @UpdateTimestamp
     private Timestamp updatedAt;
 
     @ManyToMany(fetch = FetchType.LAZY,
-            cascade = {CascadeType.PERSIST,
-            CascadeType.DETACH, CascadeType.MERGE,
-            CascadeType.REFRESH})
+            cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinTable(name = "post_tags",
             joinColumns = {@JoinColumn(name = "postId")},
             inverseJoinColumns = {@JoinColumn(name = "tagId")})
     private Set<Tag> tags = new HashSet<>();
-
-    @Transient
-    private String tagString;
-
-    public String getTagString() {
-        return tagString;
-    }
-
-    public void setTagString(String tagString) {
-        this.tagString = tagString;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getExcerpt() {
-        return excerpt;
-    }
-
-    public void setExcerpt(String excerpt) {
-        this.excerpt = excerpt;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public String getPublishedAt() {
-        return publishedAt;
-    }
-
-    public void setPublishedAt(String publishedAt) {
-        this.publishedAt = publishedAt;
-    }
-
-    public boolean isPublished() {
-        return isPublished;
-    }
-
-    public void setPublished(boolean isPublished) {
-        this.isPublished = isPublished;
-    }
-
-    public Timestamp getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Timestamp getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Timestamp updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public Set<Tag> getTags() {
-        return tags;
-    }
-
-    public void setTags(Set<Tag> tags) {
-        this.tags = tags;
-    }
 }

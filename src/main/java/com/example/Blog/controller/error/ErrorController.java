@@ -20,4 +20,9 @@ public class ErrorController {
     public String showServerErrorPage() {
         return "/error/internal-server-error";
     }
+
+    @RequestMapping("/bad-request")
+    public String showBadRequestPage() {
+        return "/error/bad-request";
+    }
 }

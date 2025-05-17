@@ -1,6 +1,8 @@
-package com.example.Blog.service;
+package com.example.Blog.service.impl;
 
+import com.example.Blog.auth.AuthProvider;
 import com.example.Blog.model.Comment;
+import com.example.Blog.model.User;
 import com.example.Blog.repository.CommentRepository;
 import com.example.Blog.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -32,11 +35,13 @@ public class CommentService {
                 commentRepository.save(preComment.get());
             }
         } else {
-            String name = userRepository.findNameByUsername(comment.getEmail());
-            if(name == null){
-                name="anonymousUser";
+            User user = AuthProvider.getAuthenticatedUser();
+            String name = "anonymousUser";
+            if (Objects.nonNull(user)) {
+                name = user.getName();
             }
             comment.setName(name);
+            comment.setCommenter(user);
             comment.setCreatedAt(new Timestamp(System.currentTimeMillis()));
             comment.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
             commentRepository.save(comment);

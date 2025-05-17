@@ -1,6 +1,6 @@
 package com.example.Blog.config;
 
-import com.example.Blog.service.UserService;
+import com.example.Blog.service.impl.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -42,14 +42,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/", "/id", "/sort", "/search", "/register", "/filter","/comment").permitAll()
+                .antMatchers("/", "/search", "/register", "/filter","/comment").permitAll()
                 .antMatchers("/blog/new", "/blog/update").hasAnyAuthority("ADMIN", "AUTHOR")
                 .antMatchers("/blog/publish").hasAnyAuthority("ADMIN", "AUTHOR")
                 .and()
                 .formLogin()
                     .loginPage("/login")
                     .loginProcessingUrl("/authenticateUser")
-                    .defaultSuccessUrl("/blog")
+                    .defaultSuccessUrl("/posts")
                     .permitAll()
                 .and()
                     .logout()

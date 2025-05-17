@@ -3,81 +3,88 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
-    <title>Blog</title>
+    <title>My Blog</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3 th:inline="text">[[${#httpServletRequest.remoteUser}]]</h3>
-        <h1 class="text-center">My Blog</h1>
+<div class="container py-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
+        <h5 class="text-muted" th:inline="text">Welcome! [[${(currentUser != null ? currentUser.user.name : "")}]]</h5>
+        <h2 class="text-end flex-grow-1">📖 Blog Post</h2>
     </div>
 
     <!-- Action Buttons -->
-    <div th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'')') ||
-                (#authorization.expression('hasAnyAuthority(''AUTHOR'')') && isAuthorsPost)}"
-         class="mb-3 text-end">
-        <form th:action="@{/blog/delete}" method="get" class="d-inline">
+    <div th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'')') || (#authorization.expression('hasAnyAuthority(''AUTHOR'')') && isAuthorsPost)}"
+         class="text-end mb-3">
+        <form th:action="@{/posts/delete}" method="get" class="d-inline">
             <input type="hidden" th:value="${post.id}" name="id">
             <button type="submit" class="btn btn-danger btn-sm">Delete</button>
         </form>
-        <form th:action="@{/blog/update}" method="get" class="d-inline">
+        <form th:action="@{/posts/update}" method="get" class="d-inline">
             <input type="hidden" th:value="${post.id}" name="id">
-            <button type="submit" class="btn btn-primary btn-sm">Update</button>
+            <button type="submit" class="btn btn-primary btn-sm">Edit</button>
         </form>
     </div>
 
-    <!-- Blog Post Content -->
-    <div class="card mb-4">
+    <!-- Blog Post -->
+    <div class="card shadow-sm mb-4">
         <div class="card-body">
-            <h3 class="card-title" th:text="${post.title}">Post Title</h3>
-            <h6 class="card-subtitle text-muted mb-2">
-                <span th:text="${post.author}">Author</span>,
-                <span th:text="${post.createdAt}">Date</span>
-            </h6>
-            <p class="card-text text-muted mb-2" th:text="${post.tagString}">Tags</p>
-            <p class="card-text" th:text="${post.content}">Post content goes here.</p>
+            <h3 class="card-title mb-1" th:text="${post.title}">Post Title</h3>
+            <p class="text-muted mb-1">
+                By <strong th:text="${post.author.name}">Author</strong> •
+                <span th:text="${#dates.format(post.createdAt, 'yyyy-MM-dd')}">Date</span>
+            </p>
+            <div class="mb-2">
+                <span class="badge bg-secondary me-1" th:each="tag : ${post.tags}" th:text="${tag.name}">Tag</span>
+            </div>
+            <p class="card-text" style="white-space: pre-line;" th:text="${post.content}">Post content goes here.</p>
         </div>
     </div>
 
     <!-- Comment Form -->
-    <div class="card mb-4">
+    <div class="card shadow-sm mb-4">
         <div class="card-body">
+            <h5 class="card-title">💬 Leave a Comment</h5>
             <form th:action="@{/comment}" th:object="${newComment}" method="post" class="row g-3">
                 <div class="col-12">
-                    <input type="text" th:field="*{comment}" name="comment" class="form-control"
-                           placeholder="Comment here..." required>
+                    <textarea th:field="*{comment}" class="form-control" rows="3"
+                              placeholder="Your comment..." required></textarea>
                 </div>
                 <input type="hidden" th:value="${post.id}" name="postId">
-                <input type="hidden" th:value="${#httpServletRequest.remoteUser}" name="email">
-                <div class="col-12">
-                    <button type="submit" class="btn btn-secondary">Submit Comment</button>
+                <div class="col-12 text-end">
+                    <button type="submit" class="btn btn-secondary">Submit</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Comment List -->
-    <div class="card">
+    <!-- Comments List -->
+    <div class="card shadow-sm">
         <div class="card-body">
             <h5 class="card-title mb-3">Comments</h5>
-            <div th:each="comment : ${comments}" class="mb-3 border-bottom pb-2">
+            <div th:if="${#lists.isEmpty(comments)}">
+                <p class="text-muted">No comments yet.</p>
+            </div>
+            <div th:each="comment : ${comments}" class="mb-3 pb-2 border-bottom">
                 <div class="d-flex justify-content-between">
                     <strong th:text="${comment.name}">Name</strong>
-                    <small class="text-muted" th:text="${comment.createdAt}">Date</small>
+                    <small class="text-muted" th:text="${#dates.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}">Date</small>
                 </div>
-                <div class="text-muted mb-1" th:text="${comment.email}">Email</div>
-                <p th:text="${comment.comment}">Comment text</p>
+                <p class="mb-2" th:text="${comment.comment}">Comment text</p>
 
+                <!-- Comment Actions -->
                 <div th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'')') ||
                              (#authorization.expression('hasAnyAuthority(''AUTHOR'')') && isAuthorsPost) ||
-                             #httpServletRequest.remoteUser == comment.email}">
-                    <form th:action="@{/updateComment}" method="get" class="d-inline">
+                             (currentUser != null && currentUser.user.id == comment.commenter.id)}">
+<!--                   || #httpServletRequest.remoteUser == comment.email-->
+                    <form th:action="@{/update-comment}" method="get" class="d-inline">
                         <input type="hidden" th:value="${comment.id}" name="id">
                         <button type="submit" class="btn btn-outline-primary btn-sm">Edit</button>
                     </form>
-                    <form th:action="@{/deleteComment}" method="get" class="d-inline">
+                    <form th:action="@{/delete-comment}" method="get" class="d-inline">
                         <input type="hidden" th:value="${post.id}" name="postId">
                         <input type="hidden" th:value="${comment.id}" name="commentId">
                         <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
@@ -87,7 +94,8 @@
         </div>
     </div>
 </div>
-
+<div th:if="${toastMessage}" th:replace="fragments/toast :: toastFragment (${toastMessage}, ${toastStatusColor})"></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/toast.js}"></script>
 </body>
 </html>

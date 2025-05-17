@@ -18,6 +18,8 @@ public class CustomErrorController implements ErrorController {
             return "redirect:/not-found";
         } else if (status == 500) {
             return "redirect:/server-error";
+        } else if (status == 400){
+            return "redirect:/bad-request";
         }
         return "error";
     }

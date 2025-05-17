@@ -1,8 +1,10 @@
 package com.example.Blog.controller;
 
+import com.example.Blog.auth.AuthProvider;
 import com.example.Blog.model.Comment;
 import com.example.Blog.model.Login;
-import com.example.Blog.service.CommentService;
+import com.example.Blog.model.User;
+import com.example.Blog.service.impl.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Controller
@@ -19,14 +22,15 @@ public class CommentController {
     private CommentService commentService;
 
     @RequestMapping("/comment")
-    public String makeComment(@ModelAttribute("newComment") Comment comment){
+    public String makeComment(@ModelAttribute("newComment") Comment comment) {
         commentService.saveOrUpdateComment(comment);
-        return "redirect:/id?id="+ comment.getPostId();
+        return "redirect:/posts/" + comment.getPostId();
     }
-    @GetMapping("/updateComment")
-    public String viewUpdateCommentPage(@RequestParam("id") Integer id, Model model){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+
+    @GetMapping("/update-comment")
+    public String viewUpdateCommentPage(@RequestParam("id") Integer id, Model model) {
+        User user = AuthProvider.getAuthenticatedUser();
+        if (Objects.isNull(user)) {
             Login login = new Login();
             model.addAttribute("login", login);
             return "login";
@@ -35,15 +39,16 @@ public class CommentController {
         model.addAttribute("updateComment", comment.get());
         return "update-comment";
     }
-    @PostMapping("/updateComment")
-    public String updateComment(@ModelAttribute("updateComment") Comment comment){
+
+    @PostMapping("/update-comment")
+    public String updateComment(@ModelAttribute("updateComment") Comment comment) {
         commentService.saveOrUpdateComment(comment);
-        return "redirect:/id?id="+ comment.getPostId();
+        return "redirect:/posts/" + comment.getPostId();
     }
 
-    @GetMapping("/deleteComment")
-    public String deleteComment(@RequestParam("commentId") Integer commentId, @RequestParam("postId") Integer postId){
+    @GetMapping("/delete-comment")
+    public String deleteComment(@RequestParam("commentId") Integer commentId, @RequestParam("postId") Integer postId) {
         commentService.deleteCommentById(commentId);
-        return "redirect:/id?id="+ postId;
+        return "redirect:/posts/" + postId;
     }
 }

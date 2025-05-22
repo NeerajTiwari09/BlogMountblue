@@ -14,9 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,22 +37,6 @@ public class PostController {
     private TagService tagService;
     @Autowired
     private UserService userService;
-
-    @GetMapping(value = {"/", ""})
-    public String viewHomePage(@RequestParam(name = "start", defaultValue = "1") int start, @RequestParam(value = "limit", defaultValue = "10") int limit, Model model) {
-        Page<Post> posts = postService.getAllBlogs(start, limit);
-        List<Tag> tags = tagService.findAll();
-        List<User> users = userService.findAllAuthors();
-
-        model.addAttribute("users", users);
-        model.addAttribute("posts", posts);
-        model.addAttribute("start", start);
-        model.addAttribute("currentPage", posts.getPageable().getPageNumber());
-        model.addAttribute("tags", tags);
-        model.addAttribute("sort", ORDER_BY);
-        model.addAttribute("sortBy", SORT_BY);
-        return "home";
-    }
 
     @RequestMapping("/{id}")
     public String getPostById(@PathVariable("id") int id, Model model) {
@@ -99,15 +85,22 @@ public class PostController {
     }
 
     @GetMapping("/update")
-    public String showUpdatePostPage(@RequestParam("id") String id, Model model) {
+    public String showUpdatePostPage(@RequestParam("id") String id, Model model, RedirectAttributes redirectAttributes) {
         Optional<Post> post = postService.getById(Integer.valueOf(id));
         PostDto postDto = new PostDto();
-        BeanUtils.copyProperties(post.get(), postDto);
-        postDto.setSelectedTags(post.get().getTags().stream().map(Tag::getId).collect(Collectors.toList()));
-        List<Tag> allTags = tagService.findAll();
-        model.addAttribute("blogPost", postDto);
-        model.addAttribute("allTags", allTags);
-        return "update-post";
+        if(post.isPresent()){
+            BeanUtils.copyProperties(post.get(), postDto);
+            postDto.setSelectedTags(post.get().getTags().stream().map(Tag::getId).collect(Collectors.toList()));
+            List<Tag> allTags = tagService.findAll();
+            model.addAttribute("blogPost", postDto);
+            model.addAttribute("allTags", allTags);
+            return "update-post";
+        }
+        else {
+            redirectAttributes.addFlashAttribute("toastMessage", "Blog doesn't exist!");
+            redirectAttributes.addFlashAttribute("toastStatusColor", "bg-danger");
+            return "redirect:/posts";
+        }
     }
 
     @GetMapping("/delete")
@@ -147,15 +140,19 @@ public class PostController {
         return "home";
     }
 
-    @RequestMapping("/filter")
+    @GetMapping(value = {"/", ""})
     public String filterPosts(@RequestParam(name = "publishedAt", required = false, defaultValue = "") String publishedAt,
                               @RequestParam(name = "authorId", required = false, defaultValue = "0") int authorId,
-                              @RequestParam(name = "tagId", required = false) List<Integer> tagIds,
+                              @RequestParam(name = "tagIds", required = false, defaultValue = "") String tagIds,
                               @RequestParam(value = "start", required = false, defaultValue = "1") int start,
                               @RequestParam(value = "limit", required = false, defaultValue = "10") int limit,
                               @RequestParam(value = "sortField", required = false, defaultValue = "publishedAt") String sortField,
                               @RequestParam(value = "order", required = false, defaultValue = "aes") String order,
-                              Model model) {
+                              Model model, HttpServletRequest request) {
+        List<Integer> intTagIds = new ArrayList<>();
+        if(StringUtils.hasText(tagIds)){
+            intTagIds = Arrays.stream(tagIds.split(",")).map(Integer::parseInt).collect(Collectors.toList());
+        }
         SearchDto searchDto = new SearchDto();
         searchDto.setLimit(limit);
         searchDto.setOffset(start);
@@ -163,11 +160,20 @@ public class PostController {
         searchDto.setSortByField(sortField);
         searchDto.setAuthorId(authorId);
         searchDto.setPublishedAt(publishedAt);
-        searchDto.setTagIds(tagIds);
-        Page<Post> posts = postService.findByFiltering(searchDto);
+        searchDto.setTagIds(intTagIds);
+        Page<Post> posts = postService.findByFilterCriteria(searchDto);
         List<Tag> tags = tagService.findAll();
         List<User> users = userService.findAllAuthors();
-
+        String queryString = request.getQueryString();
+        String extraParams = "";
+        if (queryString != null) {
+            extraParams = Arrays.stream(queryString.split("&"))
+                    .filter(p -> !p.startsWith("start=") && !p.startsWith("limit="))
+                    .collect(Collectors.joining("&"));
+            if(!extraParams.isEmpty()){
+                extraParams = '&' + extraParams;
+            }
+        }
         model.addAttribute("users", users);
         model.addAttribute("posts", posts);
         model.addAttribute("tags", tags);
@@ -177,23 +183,46 @@ public class PostController {
         model.addAttribute("sort", ORDER_BY);
         model.addAttribute("sortBy", SORT_BY);
         model.addAttribute("selectedAuthorId", authorId);
-        model.addAttribute("selectedTagIds", tagIds);
+        model.addAttribute("selectedTagIds", intTagIds);
+        model.addAttribute("selectedTagIdsForSort", tagIds);
         model.addAttribute("selectedPublishedAt", publishedAt);
         model.addAttribute("selectedSortBy", sortField);
+        model.addAttribute("queryParams", extraParams);
         return "home";
     }
 
     @GetMapping("/my-blog")
-    public String fetchLoggedInUserBlog(@RequestParam(value = "start", required = false, defaultValue = "1") int start,
+    public String fetchLoggedInUserBlog(@RequestParam(name = "publishedAt", required = false, defaultValue = "") String publishedAt,
+                                        @RequestParam(name = "authorId", required = false, defaultValue = "0") int authorId,
+                                        @RequestParam(name = "tagIds", required = false) String tagIds,
+                                        @RequestParam(value = "start", required = false, defaultValue = "1") int start,
                                         @RequestParam(value = "limit", required = false, defaultValue = "10") int limit,
-                                        @RequestParam(value = "sortField", defaultValue = "publishedAt") String sortField,
-                                        @RequestParam(value = "order", defaultValue = "aes") String order, Model model) {
+                                        @RequestParam(value = "sortField", required = false, defaultValue = "publishedAt") String sortField,
+                                        @RequestParam(value = "order", required = false, defaultValue = "aes") String order,
+                                        Model model, HttpServletRequest request) {
+        List<Integer> intTagIds = new ArrayList<>();
+        if(StringUtils.hasText(tagIds)){
+            intTagIds = Arrays.stream(tagIds.split(",")).map(Integer::parseInt).collect(Collectors.toList());
+        }
         SearchDto searchDto = new SearchDto();
         searchDto.setLimit(limit);
         searchDto.setOffset(start);
         searchDto.setOrderBy(order);
         searchDto.setSortByField(sortField);
+        searchDto.setPublishedAt(publishedAt);
+        searchDto.setAuthorId(authorId);
+        searchDto.setTagIds(intTagIds);
         User user = AuthProvider.getAuthenticatedUser();
+        String queryString = request.getQueryString();
+        String extraParams = "";
+        if (queryString != null) {
+            extraParams = Arrays.stream(queryString.split("&"))
+                    .filter(p -> !p.startsWith("start=") && !p.startsWith("limit="))
+                    .collect(Collectors.joining("&"));
+            if(!extraParams.isEmpty()){
+                extraParams = '&' + extraParams;
+            }
+        }
         if (Objects.nonNull(user)) {
             Page<Post> posts = postService.getAllBlogsByAuthor(user, searchDto);
             Map<String, Tag> tags = new HashMap<>();
@@ -208,8 +237,12 @@ public class PostController {
             model.addAttribute("selectedOrder", order);
             model.addAttribute("selectedAuthorId", user.getId());
             model.addAttribute("selectedSortBy", sortField);
+            model.addAttribute("selectedTagIds", intTagIds);
+            model.addAttribute("selectedTagIdsForSort", tagIds);
+            model.addAttribute("selectedPublishedAt", publishedAt);
             model.addAttribute("sort", ORDER_BY);
             model.addAttribute("sortBy", SORT_BY);
+            model.addAttribute("queryParams", extraParams);
             return "user-post";
         }
         return "/error/access-denied";
@@ -223,19 +256,6 @@ public class PostController {
                                  @RequestParam(value = "order", defaultValue = "aes") String order,
                                  Model model) {
         searchByString(search, start, limit, sortField, order, model);
-        return "user-post";
-    }
-
-    @RequestMapping("/my-blog/filter")
-    public String filterMyPosts(@RequestParam(name = "publishedAt", required = false, defaultValue = "") String publishedAt,
-                              @RequestParam(name = "authorId", required = false, defaultValue = "0") int authorId,
-                              @RequestParam(name = "tagId", required = false) List<Integer> tagIds,
-                              @RequestParam(value = "start", required = false, defaultValue = "1") int start,
-                              @RequestParam(value = "limit", required = false, defaultValue = "10") int limit,
-                              @RequestParam(value = "sortField", required = false, defaultValue = "publishedAt") String sortField,
-                              @RequestParam(value = "order", required = false, defaultValue = "aes") String order,
-                              Model model) {
-        filterPosts(publishedAt, authorId, tagIds, start, limit, sortField, order, model);
         return "user-post";
     }
 }

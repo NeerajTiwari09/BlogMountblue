@@ -8,7 +8,6 @@ import com.example.Blog.model.Role;
 import com.example.Blog.model.User;
 import com.example.Blog.repository.RoleRepository;
 import com.example.Blog.repository.UserRepository;
-import org.hibernate.result.Output;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

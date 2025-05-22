@@ -27,25 +27,17 @@ public class CommentService {
     }
 
     public void saveOrUpdateComment(Comment comment) {
+        Comment commentToSave = new Comment();
         if (comment.getId() != null) {
-            Optional<Comment> preComment = commentRepository.findById(comment.getId());
-            if (preComment.isPresent()) {
-                preComment.get().setComment(comment.getComment());
-                preComment.get().setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-                commentRepository.save(preComment.get());
-            }
-        } else {
-            User user = AuthProvider.getAuthenticatedUser();
-            String name = "anonymousUser";
-            if (Objects.nonNull(user)) {
-                name = user.getName();
-            }
-            comment.setName(name);
-            comment.setCommenter(user);
-            comment.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-            comment.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-            commentRepository.save(comment);
+            commentToSave = commentRepository.findById(comment.getId()).orElse(new Comment());
         }
+        User user = AuthProvider.getAuthenticatedUser();
+        String name = Objects.nonNull(user) ? user.getName() : "anonymousUser";
+        commentToSave.setComment(comment.getComment());
+        commentToSave.setName(name);
+        commentToSave.setPostId(comment.getPostId());
+        commentToSave.setCommenter(user);
+        commentRepository.save(commentToSave);
     }
 
     public Optional<Comment> findCommentById(Integer id) {

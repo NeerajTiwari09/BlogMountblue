@@ -21,7 +21,7 @@ public interface PostService {
 
     Page<Post> getAllBlogsByAuthor(User user, SearchDto searchDto);
 
-    Page<Post> findByFiltering(SearchDto searchDto);
+    Page<Post> findByFilterCriteria(SearchDto searchDto);
 
     Page<Post> getBySearchString(SearchDto searchDto);
 

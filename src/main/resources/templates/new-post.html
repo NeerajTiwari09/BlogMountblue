@@ -12,56 +12,60 @@
         }
 
         .scrollable-tags {
-            max-height: 100px;
-               overflow-y: auto;
+            max-height: 200px;
+            overflow-y: auto;
         }
     </style>
 </head>
 <body class="bg-light">
 
-<div class="container mt-4">
-    <!-- Logged-in user -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="text-muted mb-0" th:inline="text">Logged in as: [[${(currentUser != null ? currentUser.user.name : "")}]]</h5>
-        <div sec:authentication="principal.authorities" class="text-muted"></div>
-    </div>
-
+<div th:replace="fragments/navbar :: navbarFragment"></div>
+<!-- Container for the content -->
+<div class="container-fluid mb-4">
     <!-- Header -->
     <div class="text-center mb-4">
         <h2>📝 Create Your Blog</h2>
     </div>
 
     <!-- Blog Form -->
-    <div class="card mx-auto" style="max-width: 700px;">
+    <div class="card mx-auto" style="max-width: 1150px;">
         <div class="card-body">
             <form th:action="@{/posts/publish}" th:object="${blogPost}" method="post">
-                <div class="mb-3">
-                    <label for="title" class="form-label">Title</label>
-                    <input type="text" th:field="*{title}" name="title" id="title" class="form-control"
-                           placeholder="Enter blog title" required>
-                </div>
-                <div class="mb-3" th:if="${!allTags.isEmpty()}">
-                    <label class="form-label">Select Existing Tags</label>
-                    <div class="scrollable-tags">
-                        <div class="form-check" th:each="tag : ${allTags}">
-                            <input class="form-check-input"
-                                   type="checkbox"
-                                   name="selectedTags"
-                                   th:value="${tag.id}"
-                                   id="${tag.id}">
-                            <label class="form-check-label" th:for="${tag.id}" th:text="${tag.name}"></label>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Title</label>
+                            <input type="text" th:field="*{title}" name="title" id="title" class="form-control"
+                                   placeholder="Enter blog title" required>
+                        </div>
+                        <div class="mb-3" th:if="${!allTags.isEmpty()}">
+                            <label class="form-label">Select Existing Tags</label>
+                            <div class="scrollable-tags border rounded p-2">
+                                <div class="form-check" th:each="tag : ${allTags}">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           name="selectedTags"
+                                           th:value="${tag.id}"
+                                           id="${tag.id}">
+                                    <label class="form-check-label" th:for="${tag.id}" th:text="${tag.name}"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tagString" class="form-label">Tags</label>
+                            <input type="text" th:field="*{tagString}" name="tagString" id="tagString"
+                                   class="form-control"
+                                   placeholder="Enter new tags (comma-separated)">
                         </div>
                     </div>
-                </div>
-                <div class="mb-3">
-                    <label for="tagString" class="form-label">Tags</label>
-                    <input type="text" th:field="*{tagString}" name="tagString" id="tagString" class="form-control"
-                           placeholder="Enter new tags (comma-separated)">
-                </div>
-                <div class="mb-3">
-                    <label for="content" class="form-label">Content</label>
-                    <textarea th:field="*{content}" name="content" id="content" class="form-control" rows="10"
-                              placeholder="Write your blog content here..." required></textarea>
+                    <div class="col-md-8">
+                        <div class="mb-3 h-100 d-flex flex-column">
+                            <label for="content" class="form-label">Content</label>
+                            <textarea th:field="*{content}" name="content" id="content"
+                                      class="form-control flex-grow-1 mb-3" rows="10"
+                                      placeholder="Write your blog content here..." required></textarea>
+                        </div>
+                    </div>
                 </div>
                 <div class="d-grid">
                     <button type="submit" class="btn btn-success">Publish</button>

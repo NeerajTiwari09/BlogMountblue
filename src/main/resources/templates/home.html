@@ -13,48 +13,21 @@
         }
 
         .scrollable-posts {
-            max-height: calc(100vh - 300px);
+            max-height: calc(100vh - 260px);
             overflow-y: auto;
         }
 
         .scrollable-tags {
-            max-height: calc(100vh - 550px);
-               overflow-y: auto;
+            max-height: calc(100vh - 500px);
+            overflow-y: auto;
         }
     </style>
 </head>
 <body class="bg-light">
 
+<div th:replace="fragments/navbar :: navbarFragment"></div>
 <!-- Container for the content -->
-<div class="container mt-4">
-
-    <!-- Authentication and Greeting -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="text-muted mb-0" th:inline="text">Welcome! [[${(currentUser != null ? currentUser.user.name : "")}]]</h5>
-
-        <div class="d-flex align-items-center gap-2">
-            <!-- Create Blog Button (visible to AUTHOR and ADMIN) -->
-            <div sec:authorize="hasAnyAuthority('AUTHOR','ADMIN')">
-                <a class="btn btn-success" th:href="@{/posts/new}">Create a Blog</a>
-            </div>
-            <div sec:authorize="hasAnyAuthority('AUTHOR','ADMIN')">
-                <a class="btn btn-success" th:href="@{/posts/my-blog}">My Blogs</a>
-            </div>
-            <div sec:authorize="!isAuthenticated()">
-                <a class="btn btn-outline-primary" th:href="@{/login}">Login</a>
-            </div>
-            <div sec:authorize="isAuthenticated()">
-                <form th:action="@{/logout}" method="post" class="d-inline">
-                    <input type="submit" class="btn btn-outline-danger" value="Logout"/>
-                </form>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- Main Heading -->
-    <h2 class="text-center mb-4">📄 Blog Dashboard</h2>
-
+<div class="container-fluid mb-4">
     <!-- Search and Sort Controls -->
     <div class="row mb-4">
         <div class="col-md-6">
@@ -65,13 +38,13 @@
             </form>
         </div>
         <div class="col-md-6 text-end">
-            <form th:action="@{/posts/filter}" method="get" class="d-inline-block">
+            <form th:action="@{/posts}" method="get" class="d-inline-block">
                 <label class="form-label">Sort by</label>
-                <th:block th:if="${selectedAuthorId}">
+                <th:block th:if="${selectedAuthorId != null and selectedAuthorId != 0}">
                     <input type="hidden" th:name="authorId" th:value="${selectedAuthorId}">
                 </th:block>
-                <th:block th:if="${selectedTagIds}">
-                    <input type="hidden" th:each="id : ${selectedTagIds}" name="tagId" th:value="${id}"/>
+                <th:block th:if="${selectedTagIdsForSort != null and selectedTagIdsForSort != ''}">
+                    <input type="hidden" name="tagIds" th:value="${selectedTagIdsForSort}"/>
                 </th:block>
                 <select class="form-select d-inline-block w-auto" name="sortField">
                     <option th:each="s : ${sortBy}" th:value="${s.value}" th:text="${s.key}"
@@ -88,7 +61,7 @@
 
     <!-- Filter by Date, Author, Tags -->
     <div class="row mb-5">
-        <div th:replace="fragments/filter :: filterFragment(${users}, ${selectedAuthorId}, ${publishedAt}, ${selectedPublishedAt}, ${tags}, ${selectedTagIds}, ${'/posts/filter'})"></div>
+        <div th:replace="fragments/filter :: filterFragment(${users}, ${selectedAuthorId}, ${publishedAt}, ${selectedPublishedAt}, ${tags}, ${selectedTagIds}, ${'/posts'})"></div>
         <!-- Blog Posts Cards and Pagination -->
         <div class="col-md-8">
             <div class="bg-white p-3 rounded shadow-sm h-100 d-flex justify-content-center align-items-center"
@@ -117,7 +90,7 @@
                 </div>
             </div>
             <!-- Pagination -->
-            <div th:replace="fragments/pagination :: paginationFragment(${posts}, ${currentPage}, ${'/posts'})"></div>
+            <div th:replace="fragments/pagination :: paginationFragment(${posts.totalPages}, ${currentPage}, ${'/posts'}, ${queryParams})"></div>
         </div>
     </div>
 </div>

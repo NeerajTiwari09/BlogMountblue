@@ -5,14 +5,15 @@
     <title>Pagination Fragment</title>
 </head>
 <body>
-<div th:fragment="paginationFragment (posts, currentPage, url)">
-    <nav th:if="${posts.totalPages > 1}" class="mt-4">
+<div th:fragment="paginationFragment (totalPages, currentPage, url, queryParams)"
+     th:if="${totalPages > 1}">
+    <nav class="mt-4">
         <ul class="pagination justify-content-center">
             <li class="page-item"
-                th:each="i: ${#numbers.sequence(1, posts.totalPages)}"
+                th:each="i: ${#numbers.sequence(1, totalPages)}"
                 th:classappend="${i == currentPage + 1} ? 'active'">
                 <a class="page-link"
-                   th:href="@{${url} + '?start=' + ${i} + '&limit=10'}"
+                   th:href="@{${url} + '?start=' + ${i} + '&limit=10' + ${queryParams}}"
                    th:text="${i}"></a>
             </li>
         </ul>

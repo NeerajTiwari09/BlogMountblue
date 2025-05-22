@@ -8,14 +8,9 @@
 </head>
 <body class="bg-light">
 
-<div class="container py-4">
-
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
-        <h5 class="text-muted" th:inline="text">Welcome! [[${(currentUser != null ? currentUser.user.name : "")}]]</h5>
-        <h2 class="text-end flex-grow-1">📖 Blog Post</h2>
-    </div>
-
+<div th:replace="fragments/navbar :: navbarFragment"></div>
+<div class="container-fluid mb-4">
+    <h2 class="text-center flex-grow-1">📖 Blog Post</h2>
     <!-- Action Buttons -->
     <div th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'')') || (#authorization.expression('hasAnyAuthority(''AUTHOR'')') && isAuthorsPost)}"
          class="text-end mb-3">
@@ -80,11 +75,11 @@
                              (#authorization.expression('hasAnyAuthority(''AUTHOR'')') && isAuthorsPost) ||
                              (currentUser != null && currentUser.user.id == comment.commenter.id)}">
 <!--                   || #httpServletRequest.remoteUser == comment.email-->
-                    <form th:action="@{/update-comment}" method="get" class="d-inline">
+                    <form th:action="@{/comment/update}" method="get" class="d-inline">
                         <input type="hidden" th:value="${comment.id}" name="id">
                         <button type="submit" class="btn btn-outline-primary btn-sm">Edit</button>
                     </form>
-                    <form th:action="@{/delete-comment}" method="get" class="d-inline">
+                    <form th:action="@{/comment/delete}" method="get" class="d-inline">
                         <input type="hidden" th:value="${post.id}" name="postId">
                         <input type="hidden" th:value="${comment.id}" name="commentId">
                         <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>

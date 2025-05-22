@@ -16,6 +16,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -88,17 +90,9 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Page<Post> findByFiltering(SearchDto searchDto) {
-        int start = searchDto.getOffset();
-        int limit = searchDto.getLimit();
-        String sortField = searchDto.getSortByField();
-        Sort.Direction sortDirection = searchDto.getOrderBy().equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Pageable pageable = PageRequest.of(start - 1, limit, Sort.by(sortDirection, sortField));
+    public Page<Post> findByFilterCriteria(SearchDto searchDto) {
         User user = userRepository.findById(searchDto.getAuthorId()).orElse(null);
-        if (searchDto.getPublishedAt().isEmpty()) {
-            return postRepository.findByFilteringWithoutPublishedAt(user, searchDto.getTagIds(), pageable);
-        }
-        return postRepository.findByFiltering(searchDto.getPublishedAt(), user, searchDto.getTagIds(), pageable);
+        return getPostBySearchCriteria(user, searchDto);
     }
 
     @Override
@@ -108,11 +102,27 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Page<Post> getAllBlogsByAuthor(User user, SearchDto searchDto) {
-        Pageable pageable;
-        Sort.Direction sortDirection = searchDto.getOrderBy().equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-        pageable = PageRequest.of(searchDto.getOffset() - 1, searchDto.getLimit(),
-                    Sort.by(sortDirection, searchDto.getSortByField()));
+        return getPostBySearchCriteria(user, searchDto);
+    }
 
-        return postRepository.findAllByAuthor(user, pageable);
+    private Page<Post> getPostBySearchCriteria(User user, SearchDto searchDto){
+        int start = searchDto.getOffset();
+        int limit = searchDto.getLimit();
+        String sortField = searchDto.getSortByField();
+        Sort.Direction sortDirection = searchDto.getOrderBy().equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(start - 1, limit, Sort.by(sortDirection, sortField));
+        if (StringUtils.hasText(searchDto.getPublishedAt()) && Objects.nonNull(user) &&
+                !ObjectUtils.isEmpty(searchDto.getTagIds())) {
+            return postRepository.findByPublishedAtAndUserAndTagIds(searchDto.getPublishedAt(), user, searchDto.getTagIds(), pageable);
+        } else if (Objects.nonNull(user) && !ObjectUtils.isEmpty(searchDto.getTagIds())) {
+            return postRepository.findByUserAndTagIds(user, searchDto.getTagIds(), pageable);
+        } else if (Objects.isNull(user) && !ObjectUtils.isEmpty(searchDto.getTagIds())) {
+            return postRepository.findByTagIds(searchDto.getTagIds(), pageable);
+        } else if (Objects.nonNull(user)) {
+            return postRepository.findAllByAuthor(user, pageable);
+        } else if (StringUtils.hasText(searchDto.getPublishedAt())){
+            return postRepository.findAllByPublishedAt(searchDto.getPublishedAt(), pageable);
+        }
+        return postRepository.findAll(pageable);
     }
 }

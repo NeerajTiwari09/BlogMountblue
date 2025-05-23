@@ -1,5 +1,6 @@
 package com.example.Blog.controller;
 
+import com.example.Blog.constant.ToastConstant;
 import com.example.Blog.dto.output_dto.Response;
 import com.example.Blog.model.Login;
 import com.example.Blog.model.User;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class UserController {
@@ -38,12 +40,15 @@ public class UserController {
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public String registerUser(@ModelAttribute("user") User user, BindingResult result, Model model) {
+    public String registerUser(@ModelAttribute("user") User user, Model model, RedirectAttributes redirectAttributes) {
         Response<Object> output = userService.registerUser(user);
         if (output.isSuccess()) {
+            redirectAttributes.addFlashAttribute(ToastConstant.TOAST_MESSAGE, "Registered successfully!");
+            redirectAttributes.addFlashAttribute(ToastConstant.TOAST_STATUS_COLOR, ToastConstant.TOAST_BG_SUCCESS);
             return "redirect:/login";
         }
-        result.rejectValue("username", "error.user", output.getMessage());
+        model.addAttribute(ToastConstant.TOAST_MESSAGE, output.getMessage());
+        model.addAttribute(ToastConstant.TOAST_STATUS_COLOR, ToastConstant.TOAST_BG_DANGER);
         return "register";
     }
 }

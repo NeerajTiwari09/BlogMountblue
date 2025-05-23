@@ -118,6 +118,8 @@ public class PostServiceImpl implements PostService {
             return postRepository.findByUserAndTagIds(user, searchDto.getTagIds(), pageable);
         } else if (Objects.isNull(user) && !ObjectUtils.isEmpty(searchDto.getTagIds())) {
             return postRepository.findByTagIds(searchDto.getTagIds(), pageable);
+        } else if (Objects.nonNull(user) && StringUtils.hasText(searchDto.getPublishedAt())) {
+            return postRepository.findAllByAuthorAndPublishedAt(user, searchDto.getPublishedAt(), pageable);
         } else if (Objects.nonNull(user)) {
             return postRepository.findAllByAuthor(user, pageable);
         } else if (StringUtils.hasText(searchDto.getPublishedAt())){

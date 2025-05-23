@@ -5,12 +5,12 @@
   <title>Pagination Fragment</title>
 </head>
 <body>
-<div th:fragment="toastFragment (toastMessage, toastStatusColor)"
-     th:if="${toastMessage}" class="position-fixed bottom-0 end-0 p-3 d-flex justify-content-end" style="z-index: 1100">
+<div th:fragment="toastFragment (toastMessage, toastStatusColor)" id="toastWrapper"
+      class="position-fixed bottom-0 end-0 p-3 d-flex justify-content-end" style="z-index: 1100">
   <div id="liveToast" class="toast align-items-center text-white bg-success border-0"
        th:classappend="${toastStatusColor}" role="alert" aria-live="assertive" aria-atomic="true">
     <div class="d-flex">
-      <div class="toast-body" th:text="${toastMessage}">Toast message goes here</div>
+      <div class="toast-body" id="toastMessage" th:text="${toastMessage}">Toast message goes here</div>
       <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
     </div>
   </div>

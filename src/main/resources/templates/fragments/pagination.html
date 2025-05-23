@@ -9,12 +9,48 @@
      th:if="${totalPages > 1}">
     <nav class="mt-4">
         <ul class="pagination justify-content-center">
-            <li class="page-item"
-                th:each="i: ${#numbers.sequence(1, totalPages)}"
-                th:classappend="${i == currentPage + 1} ? 'active'">
+
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
                 <a class="page-link"
-                   th:href="@{${url} + '?start=' + ${i} + '&limit=10' + ${queryParams}}"
-                   th:text="${i}"></a>
+                   th:href="@{${url} + '?start=' + ${currentPage} + '&limit=10' + ${queryParams}}"
+                   aria-label="Previous">&laquo;</a>
+            </li>
+
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'active'">
+                <a class="page-link"
+                   th:href="@{${url} + '?start=1&limit=10' + ${queryParams}}">1</a>
+            </li>
+
+            <!-- Ellipsis if currentPage > 3 -->
+            <li class="page-item disabled" th:if="${currentPage > 3}">
+                <span class="page-link">...</span>
+            </li>
+
+            <li class="page-item"
+                th:each="i : ${#numbers.sequence(
+                        T(java.lang.Math).max(1, currentPage - 2),
+                        T(java.lang.Math).min(totalPages - 2, currentPage + 2)
+                      )}"
+                th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link"
+                   th:href="@{${url} + '?start=' + ${i + 1} + '&limit=10' + ${queryParams}}"
+                   th:text="${i + 1}"></a>
+            </li>
+
+            <li class="page-item disabled" th:if="${currentPage < totalPages - 4}">
+                <span class="page-link">...</span>
+            </li>
+
+            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'active'">
+                <a class="page-link"
+                   th:href="@{${url} + '?start=' + ${totalPages} + '&limit=10' + ${queryParams}}"
+                   th:text="${totalPages}"></a>
+            </li>
+
+            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{${url} + '?start=' + ${currentPage + 2} + '&limit=10' + ${queryParams}}"
+                   aria-label="Next">&raquo;</a>
             </li>
         </ul>
     </nav>

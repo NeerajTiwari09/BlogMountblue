@@ -37,4 +37,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
     @Query("select DISTINCT p from Post as p JOIN p.tags t where p.publishedAt like CONCAT(:publishedAt,'%')")
     Page<Post> findAllByPublishedAt(String publishedAt, Pageable pageable);
+
+    @Query("select DISTINCT p from Post as p JOIN p.tags t where p.publishedAt like CONCAT(:publishedAt,'%') and p.author = :author")
+    Page<Post> findAllByAuthorAndPublishedAt(User author, String publishedAt, Pageable pageable);
 }

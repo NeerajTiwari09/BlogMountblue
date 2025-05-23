@@ -1,12 +1,16 @@
 package com.example.Blog.controller;
 
 import com.example.Blog.auth.AuthProvider;
+import com.example.Blog.constant.ToastConstant;
+import com.example.Blog.dto.input_dto.LikeDto;
 import com.example.Blog.dto.input_dto.PostDto;
 import com.example.Blog.dto.input_dto.SearchDto;
+import com.example.Blog.dto.output_dto.Response;
 import com.example.Blog.model.Comment;
 import com.example.Blog.model.Post;
 import com.example.Blog.model.Tag;
 import com.example.Blog.model.User;
+import com.example.Blog.service.LikeService;
 import com.example.Blog.service.PostService;
 import com.example.Blog.service.impl.*;
 import org.springframework.beans.BeanUtils;
@@ -37,6 +41,8 @@ public class PostController {
     private TagService tagService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private LikeService likeService;
 
     @RequestMapping("/{id}")
     public String getPostById(@PathVariable("id") int id, Model model) {
@@ -44,6 +50,8 @@ public class PostController {
         User user = AuthProvider.getAuthenticatedUser();
         boolean isAuthorsPost = false;
         Post post = postService.getById(id).orElse(null);
+        Integer likesCount = likeService.getLikeCountByPost(post);
+        boolean likedByCurrentUser = likeService.likedByCurrentUser(post, user);
         if (Objects.nonNull(user) && Objects.nonNull(post) && post.getAuthor().getUsername().equals(user.getUsername())) {
             isAuthorsPost = true;
         }
@@ -52,6 +60,9 @@ public class PostController {
         model.addAttribute("post", post);
         model.addAttribute("newComment", newComment);
         model.addAttribute("comments", comments);
+        model.addAttribute("likeForm", new LikeDto());
+        model.addAttribute("likesCount", likesCount);
+        model.addAttribute("isPostLikedByCurrentUser", likedByCurrentUser);
         return "post";
     }
 
@@ -257,5 +268,11 @@ public class PostController {
                                  Model model) {
         searchByString(search, start, limit, sortField, order, model);
         return "user-post";
+    }
+
+    @PostMapping("/like")
+    @ResponseBody
+    public Response<LikeDto> likePost(@RequestParam Integer postId){
+        return likeService.toggleLike(postId);
     }
 }

@@ -6,7 +6,8 @@
 </head>
 <body>
 <div th:fragment="toastFragment (toastMessage, toastStatusColor)" id="toastWrapper"
-      class="position-fixed bottom-0 end-0 p-3 d-flex justify-content-end" style="z-index: 1100">
+      class="position-fixed bottom-0 p-3 start-50 translate-middle-x start-lg-auto end-lg-0 translate-middle-x-lg-0"
+     style="z-index: 1100">
   <div id="liveToast" class="toast align-items-center text-white bg-success border-0"
        th:classappend="${toastStatusColor}" role="alert" aria-live="assertive" aria-atomic="true">
     <div class="d-flex">

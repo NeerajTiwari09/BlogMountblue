@@ -20,7 +20,8 @@ public class Post {
     private Integer id;
     private String title;
     private String excerpt;
-    @Column(name = "content", columnDefinition = "text")
+    @Lob
+    @Column(name = "content")
     private String content;
     @ManyToOne
     private User author;

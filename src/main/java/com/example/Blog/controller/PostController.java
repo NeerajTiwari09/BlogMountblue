@@ -1,7 +1,6 @@
 package com.example.Blog.controller;
 
 import com.example.Blog.auth.AuthProvider;
-import com.example.Blog.constant.ToastConstant;
 import com.example.Blog.dto.input_dto.LikeDto;
 import com.example.Blog.dto.input_dto.PostDto;
 import com.example.Blog.dto.input_dto.SearchDto;
@@ -55,7 +54,7 @@ public class PostController {
         if (Objects.nonNull(user) && Objects.nonNull(post) && post.getAuthor().getUsername().equals(user.getUsername())) {
             isAuthorsPost = true;
         }
-        List<Comment> comments = commentService.findAllByPostIdOrderCreatedAtDesc(Integer.valueOf(id));
+        List<Comment> comments = commentService.findAllByPostIdOrderCreatedAtDesc(id);
         model.addAttribute("isAuthorsPost", isAuthorsPost);
         model.addAttribute("post", post);
         model.addAttribute("newComment", newComment);

@@ -34,6 +34,9 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private NotificationService notificationService;
+
     @Override
     public Page<Post> getAllBlogs(int start, int limit) {
         Pageable pageWithTenElements = PageRequest.of(start - 1, limit);
@@ -47,8 +50,8 @@ public class PostServiceImpl implements PostService {
 
     private Post saveOrUpdatePost(PostDto postDto) {
         Post post = postRepository.findById(postDto.getId()).orElse(null);
+        User user = AuthProvider.getAuthenticatedUser();
         if (Objects.isNull(post)) {
-            User user = AuthProvider.getAuthenticatedUser();
             post = new Post();
             post.setAuthor(user);
             post.setTags(postDto.getTags());
@@ -62,6 +65,9 @@ public class PostServiceImpl implements PostService {
         post.setTitle(postDto.getTitle());
         post.setContent(postDto.getContent());
         post = postRepository.save(post);
+        userRepository.findAllExcept(user.getId()).forEach(u ->
+                notificationService.sendNotification(u, user.getName() + " posted a new blog.")
+        );
         return post;
     }
 

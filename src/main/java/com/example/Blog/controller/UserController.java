@@ -11,7 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -22,9 +22,14 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/login")
-    public String viewLoginPage(Model model) {
+    public String viewLoginPage(@RequestParam(value = "error", required = false, defaultValue = "") String error,
+                                Model model) {
         Login login = new Login();
         model.addAttribute("login", login);
+        if (StringUtils.hasText(error)){
+            model.addAttribute(ToastConstant.TOAST_MESSAGE, error);
+            model.addAttribute(ToastConstant.TOAST_STATUS_COLOR, ToastConstant.TOAST_BG_DANGER);
+        }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
             return "login";

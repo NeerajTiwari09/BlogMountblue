@@ -11,3 +11,11 @@ function showToast(message, status = 'bg-danger') {
         bootstrapToast.show();
     }
 }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const navbar = document.querySelector('.navbar.fixed-top');
+    if (navbar) {
+      const height = navbar.offsetHeight;
+      document.body.style.paddingTop = height + 'px';
+    }
+  });

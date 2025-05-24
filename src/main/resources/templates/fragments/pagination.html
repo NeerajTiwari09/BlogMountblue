@@ -16,7 +16,7 @@
                    aria-label="Previous">&laquo;</a>
             </li>
 
-            <li class="page-item" th:classappend="${currentPage == 0} ? 'active'">
+            <li class="page-item"  th:classappend="${currentPage == 0} ? 'active'">
                 <a class="page-link"
                    th:href="@{${url} + '?start=1&limit=10' + ${queryParams}}">1</a>
             </li>
@@ -26,7 +26,7 @@
                 <span class="page-link">...</span>
             </li>
 
-            <li class="page-item"
+            <li class="page-item" th:if="${totalPages > 2}"
                 th:each="i : ${#numbers.sequence(
                         T(java.lang.Math).max(1, currentPage - 2),
                         T(java.lang.Math).min(totalPages - 2, currentPage + 2)
@@ -41,7 +41,7 @@
                 <span class="page-link">...</span>
             </li>
 
-            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'active'">
+            <li class="page-item"  th:classappend="${currentPage == totalPages - 1} ? 'active'">
                 <a class="page-link"
                    th:href="@{${url} + '?start=' + ${totalPages} + '&limit=10' + ${queryParams}}"
                    th:text="${totalPages}"></a>

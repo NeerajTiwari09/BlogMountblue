@@ -6,9 +6,18 @@
 </head>
 <body>
 <!--<div th:fragment="filterFragment (users, selectedAuthorId, publishedAt, selectedPublishedAt, tags, selectedTagIds, url)">-->
-    <div class="col-md-4" th:fragment="filterFragment (users, selectedAuthorId, publishedAt, selectedPublishedAt, tags, selectedTagIds, url)">
-        <form id="filterForm" th:action="@{${url}}" method="get" class="border p-3 bg-white rounded shadow-sm">
-            <h5>Filter Posts</h5>
+<div class="border p-3 bg-white rounded shadow-sm"
+     th:fragment="filterFragment (users, selectedAuthorId, publishedAt, selectedPublishedAt, tags, selectedTagIds, url)">
+    <div class="d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Filter Posts</h5>
+        <button class="btn btn-outline-secondary d-md-none" type="button" data-bs-toggle="collapse"
+                data-bs-target="#filterSidebar" aria-expanded="false" aria-controls="filterSidebar">
+            <i class="fas fa-filter me-1"></i>
+        </button>
+    </div>
+    <div id="filterSidebar" class="collapse d-md-block mt-2">
+        <form id="filterForm" th:action="@{${url}}" method="get">
+            <!--            <h5 >Filter Posts</h5>-->
             <div class="mb-2">
                 <label class="form-label">Published Date</label>
                 <input type="date" name="publishedAt" class="form-control" placeholder="yyyy-mm-dd"
@@ -41,6 +50,7 @@
             <button type="submit" class="btn btn-primary w-100">Apply Filter</button>
         </form>
     </div>
+</div>
 <!--</div>-->
 </body>
 </html>

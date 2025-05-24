@@ -2,7 +2,6 @@ package com.example.Blog;
 
 import com.example.Blog.enums.RoleName;
 import com.example.Blog.model.*;
-import com.example.Blog.repository.PostRepository;
 import com.example.Blog.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -10,9 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import javax.annotation.PostConstruct;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @SpringBootApplication
 public class BlogApplication {

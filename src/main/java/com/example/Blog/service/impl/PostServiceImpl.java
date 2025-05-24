@@ -3,9 +3,15 @@ package com.example.Blog.service.impl;
 import com.example.Blog.auth.AuthProvider;
 import com.example.Blog.dto.input_dto.PostDto;
 import com.example.Blog.dto.input_dto.SearchDto;
+import com.example.Blog.dto.output_dto.Response;
+import com.example.Blog.enums.ErrorCode;
+import com.example.Blog.enums.NotificationMessage;
+import com.example.Blog.enums.SuccessCode;
+import com.example.Blog.model.Like;
 import com.example.Blog.model.Post;
 import com.example.Blog.model.Tag;
 import com.example.Blog.model.User;
+import com.example.Blog.repository.LikeRepository;
 import com.example.Blog.repository.PostRepository;
 import com.example.Blog.repository.TagRepository;
 import com.example.Blog.repository.UserRepository;
@@ -35,6 +41,9 @@ public class PostServiceImpl implements PostService {
     private UserRepository userRepository;
 
     @Autowired
+    private LikeRepository likeRepository;
+
+    @Autowired
     private NotificationService notificationService;
 
     @Override
@@ -58,7 +67,10 @@ public class PostServiceImpl implements PostService {
             post.setPublishedAt((new Timestamp(System.currentTimeMillis())).toString());
             post = postRepository.save(post);
         }
-        String excerpt = postDto.getContent().substring(0, 50) + "...";
+        String excerpt = postDto.getContent();
+        if(postDto.getContent().length() > 200){
+            excerpt = postDto.getContent().substring(0, 200) + "...";
+        }
         post.setExcerpt(excerpt);
         post.setPublished(true);
         post.setTags(postDto.getTags());
@@ -66,7 +78,8 @@ public class PostServiceImpl implements PostService {
         post.setContent(postDto.getContent());
         post = postRepository.save(post);
         userRepository.findAllExcept(user.getId()).forEach(u ->
-                notificationService.sendNotification(u, user.getName() + " posted a new blog.")
+                notificationService.sendNotification(u,
+                        NotificationMessage.NEW_BLOG_POST.formatMessage(user.getName()))
         );
         return post;
     }
@@ -102,8 +115,14 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void deletePostById(Integer id) {
-        postRepository.deleteById(id);
+    public Response<Object> deletePostById(Integer id) {
+        Optional<Post> post = postRepository.findById(id);
+        if (post.isPresent()) {
+            likeRepository.deleteAllByPost(post.get());
+            postRepository.deleteById(id);
+            return new Response<>(SuccessCode.BLOG_DELETED_SUCCESSFUL);
+        }
+        return new Response<>(ErrorCode.INVALID_POST);
     }
 
     @Override

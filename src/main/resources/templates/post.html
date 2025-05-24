@@ -14,7 +14,7 @@
 <body class="bg-light">
 
 <div th:replace="fragments/navbar :: navbarFragment (${unreadCount}, ${unreadNotifications})"></div>
-<div class="container-fluid mb-4">
+<div class="container-fluid mb-4 mt-4">
     <h2 class="text-center flex-grow-1">📖 Blog Post</h2>
     <!-- Action Buttons -->
     <div th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'')') || (#authorization.expression('hasAnyAuthority(''AUTHOR'')') && isAuthorsPost)}"
@@ -99,7 +99,6 @@
                 <div th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'')') ||
                              (#authorization.expression('hasAnyAuthority(''AUTHOR'')') && isAuthorsPost) ||
                              (currentUser != null && currentUser.user.id == comment.commenter.id)}">
-<!--                   || #httpServletRequest.remoteUser == comment.email-->
                     <form th:action="@{/comment/update}" method="get" class="d-inline">
                         <input type="hidden" th:value="${comment.id}" name="id">
                         <button type="submit" class="btn btn-outline-primary btn-sm">
@@ -120,11 +119,14 @@
 </div>
 <div th:if="${toastMessage}" th:replace="fragments/toast :: toastFragment (${toastMessage}, ${toastStatusColor})"></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 <script th:src="@{/js/utils.js}"></script>
 <script th:src="@{/js/toast.js}"></script>
 <script th:src="@{/js/like.js}"></script>
 <!-- Toast UI Editor Markdown -->
 <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 <script th:src="@{/js/md-viewer.js}"></script>
+<script th:src="@{/js/notification-socket.js}"></script>
 </body>
 </html>

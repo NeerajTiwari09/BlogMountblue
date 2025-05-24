@@ -6,74 +6,107 @@
     <title>Nav Fragment</title>
 </head>
 <body>
-    <div th:fragment="navbarFragment (unreadCount, allNotifications)">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm mb-4">
-            <div class="container">
-                <a class="navbar-brand" th:href="@{'/posts'}">📄 BlogApp</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
-                        aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div class="collapse navbar-collapse justify-content-between" id="navbarContent">
-                    <!-- Left side -->
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item" sec:authorize="hasAnyAuthority('AUTHOR','ADMIN')">
-                            <a class="nav-link" th:href="@{/posts/new}"
-                               th:classappend="${#httpServletRequest.requestURI.endsWith('/posts/new')} ? ' active'">Create Blog</a>
-                        </li>
-                        <li class="nav-item" sec:authorize="hasAnyAuthority('AUTHOR','ADMIN')">
-                            <a class="nav-link" th:href="@{/posts/my-blog}"
-                               th:classappend="${#httpServletRequest.requestURI.endsWith('/posts/my-blog')} ? ' active'">My Blogs</a>
-                        </li>
-                    </ul>
-
-                    <!-- Right side -->
-                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                        <li class="nav-item dropdown me-3 d-flex align-items-center" sec:authorize="isAuthenticated()">
-                            <a class="nav-link position-relative" href="#" id="notificationDropdown"
-                               role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-bell text-white"></i>
-                                <span class="translate-middle badge rounded-pill bg-danger" style="font-size: 0.7rem;"
-                                      th:if="${unreadCount > 0}" th:text="${unreadCount}">0</span>
+<div th:fragment="navbarFragment (unreadCount, allNotifications)">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm mb-4 fixed-top">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{'/posts'}">📄 BlogApp</a>
+            <div class="d-flex align-items-center">
+                <!-- Notification bell for small screens -->
+                <div class="d-lg-none me-3" sec:authorize="isAuthenticated()">
+                    <a class="nav-link position-relative text-white" href="#" id="notificationDropdownMobile"
+                       role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-bell text-white"></i>
+                        <span class="translate-middle badge rounded-pill bg-danger notification-badge" style="font-size: 0.7rem;"
+                              th:if="${unreadCount > 0}" th:text="${unreadCount}">0</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="notificationDropdownMobile"
+                        id="notificationListMobile" style="min-width: 250px; max-height: 300px; overflow-y: auto;">
+                        <li th:each="notif : ${allNotifications}" class="border-bottom">
+                            <a class="notification-link dropdown-item small text-wrap"
+                               th:text="${notif.message}"
+                               th:attr="data-id=${notif.id}"
+                               th:styleappend="${!notif.seen} ? 'background-color: #ffeeba; color: #212529;'"
+                               href="#">
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="notificationDropdown"
-                                id="notificationList" style="min-width: 250px; max-height: 300px; overflow-y: auto;">
-                                <li th:each="notif : ${allNotifications}">
-                                    <a class="notification-link dropdown-item small text-wrap"
-                                       th:text="${notif.message}"
-                                       th:attr="data-id=${notif.id}"
-                                       th:styleappend="${!notif.seen} ? 'background-color: #ffeeba; color: #212529;'"
-                                       href="#">
-                                    </a>
-                                </li>
-                                <li th:if="${#lists.isEmpty(allNotifications)}">
-                                    <span class="dropdown-item small text-muted">No new notifications</span>
-                                </li>
-                            </ul>
                         </li>
-                        <li class="nav-item me-3 d-flex align-items-center">
-                    <span class="text-white small" th:inline="text">
-                        Hello, [[${(currentUser != null ? currentUser.user.name : '')}]]
-                    </span>
-                        </li>
-                        <li class="nav-item" sec:authorize="!isAuthenticated()">
-                            <a class="nav-link" th:href="@{/login}"
-                               th:classappend="${#httpServletRequest.requestURI.endsWith('/login')} ? ' active'">Login</a>
-                        </li>
-                        <li class="nav-item" sec:authorize="!isAuthenticated()">
-                            <a class="nav-link" th:href="@{/register}"
-                               th:classappend="${#httpServletRequest.requestURI.endsWith('/register')} ? ' active'">Register</a>
-                        </li>
-                        <li class="nav-item d-flex align-items-center" sec:authorize="isAuthenticated()">
-                            <form th:action="@{/logout}" method="post" class="d-inline">
-                                <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
-                            </form>
+                        <li th:if="${#lists.isEmpty(allNotifications)}">
+                            <span class="dropdown-item small text-muted">No new notifications</span>
                         </li>
                     </ul>
                 </div>
+                <span class="text-white d-lg-none small me-3" th:inline="text">
+                        <i class="fa-solid fa-user ms-1 me-1" sec:authorize="isAuthenticated()"></i>
+                        [[${(currentUser != null ? currentUser.user.name : '')}]]
+                </span>
+                <button class="navbar-toggler p-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+                        aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
             </div>
-        </nav>
-    </div>
+
+            <div class="collapse navbar-collapse justify-content-between" id="navbarContent">
+                <!-- Left side -->
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item" sec:authorize="hasAnyAuthority('AUTHOR','ADMIN')">
+                        <a class="nav-link" th:href="@{/posts/new}"
+                           th:classappend="${#httpServletRequest.requestURI.endsWith('/posts/new')} ? ' active'">Create
+                            Blog</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasAnyAuthority('AUTHOR','ADMIN')">
+                        <a class="nav-link" th:href="@{/posts/my-blog}"
+                           th:classappend="${#httpServletRequest.requestURI.endsWith('/posts/my-blog')} ? ' active'">My
+                            Blogs</a>
+                    </li>
+                </ul>
+
+                <!-- Right side -->
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item dropdown me-2 d-none d-lg-flex align-items-center" sec:authorize="isAuthenticated()">
+                        <a class="nav-link position-relative" href="#" id="notificationDropdown"
+                           role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-bell text-white"></i>
+                            <span class="translate-middle badge rounded-pill bg-danger notification-badge" style="font-size: 0.7rem;"
+                                  th:if="${unreadCount > 0}" th:text="${unreadCount}">0</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="notificationDropdown"
+                            id="notificationList" style="min-width: 250px; max-height: 300px; overflow-y: auto;">
+                            <li th:each="notif : ${allNotifications}" class="border-bottom">
+                                <a class="notification-link dropdown-item small text-wrap"
+                                   th:text="${notif.message}"
+                                   th:attr="data-id=${notif.id}"
+                                   th:styleappend="${!notif.seen} ? 'background-color: #ffeeba; color: #212529;'"
+                                   href="#">
+                                </a>
+                            </li>
+                            <li th:if="${#lists.isEmpty(allNotifications)}">
+                                <span class="dropdown-item small text-muted">No new notifications</span>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item me-3 d-none d-lg-flex align-items-center">
+                    <span class="text-white small" th:inline="text">
+                        Hello!
+                        <i class="fa-solid fa-user ms-1 me-1" sec:authorize="isAuthenticated()"></i>
+                        [[${(currentUser != null ? currentUser.user.name : '')}]]
+                    </span>
+                    </li>
+                    <li class="nav-item" sec:authorize="!isAuthenticated()">
+                        <a class="nav-link" th:href="@{/login}"
+                           th:classappend="${#httpServletRequest.requestURI.endsWith('/login')} ? ' active'">Login</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="!isAuthenticated()">
+                        <a class="nav-link" th:href="@{/register}"
+                           th:classappend="${#httpServletRequest.requestURI.endsWith('/register')} ? ' active'">Register</a>
+                    </li>
+                    <li class="nav-item d-flex align-items-center" sec:authorize="isAuthenticated()">
+                        <form th:action="@{/logout}" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
 </body>
 </html>

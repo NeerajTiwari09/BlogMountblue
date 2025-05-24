@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     showToast(data.message, 'bg-danger')
                 }
             })
-            .catch(error => showToast('Something went wrong!', 'bg-danger'););
+            .catch(error => showToast('Something went wrong!', 'bg-danger'));
         });
     }
 });

@@ -1,9 +1,12 @@
 package com.example.Blog.service.impl;
 
 import com.example.Blog.auth.AuthProvider;
+import com.example.Blog.enums.NotificationMessage;
 import com.example.Blog.model.Comment;
+import com.example.Blog.model.Post;
 import com.example.Blog.model.User;
 import com.example.Blog.repository.CommentRepository;
+import com.example.Blog.repository.PostRepository;
 import com.example.Blog.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,12 @@ public class CommentService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PostRepository postRepository;
+
+    @Autowired
+    private NotificationService notificationService;
+
     public List<Comment> findAllByPostIdOrderCreatedAtDesc(Integer postId) {
         return commentRepository.findAllByPostIdOrderByCreatedAtDesc(postId);
     }
@@ -38,6 +47,11 @@ public class CommentService {
         commentToSave.setPostId(comment.getPostId());
         commentToSave.setCommenter(user);
         commentRepository.save(commentToSave);
+        Optional<Post> post = postRepository.findById(comment.getPostId());
+        if(post.isPresent() && !user.getUsername().equals(post.get().getAuthor().getUsername())){
+            String message = NotificationMessage.COMMENT_ON_BLOG.formatMessage(user.getName(), post.get().getTitle());
+            notificationService.sendNotification(post.get().getAuthor(), message);
+        }
     }
 
     public Optional<Comment> findCommentById(Integer id) {

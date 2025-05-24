@@ -1,6 +1,7 @@
 package com.example.Blog.controller;
 
 import com.example.Blog.auth.AuthProvider;
+import com.example.Blog.constant.ToastConstant;
 import com.example.Blog.dto.input_dto.LikeDto;
 import com.example.Blog.dto.input_dto.PostDto;
 import com.example.Blog.dto.input_dto.SearchDto;
@@ -115,9 +116,10 @@ public class PostController {
 
     @GetMapping("/delete")
     public String deletePost(@RequestParam("id") Integer id, RedirectAttributes redirectAttributes) {
-        postService.deletePostById(id);
-        redirectAttributes.addFlashAttribute("toastMessage", "Blog deleted successfully!");
-        redirectAttributes.addFlashAttribute("toastStatusColor", "bg-success");
+        Response<Object> output = postService.deletePostById(id);
+        String statusColor = output.isSuccess() ? ToastConstant.TOAST_BG_SUCCESS : ToastConstant.TOAST_BG_DANGER;
+        redirectAttributes.addFlashAttribute(ToastConstant.TOAST_MESSAGE, output.getMessage());
+        redirectAttributes.addFlashAttribute(ToastConstant.TOAST_STATUS_COLOR, statusColor);
         return "redirect:/posts";
     }
 
@@ -178,7 +180,7 @@ public class PostController {
         String extraParams = "";
         if (queryString != null) {
             extraParams = Arrays.stream(queryString.split("&"))
-                    .filter(p -> !p.startsWith("start=") && !p.startsWith("limit="))
+                    .filter(p -> !p.startsWith("start=") && !p.startsWith("limit=") && !p.endsWith("="))
                     .collect(Collectors.joining("&"));
             if(!extraParams.isEmpty()){
                 extraParams = '&' + extraParams;
@@ -253,7 +255,9 @@ public class PostController {
             model.addAttribute("sort", ORDER_BY);
             model.addAttribute("sortBy", SORT_BY);
             model.addAttribute("queryParams", extraParams);
-            return "user-post";
+            model.addAttribute("searchUrl", "/posts/my-blog/search");
+            model.addAttribute("filterSortUrl", "/posts/my-blog");
+            return "home";
         }
         return "/error/access-denied";
     }
@@ -266,7 +270,9 @@ public class PostController {
                                  @RequestParam(value = "order", defaultValue = "aes") String order,
                                  Model model) {
         searchByString(search, start, limit, sortField, order, model);
-        return "user-post";
+        model.addAttribute("searchUrl", "/posts/my-blog/search");
+        model.addAttribute("filterSortUrl", "/posts/my-blog");
+        return "home";
     }
 
     @PostMapping("/like")

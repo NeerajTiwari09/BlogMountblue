@@ -4,6 +4,7 @@ import com.example.Blog.auth.AuthProvider;
 import com.example.Blog.dto.input_dto.LikeDto;
 import com.example.Blog.dto.output_dto.Response;
 import com.example.Blog.enums.ErrorCode;
+import com.example.Blog.enums.NotificationMessage;
 import com.example.Blog.model.Like;
 import com.example.Blog.model.Post;
 import com.example.Blog.model.User;
@@ -24,6 +25,9 @@ public class LikeServiceImpl implements LikeService {
 
     @Autowired
     private PostRepository postRepository;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @Override
     public Integer getLikeCountByPostId(Integer postId) {
@@ -60,6 +64,10 @@ public class LikeServiceImpl implements LikeService {
                 like.setPost(post.get());
                 likeDto.setLiked(Boolean.TRUE);
                 likeRepository.save(like);
+                if (!post.get().getAuthor().getUsername().equals(user.getUsername())) {
+                    notificationService.sendNotification(post.get().getAuthor(),
+                            NotificationMessage.LIKE_BLOG.formatMessage(user.getName(), post.get().getTitle()));
+                }
             }
             Integer likesCount = likeRepository.countByPost(post.get());
             likeDto.setLikesCount(likesCount);

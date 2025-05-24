@@ -12,7 +12,7 @@ public class Constants {
         put("Desc", "desc");
     }};
     public static final Map<String, String> SORT_BY = new HashMap<String, String>() {{
-        put("Published Date", "publishedAt");
+        put("Date", "publishedAt");
         put("Author", "author");
         put("Title", "title");
     }};

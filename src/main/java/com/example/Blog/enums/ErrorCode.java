@@ -4,7 +4,8 @@ public enum ErrorCode {
 
     EMAIL_ALREADY_IN_USE("Email already in use."),
     NAME_SHOULD_NOT_EMPTY("Name should not be empty."),
-    LOGIN_TO_LIKE_POST("Please login to like the post.");
+    LOGIN_TO_LIKE_POST("Please login to like the post."),
+    INVALID_POST("Doesn't find the requested post.");
 
     private final String errorMessage;
 

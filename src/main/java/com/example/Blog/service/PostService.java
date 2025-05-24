@@ -2,6 +2,7 @@ package com.example.Blog.service;
 
 import com.example.Blog.dto.input_dto.PostDto;
 import com.example.Blog.dto.input_dto.SearchDto;
+import com.example.Blog.dto.output_dto.Response;
 import com.example.Blog.model.Post;
 import com.example.Blog.model.Tag;
 import com.example.Blog.model.User;
@@ -17,7 +18,7 @@ public interface PostService {
 
     Post publishPost(PostDto postDto);
 
-    void deletePostById(Integer id);
+    Response<Object> deletePostById(Integer id);
 
     Page<Post> getAllBlogsByAuthor(User user, SearchDto searchDto);
 

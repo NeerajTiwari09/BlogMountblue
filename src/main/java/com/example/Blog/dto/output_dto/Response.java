@@ -21,10 +21,11 @@ public class Response<T> {
         this.data = data;
     }
 
-    public Response(T data, String message) {
+    public Response(T data, SuccessCode successCode) {
         this.success = true;
         this.data = data;
-        this.message = message;
+        this.message = successCode.getMessage();
+        this.successCode = successCode;
     }
 
     public Response(ErrorCode errorCode) {

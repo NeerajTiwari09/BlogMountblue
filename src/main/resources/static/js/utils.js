@@ -12,10 +12,24 @@ function showToast(message, status = 'bg-danger') {
     }
 }
 
-  document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {
     const navbar = document.querySelector('.navbar.fixed-top');
     if (navbar) {
       const height = navbar.offsetHeight;
       document.body.style.paddingTop = height + 'px';
     }
-  });
+
+    document.querySelectorAll('.likes-count').forEach(el => {
+        const rawCount = parseInt(el.dataset.rawCount);
+        el.textContent = formatLikeCount(rawCount);
+    });
+});
+
+function formatLikeCount(count) {
+    if (count >= 1_000_000) {
+        return (count / 1_000_000).toFixed(count % 1_000_000 === 0 ? 0 : 1) + 'M';
+    } else if (count >= 1_000) {
+        return (count / 1_000).toFixed(count % 1_000 === 0 ? 0 : 1) + 'k';
+    }
+    return count.toString();
+}

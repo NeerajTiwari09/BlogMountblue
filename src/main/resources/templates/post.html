@@ -38,17 +38,15 @@
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-1">
                 <h3 class="card-title mb-0" th:text="${post.title}">Post Title</h3>
-                <div class="d-flex align-items-center">
-                    <form id="likeForm" th:action="@{/posts/like}" method="post" th:object="${likeForm}" class="me-2">
+                <div class="d-flex align-items-center me-2">
+                    <form id="likeForm" th:action="@{/posts/like}" method="post" th:object="${likeForm}">
                         <input type="hidden" name="postId" th:value="${post.id}" />
-                        <button type="submit" class="btn btn-sm"
-                                th:classappend="${isPostLikedByCurrentUser} ? 'btn-primary' : 'btn-outline-primary'">
-                            <i class="fa-solid fa-thumbs-up me-1"
-                               th:classappend="${isPostLikedByCurrentUser} ? 'text-white' : ''"></i>
-                            <span th:text="${isPostLikedByCurrentUser ? 'Liked' : 'Like'}">Like</span>
+                        <button type="submit" class="btn btn-lg pe-1">
+                            <i class="fa-solid fa-thumbs-up"
+                               th:classappend="${isPostLikedByCurrentUser} ? 'text-primary' : 'text-muted'"></i>
                         </button>
                     </form>
-                    <span id="likes-count" class="text-muted" th:text="${likesCount + ' likes'}">0 likes</span>
+                    <span id="likes-count" class="likes-count text-muted" th:attr="data-raw-count=${likesCount}">0 likes</span>
                 </div>
             </div>
 
@@ -98,7 +96,7 @@
                 <!-- Comment Actions -->
                 <div th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'')') ||
                              (#authorization.expression('hasAnyAuthority(''AUTHOR'')') && isAuthorsPost) ||
-                             (currentUser != null && currentUser.user.id == comment.commenter.id)}">
+                             (currentUser != null && currentUser.id == comment.commenter.id)}">
                     <form th:action="@{/comment/update}" method="get" class="d-inline">
                         <input type="hidden" th:value="${comment.id}" name="id">
                         <button type="submit" class="btn btn-outline-primary btn-sm">

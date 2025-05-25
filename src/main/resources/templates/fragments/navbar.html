@@ -12,11 +12,12 @@
             <a class="navbar-brand" th:href="@{'/posts'}">📄 BlogApp</a>
             <div class="d-flex align-items-center">
                 <!-- Notification bell for small screens -->
-                <div class="d-lg-none me-3" sec:authorize="isAuthenticated()">
-                    <a class="nav-link position-relative text-white" href="#" id="notificationDropdownMobile"
+                <div class="d-lg-none me-2" sec:authorize="isAuthenticated()">
+                    <a class="position-relative text-decoration-none text-white" href="#" id="notificationDropdownMobile"
                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fas fa-bell text-white"></i>
-                        <span class="translate-middle badge rounded-pill bg-danger notification-badge" style="font-size: 0.7rem;"
+                        <span class="translate-middle badge rounded-pill bg-danger notification-badge"
+                              style="font-size: 0.7rem;"
                               th:if="${unreadCount > 0}" th:text="${unreadCount}">0</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="notificationDropdownMobile"
@@ -34,11 +35,23 @@
                         </li>
                     </ul>
                 </div>
-                <span class="text-white d-lg-none small me-3" th:inline="text">
-                        <i class="fa-solid fa-user ms-1 me-1" sec:authorize="isAuthenticated()"></i>
-                        [[${(currentUser != null ? currentUser.user.name : '')}]]
-                </span>
-                <button class="navbar-toggler p-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+                <a th:href="@{/profile}"
+                   class="text-white d-lg-none text-decoration-none small d-flex align-items-center"
+                   sec:authorize="isAuthenticated()">
+                    <span class="text-white small d-lg-none me-3 d-flex align-items-center" th:inline="text">
+                                <th:block th:if="${currentUser != null and currentUser.imageUrl != null}">
+                                    <img th:src="@{${currentUser.imageUrl}}" alt="User Image"
+                                         style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;"
+                                         class="me-2"/>
+                                </th:block>
+                                <th:block th:unless="${currentUser != null and currentUser.imageUrl != null}">
+                                    <i class="fa-solid fa-user me-2"></i>
+                                </th:block>
+                                <span th:text="${currentUser != null ? currentUser.name : ''}"></span>
+                            </span>
+                </a>
+                <button class="navbar-toggler p-1" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarContent"
                         aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -61,11 +74,13 @@
 
                 <!-- Right side -->
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    <li class="nav-item dropdown me-2 d-none d-lg-flex align-items-center" sec:authorize="isAuthenticated()">
-                        <a class="nav-link position-relative" href="#" id="notificationDropdown"
+                    <li class="nav-item dropdown me-2 d-none d-lg-flex align-items-center"
+                        sec:authorize="isAuthenticated()">
+                        <a class="position-relative text-decoration-none" href="#" id="notificationDropdown"
                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-bell text-white"></i>
-                            <span class="translate-middle badge rounded-pill bg-danger notification-badge" style="font-size: 0.7rem;"
+                            <span class="translate-middle badge rounded-pill bg-danger notification-badge"
+                                  style="font-size: 0.7rem;"
                                   th:if="${unreadCount > 0}" th:text="${unreadCount}">0</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="notificationDropdown"
@@ -84,11 +99,21 @@
                         </ul>
                     </li>
                     <li class="nav-item me-3 d-none d-lg-flex align-items-center">
-                    <span class="text-white small" th:inline="text">
-                        Hello!
-                        <i class="fa-solid fa-user ms-1 me-1" sec:authorize="isAuthenticated()"></i>
-                        [[${(currentUser != null ? currentUser.user.name : '')}]]
-                    </span>
+                        <a th:href="@{/profile}" class="text-white text-decoration-none small d-flex align-items-center"
+                           sec:authorize="isAuthenticated()">
+                            <span class="text-white small d-flex align-items-center">
+                        
+                                <th:block th:if="${currentUser != null and currentUser.imageUrl != null}">
+                                    <img th:src="@{${currentUser.imageUrl}}" alt="User Image"
+                                         style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;"
+                                         class="me-2"/>
+                                </th:block>
+                                <th:block th:unless="${currentUser != null and currentUser.imageUrl != null}">
+                                    <i class="fa-solid fa-user me-2"></i>
+                                </th:block>
+                                <span th:text="${currentUser != null ? currentUser.name : ''}"></span>
+                            </span>
+                        </a>
                     </li>
                     <li class="nav-item" sec:authorize="!isAuthenticated()">
                         <a class="nav-link" th:href="@{/login}"

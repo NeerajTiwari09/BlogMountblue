@@ -12,7 +12,7 @@ stompClient.connect({}, function (frame) {
         } else {
             document.querySelectorAll('.fa-bell').forEach(icon => {
                 let newBadge = document.createElement('span');
-                newBadge.className = 'badge bg-danger notification-badge';
+                newBadge.className = 'translate-middle badge rounded-pill bg-danger notification-badge';
                 newBadge.innerText = '1';
                 icon.after(newBadge);
             });

@@ -14,7 +14,6 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(data => {
                 const likeButton = likeForm.querySelector("button");
                 const icon = likeButton.querySelector("i");
-                const textSpan = likeButton.querySelector("span");
                 const countSpan = document.querySelector("#likes-count");
 
                 if (data.success) {
@@ -22,21 +21,15 @@ document.addEventListener("DOMContentLoaded", function () {
                         likeButton.classList.remove("btn-outline-primary");
                         likeButton.classList.add("btn-primary");
                         icon.classList.add("text-white");
-                        textSpan.textContent = "Liked";
                     } else {
                         likeButton.classList.remove("btn-primary");
                         likeButton.classList.add("btn-outline-primary");
                         icon.classList.remove("text-white");
-                        textSpan.textContent = "Like";
                     }
                     if (countSpan) {
-                       countSpan.textContent = `${data.data.likesCount} likes`;
+                       countSpan.textContent = formatLikeCount(data.data.likesCount);
                     }
                 } else {
-//                    likeButton.classList.remove("btn-primary");
-//                    likeButton.classList.add("btn-outline-primary");
-//                    icon.classList.remove("text-white");
-//                    textSpan.textContent = "Like";
                     showToast(data.message, 'bg-danger')
                 }
             })
@@ -44,4 +37,3 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
-

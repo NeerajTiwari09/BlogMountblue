@@ -1,5 +1,6 @@
 package com.example.Blog.model;
 
+import com.example.Blog.enums.NotificationType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,6 +29,10 @@ public class Notification {
     @ManyToOne
     @JoinColumn(name = "recipient_id")
     private User recipient;
+
+    @Column(name = "notification_type")
+    @Enumerated(EnumType.STRING)
+    private NotificationType notificationType;
 
     public boolean isUnSeen(){
         return !this.seen;

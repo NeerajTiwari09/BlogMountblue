@@ -13,7 +13,13 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="card-title" th:text="${post.title}">Post Title</h5>
-                        <span id="likes-count" class="text-muted" th:text="${likesCount != null ?likesCount : '0 likes'}">0 likes</span>
+                        <div class="d-flex align-items-center">
+                            <th:block th:with="likeUserIds=${post.likes.?[user != null].![user.id]}">
+                                <i class="fa-solid fa-thumbs-up fa-lg me-1"
+                                   th:classappend="${#lists.contains(likeUserIds, currentUser != null ? currentUser.id : 0)} ? 'text-primary' : 'text-muted'"></i>
+                            </th:block>
+                            <span class="likes-count text-muted" th:attr="data-raw-count=${post.likesCount}"></span>
+                        </div>
                     </div>
                     <h6 class="card-subtitle mb-2 text-muted">
                         <span th:text="${post.author.name}">Author</span> |

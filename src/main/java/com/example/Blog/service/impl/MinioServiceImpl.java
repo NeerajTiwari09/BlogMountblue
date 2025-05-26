@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Base64;
 
 @Service
 public class MinioServiceImpl implements MinioService {
@@ -54,6 +55,17 @@ public class MinioServiceImpl implements MinioService {
                         .key(key)
                         .build());
         return objectBytes.asByteArray();
+    }
+
+    @Override
+    public String downloadFileBase64(String key) {
+        ResponseBytes<GetObjectResponse> objectBytes = s3Client.getObjectAsBytes(
+                GetObjectRequest.builder()
+                        .bucket(bucketName)
+                        .key(key)
+                        .build());
+        String base64 = Base64.getEncoder().encodeToString(objectBytes.asByteArray());
+        return "data:image/jpeg;base64," + base64;
     }
 
     @Override

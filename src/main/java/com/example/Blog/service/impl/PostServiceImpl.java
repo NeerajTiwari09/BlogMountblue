@@ -1,13 +1,13 @@
 package com.example.Blog.service.impl;
 
 import com.example.Blog.auth.AuthProvider;
+import com.example.Blog.constant.NotificationUrl;
 import com.example.Blog.dto.input_dto.PostDto;
 import com.example.Blog.dto.input_dto.SearchDto;
 import com.example.Blog.dto.output_dto.Response;
 import com.example.Blog.enums.ErrorCode;
 import com.example.Blog.enums.NotificationMessage;
 import com.example.Blog.enums.SuccessCode;
-import com.example.Blog.model.Like;
 import com.example.Blog.model.Post;
 import com.example.Blog.model.Tag;
 import com.example.Blog.model.User;
@@ -28,6 +28,8 @@ import org.springframework.util.StringUtils;
 import java.sql.Timestamp;
 import java.util.*;
 
+import static com.example.Blog.constant.NotificationUrl.BLOG_URL_PATTERN;
+
 @Service
 public class PostServiceImpl implements PostService {
 
@@ -44,7 +46,7 @@ public class PostServiceImpl implements PostService {
     private LikeRepository likeRepository;
 
     @Autowired
-    private NotificationService notificationService;
+    private NotificationServiceImpl notificationServiceImpl;
 
     @Override
     public Page<Post> getAllBlogs(int start, int limit) {
@@ -77,9 +79,10 @@ public class PostServiceImpl implements PostService {
         post.setTitle(postDto.getTitle());
         post.setContent(postDto.getContent());
         post = postRepository.save(post);
+        String notificationUrl = NotificationUrl.getUrl(BLOG_URL_PATTERN, post.getId());
         userRepository.findAllExcept(user.getId()).forEach(u ->
-                notificationService.sendNotification(u,
-                        NotificationMessage.NEW_BLOG_POST.formatMessage(user.getName()))
+                notificationServiceImpl.sendNotification(u,
+                        NotificationMessage.NEW_BLOG_POST.formatMessage(user.getName()), notificationUrl)
         );
         return post;
     }

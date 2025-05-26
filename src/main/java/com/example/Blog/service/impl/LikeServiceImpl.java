@@ -1,21 +1,32 @@
 package com.example.Blog.service.impl;
 
 import com.example.Blog.auth.AuthProvider;
+import com.example.Blog.constant.NotificationUrl;
+import com.example.Blog.dto.UserDto;
 import com.example.Blog.dto.input_dto.LikeDto;
 import com.example.Blog.dto.output_dto.Response;
 import com.example.Blog.enums.ErrorCode;
 import com.example.Blog.enums.NotificationMessage;
+import com.example.Blog.event.EventBuffer;
+import com.example.Blog.event.EventForAuthor;
 import com.example.Blog.model.Like;
 import com.example.Blog.model.Post;
 import com.example.Blog.model.User;
 import com.example.Blog.repository.LikeRepository;
 import com.example.Blog.repository.PostRepository;
 import com.example.Blog.service.LikeService;
+import com.example.Blog.service.MinioService;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import static com.example.Blog.constant.NotificationUrl.BLOG_URL_PATTERN;
 
 @Service
 public class LikeServiceImpl implements LikeService {
@@ -27,15 +38,34 @@ public class LikeServiceImpl implements LikeService {
     private PostRepository postRepository;
 
     @Autowired
-    private NotificationService notificationService;
+    private NotificationServiceImpl notificationServiceImpl;
+
+    @Autowired
+    private MinioService minioService;
+
+    @Autowired
+    private EventBuffer eventBuffer;
 
     @Override
-    public Integer getLikeCountByPostId(Integer postId) {
-        Post post = postRepository.findById(postId).orElse(null);
-        if (Objects.nonNull(post)) {
-            return likeRepository.countByPost(post);
+    public Response<List<UserDto>> getAllUserByPostId(Integer postId) {
+        User user = AuthProvider.getAuthenticatedUser();
+        if (Objects.nonNull(user)) {
+            List<UserDto> userDtos = new ArrayList<>();
+            Optional<Post> post = postRepository.findById(postId);
+            if (post.isPresent()) {
+                List<Like> likes = likeRepository.findAllUserByPost(post.get());
+                likes.forEach(like -> {
+                    UserDto dto = new UserDto();
+                    BeanUtils.copyProperties(like.getUser(), dto);
+                    if (StringUtils.isNotEmpty(like.getUser().getImageKey())) {
+                        dto.setImageUrl(minioService.downloadFileBase64(like.getUser().getImageKey()));
+                    }
+                    userDtos.add(dto);
+                });
+            }
+            return new Response<>(userDtos);
         }
-        return 0;
+        return new Response<>(ErrorCode.LOGIN_REQUIRED);
     }
 
     @Override
@@ -65,8 +95,7 @@ public class LikeServiceImpl implements LikeService {
                 likeDto.setLiked(Boolean.TRUE);
                 likeRepository.save(like);
                 if (!post.get().getAuthor().getUsername().equals(user.getUsername())) {
-                    notificationService.sendNotification(post.get().getAuthor(),
-                            NotificationMessage.LIKE_BLOG.formatMessage(user.getName(), post.get().getTitle()));
+                    eventBuffer.bufferLike(new EventForAuthor(post.get(), user, post.get().getAuthor()));
                 }
             }
             Integer likesCount = likeRepository.countByPost(post.get());

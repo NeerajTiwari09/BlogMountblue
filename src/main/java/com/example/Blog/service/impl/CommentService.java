@@ -1,20 +1,25 @@
 package com.example.Blog.service.impl;
 
 import com.example.Blog.auth.AuthProvider;
+import com.example.Blog.constant.NotificationUrl;
 import com.example.Blog.enums.NotificationMessage;
+import com.example.Blog.event.EventBuffer;
+import com.example.Blog.event.EventForAuthor;
 import com.example.Blog.model.Comment;
 import com.example.Blog.model.Post;
 import com.example.Blog.model.User;
 import com.example.Blog.repository.CommentRepository;
 import com.example.Blog.repository.PostRepository;
 import com.example.Blog.repository.UserRepository;
+import com.example.Blog.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import static com.example.Blog.constant.NotificationUrl.BLOG_URL_PATTERN;
 
 @Service
 public class CommentService {
@@ -30,6 +35,9 @@ public class CommentService {
 
     @Autowired
     private NotificationService notificationService;
+
+    @Autowired
+    private EventBuffer eventBuffer;
 
     public List<Comment> findAllByPostIdOrderCreatedAtDesc(Integer postId) {
         return commentRepository.findAllByPostIdOrderByCreatedAtDesc(postId);
@@ -48,9 +56,8 @@ public class CommentService {
         commentToSave.setCommenter(user);
         commentRepository.save(commentToSave);
         Optional<Post> post = postRepository.findById(comment.getPostId());
-        if(post.isPresent() && !user.getUsername().equals(post.get().getAuthor().getUsername())){
-            String message = NotificationMessage.COMMENT_ON_BLOG.formatMessage(user.getName(), post.get().getTitle());
-            notificationService.sendNotification(post.get().getAuthor(), message);
+        if (post.isPresent() && !user.getUsername().equals(post.get().getAuthor().getUsername())) {
+            eventBuffer.bufferComments(new EventForAuthor(post.get(), user, post.get().getAuthor()));
         }
     }
 

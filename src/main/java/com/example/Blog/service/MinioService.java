@@ -12,5 +12,7 @@ public interface MinioService {
 
     byte[] downloadFile(String key);
 
+    String downloadFileBase64(String key);
+
     void deleteFile(String key);
 }

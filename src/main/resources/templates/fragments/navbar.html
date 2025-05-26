@@ -25,7 +25,7 @@
                         <li th:each="notif : ${allNotifications}" class="border-bottom">
                             <a class="notification-link dropdown-item small text-wrap"
                                th:text="${notif.message}"
-                               th:attr="data-id=${notif.id}"
+                               th:attr="data-id=${notif.id}, data-url=${notif.urlToRedirect}"
                                th:styleappend="${!notif.seen} ? 'background-color: #ffeeba; color: #212529;'"
                                href="#">
                             </a>
@@ -88,7 +88,7 @@
                             <li th:each="notif : ${allNotifications}" class="border-bottom">
                                 <a class="notification-link dropdown-item small text-wrap"
                                    th:text="${notif.message}"
-                                   th:attr="data-id=${notif.id}"
+                                   th:attr="data-id=${notif.id}, data-url=${notif.urlToRedirect}"
                                    th:styleappend="${!notif.seen} ? 'background-color: #ffeeba; color: #212529;'"
                                    href="#">
                                 </a>

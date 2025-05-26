@@ -34,7 +34,10 @@ public class Notification {
     @Enumerated(EnumType.STRING)
     private NotificationType notificationType;
 
-    public boolean isUnSeen(){
+    @Column(name = "url_to_redirect")
+    private String urlToRedirect;
+
+    public boolean isUnSeen() {
         return !this.seen;
     }
 }

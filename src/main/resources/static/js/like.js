@@ -18,17 +18,51 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 if (data.success) {
                     if(data.data.liked){
-                        likeButton.classList.remove("btn-outline-primary");
-                        likeButton.classList.add("btn-primary");
-                        icon.classList.add("text-white");
+                        icon.classList.add("text-primary");
+                        icon.classList.remove("text-muted");
                     } else {
-                        likeButton.classList.remove("btn-primary");
-                        likeButton.classList.add("btn-outline-primary");
-                        icon.classList.remove("text-white");
+                        icon.classList.remove("text-primary");
+                        icon.classList.add("text-muted");
                     }
                     if (countSpan) {
                        countSpan.textContent = formatLikeCount(data.data.likesCount);
                     }
+                } else {
+                    showToast(data.message, 'bg-danger')
+                }
+            })
+            .catch(error => showToast('Something went wrong!', 'bg-danger'));
+        });
+    }
+
+    const likedUserForm = document.getElementById('likedUserForm');
+    if (likedUserForm) {
+        likedUserForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+            const formData = new FormData(likedUserForm);
+            fetch(likedUserForm.action, {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.data) {
+                    const users = data.data;
+                    const container = document.getElementById('likedUsersContainer');
+                    container.innerHTML = '';
+                    users.forEach(user => {
+                        const userDiv = document.createElement('div');
+                        userDiv.className = 'd-flex justify-content-between align-items-center mb-2';
+                        userDiv.innerHTML = `
+                            <img src="${user.imageUrl}" alt="Profile Image"
+                                 class="rounded-circle border"
+                                 style="height: 50px; width: 50px; object-fit: cover;" />
+                            <strong>${user.name}</strong>
+                        `;
+                        container.appendChild(userDiv);
+                    });
+                    const modal = new bootstrap.Modal(document.getElementById('likedByUsersModal'));
+                    modal.show();
                 } else {
                     showToast(data.message, 'bg-danger')
                 }

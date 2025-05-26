@@ -3,7 +3,7 @@ package com.example.Blog.controller;
 import com.example.Blog.auth.AuthProvider;
 import com.example.Blog.model.Notification;
 import com.example.Blog.model.User;
-import com.example.Blog.service.impl.NotificationService;
+import com.example.Blog.service.NotificationService;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;

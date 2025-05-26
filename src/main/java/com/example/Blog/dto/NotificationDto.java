@@ -13,4 +13,6 @@ public class NotificationDto {
     private boolean seen;
     private LocalDateTime createdAt;
     private NotificationType notificationType;
+    private String urlToRedirect;
+    private boolean alreadySeen;
 }

@@ -2,6 +2,7 @@ package com.example.Blog.controller;
 
 import com.example.Blog.auth.AuthProvider;
 import com.example.Blog.constant.ToastConstant;
+import com.example.Blog.dto.UserDto;
 import com.example.Blog.dto.input_dto.LikeDto;
 import com.example.Blog.dto.input_dto.PostDto;
 import com.example.Blog.dto.input_dto.SearchDto;
@@ -279,5 +280,11 @@ public class PostController {
     @ResponseBody
     public Response<LikeDto> likePost(@RequestParam Integer postId){
         return likeService.toggleLike(postId);
+    }
+
+    @PostMapping("/liked-by")
+    @ResponseBody
+    public Response<List<UserDto>> likedBy(@RequestParam Integer postId){
+        return likeService.getAllUserByPostId(postId);
     }
 }

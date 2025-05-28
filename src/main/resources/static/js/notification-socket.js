@@ -9,20 +9,16 @@ stompClient.connect(headers, function (frame) {
     stompClient.subscribe('/user/queue/notifications', function (message) {
         const notif = JSON.parse(message.body);
         showToast('🔔 You received a new Notification.', 'bg-success');
-        const badgeElements = document.querySelectorAll('.notification-badge');
-        if (badgeElements.length > 0) {
-            badgeElements.forEach(badge => {
-                badge.innerText = parseInt(badge.innerText || '0') + 1;
-            });
+        const badge = document.getElementById('notification-badge');
+        let current = parseInt(badge.innerText || '0', 10);
+        let updated = current + 1;
+        if (updated <= 0) {
+            updated = 0;
+            badge.style.display = 'none';
         } else {
-            document.querySelectorAll('.fa-bell').forEach(icon => {
-                let newBadge = document.createElement('span');
-                newBadge.className = 'translate-middle badge rounded-pill bg-danger notification-badge';
-                newBadge.innerText = '1';
-                icon.after(newBadge);
-            });
+            badge.style.display = 'inline-block';
         }
-
+        badge.innerText = updated;
         const li = document.createElement('li');
         const a = document.createElement('a');
         a.className = 'dropdown-item small text-wrap';
@@ -32,10 +28,7 @@ stompClient.connect(headers, function (frame) {
         a.href = '/notifications/' + notif.id + '/read';
         li.appendChild(a);
 
-        // Prepend to both notification lists (desktop & mobile)
-        const desktopList = document.getElementById('notificationList');
         const mobileList = document.getElementById('notificationListMobile');
-        if (desktopList) desktopList.prepend(li.cloneNode(true));
         if (mobileList) mobileList.prepend(li.cloneNode(true));
     });
 });
@@ -55,15 +48,14 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(response => {
                 if (response.success) {
                     if (!response.data.alreadySeen) {
-//                      since we have 2 badges
-                        let badgeElements = document.querySelectorAll('.notification-badge');
-                        if (badgeElements.length > 0) {
-                            badgeElements.forEach(badge => {
-                                badge.innerText = parseInt(badge.innerText || '0') - 1;
-                                if(badge.innerText <= 0) {
-                                    badge.remove();
-                                }
-                            });
+                    console.log("inside already seen false")
+                        let badge = document.getElementById('notification-badge');
+                        if (badge) {
+                            badge.innerText = parseInt(badge.innerText || '0') - 1;
+                            console.log("inside already seen false", badge.innerText)
+                            if(badge.innerText <= 0) {
+                                badge.remove();
+                            }
                         }
                         document.querySelectorAll(`.notification-link[data-id="${notifId}"]`).forEach(el => {
                             el.style.backgroundColor = '';

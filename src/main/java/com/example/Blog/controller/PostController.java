@@ -129,7 +129,7 @@ public class PostController {
                                  @RequestParam(value = "start", required = false, defaultValue = "1") int start,
                                  @RequestParam(value = "limit", required = false, defaultValue = "10") int limit,
                                  @RequestParam(value = "sortField", defaultValue = "publishedAt") String sortField,
-                                 @RequestParam(value = "order", defaultValue = "aes") String order,
+                                 @RequestParam(value = "order", defaultValue = "desc") String order,
                                  Model model) {
         SearchDto searchDto = new SearchDto();
         searchDto.setLimit(limit);
@@ -160,7 +160,7 @@ public class PostController {
                               @RequestParam(value = "start", required = false, defaultValue = "1") int start,
                               @RequestParam(value = "limit", required = false, defaultValue = "10") int limit,
                               @RequestParam(value = "sortField", required = false, defaultValue = "publishedAt") String sortField,
-                              @RequestParam(value = "order", required = false, defaultValue = "aes") String order,
+                              @RequestParam(value = "order", required = false, defaultValue = "desc") String order,
                               Model model, HttpServletRequest request) {
         List<Integer> intTagIds = new ArrayList<>();
         if(StringUtils.hasText(tagIds)){
@@ -211,7 +211,7 @@ public class PostController {
                                         @RequestParam(value = "start", required = false, defaultValue = "1") int start,
                                         @RequestParam(value = "limit", required = false, defaultValue = "10") int limit,
                                         @RequestParam(value = "sortField", required = false, defaultValue = "publishedAt") String sortField,
-                                        @RequestParam(value = "order", required = false, defaultValue = "aes") String order,
+                                        @RequestParam(value = "order", required = false, defaultValue = "desc") String order,
                                         Model model, HttpServletRequest request) {
         List<Integer> intTagIds = new ArrayList<>();
         if(StringUtils.hasText(tagIds)){
@@ -268,7 +268,7 @@ public class PostController {
                                  @RequestParam(value = "start", required = false, defaultValue = "1") int start,
                                  @RequestParam(value = "limit", required = false, defaultValue = "10") int limit,
                                  @RequestParam(value = "sortField", defaultValue = "publishedAt") String sortField,
-                                 @RequestParam(value = "order", defaultValue = "aes") String order,
+                                 @RequestParam(value = "order", defaultValue = "desc") String order,
                                  Model model) {
         searchByString(search, start, limit, sortField, order, model);
         model.addAttribute("searchUrl", "/posts/my-blog/search");
@@ -286,5 +286,25 @@ public class PostController {
     @ResponseBody
     public Response<List<UserDto>> likedBy(@RequestParam Integer postId){
         return likeService.getAllUserByPostId(postId);
+    }
+
+    @PostMapping("/api")
+    public String loadMorePosts(@RequestBody SearchDto searchDto, Model model) {
+//        SearchDto searchDto = new SearchDto();
+//        searchDto.setOrderBy(order);
+//        searchDto.setSortByField(sortField);
+//        searchDto.setAuthorId(authorId);
+//        searchDto.setPublishedAt(publishedAt);
+//        searchDto.setTagIds(intTagIds);
+//        searchDto.setLimit(limit);
+//        searchDto.setOffset(page);
+//        searchDto.setOrderBy("desc");
+//        searchDto.setSortByField("publishedAt");
+        Page<Post> posts = postService.findByFilterCriteria(searchDto);
+        if (posts.isEmpty()) {
+            return "fragments/empty :: emptyFragment";
+        }
+        model.addAttribute("posts", posts.getContent());
+        return "fragments/blogposts :: blogpostsFragment";
     }
 }

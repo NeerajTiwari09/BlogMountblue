@@ -5,35 +5,30 @@
     <title>Pagination Fragment</title>
 </head>
 <body>
-<div th:fragment="blogpostsFragment (posts)">
-    <h5 style="margin-bottom: 1rem">Posts</h5>
-    <div class="scrollable-posts row" th:if="${!posts.isEmpty()}">
-        <div class="col-12" th:each="post, iterStat : ${posts}" th:classappend="${!iterStat.first} ? 'gy-4'">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="card-title" th:text="${post.title}">Post Title</h5>
-                        <div class="d-flex align-items-center">
-                            <th:block th:with="likeUserIds=${post.likes.?[user != null].![user.id]}">
-                                <i class="fa-solid fa-thumbs-up fa-lg me-1"
-                                   th:classappend="${#lists.contains(likeUserIds, currentUser != null ? currentUser.id : 0)} ? 'text-primary' : 'text-muted'"></i>
-                            </th:block>
-                            <span class="likes-count text-muted" th:attr="data-raw-count=${post.likesCount}"></span>
-                        </div>
-                    </div>
-                    <h6 class="card-subtitle mb-2 text-muted">
-                        <span th:text="${post.author.name}">Author</span> |
-                        <span th:text="${#dates.format(post.createdAt, 'yyyy-MM-dd')}">Date</span>
-                    </h6>
-                    <div class="mb-2">
-                        <span class="badge bg-secondary me-1" th:each="tag : ${post.tags}"
-                              th:text="${tag.name}">Tag</span>
-                    </div>
-                    <p class="card-text mt-2" th:text="${post.excerpt}">Post excerpt here...</p>
-                    <a th:href="@{'/posts/' + ${post.id}}" class="btn btn-outline-primary btn-sm">Read
-                        more</a>
+<div class="col-12" th:fragment="blogpostsFragment (posts)" th:each="post : ${posts}">
+    <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="card-title" th:text="${post.title}">Post Title</h5>
+                <div class="d-flex align-items-center">
+                    <th:block th:with="likeUserIds=${post.likes.?[user != null].![user.id]}">
+                        <i class="fa-solid fa-thumbs-up fa-lg me-1"
+                           th:classappend="${#lists.contains(likeUserIds, currentUser != null ? currentUser.id : 0)} ? 'text-primary' : 'text-muted'"></i>
+                    </th:block>
+                    <span class="likes-count text-muted" th:attr="data-raw-count=${post.likesCount}" th:text="${post.likesCount}"></span>
                 </div>
             </div>
+            <h6 class="card-subtitle mb-2 text-muted">
+                <span th:text="${post.author.name}">Author</span> |
+                <span th:text="${#dates.format(post.createdAt, 'yyyy-MM-dd')}">Date</span>
+            </h6>
+            <div class="mb-2">
+                        <span class="badge bg-secondary me-1" th:each="tag : ${post.tags}"
+                              th:text="${tag.name}">Tag</span>
+            </div>
+            <p class="card-text mt-2" th:text="${post.excerpt}">Post excerpt here...</p>
+            <a th:href="@{'/posts/' + ${post.id}}" class="btn btn-outline-primary btn-sm">Read
+                more</a>
         </div>
     </div>
 </div>

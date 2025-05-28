@@ -16,7 +16,7 @@
         </button>
     </div>
     <div id="filterSidebar" class="collapse d-md-block mt-2">
-        <form id="filterForm" th:action="@{${url}}" method="get">
+        <form id="filterForm" th:action="@{${url}}" method="post">
             <!--            <h5 >Filter Posts</h5>-->
             <div class="mb-2">
                 <label class="form-label">Published Date</label>
@@ -32,8 +32,14 @@
                 </select>
             </div>
             <div class="mb-3">
-                <label class="form-label">Tags</label>
-                <div class="scrollable-tags border rounded p-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <label class="form-label">Tags</label>
+                    <button class="btn d-md-none" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#tagSidebar" aria-expanded="false" aria-controls="tagSidebar">
+                        <i id="collapseIcon" class="fas fa-chevron-down"></i>
+                    </button>
+                </div>
+                <div id="tagSidebar" class="scrollable-tags collapse d-md-block border rounded p-2">
                     <div th:each="tag: ${tags}">
                         <div class="form-check">
                             <input class="form-check-input tag-checkbox" type="checkbox"
@@ -44,7 +50,7 @@
                                    th:text="${tag.name}"></label>
                         </div>
                     </div>
-                    <input type="hidden" name="tagIds" id="tags-input">
+<!--                    <input type="hidden" name="tagIds" id="tags-input">-->
                 </div>
             </div>
             <button type="submit" class="btn btn-primary w-100">Apply Filter</button>

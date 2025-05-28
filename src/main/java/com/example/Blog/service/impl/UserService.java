@@ -8,6 +8,7 @@ import com.example.Blog.model.Role;
 import com.example.Blog.model.User;
 import com.example.Blog.repository.RoleRepository;
 import com.example.Blog.repository.UserRepository;
+import com.example.Blog.utils.SystemSetting;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -30,6 +31,9 @@ public class UserService implements UserDetailsService {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    @Autowired
+    private SystemSetting systemSetting;
+
     public Response<Object> registerUser(User user) {
         Response<Object> output = validateInput(user);
         if (!output.isSuccess()) {
@@ -47,6 +51,13 @@ public class UserService implements UserDetailsService {
     private Response<Object> validateInput(User user) {
         if (!StringUtils.hasText(user.getName())) {
             return new Response<>(ErrorCode.NAME_SHOULD_NOT_EMPTY);
+        }
+        if (!StringUtils.hasText(user.getUsername())) {
+            return new Response<>(ErrorCode.EMAIL_SHOULD_NOT_EMPTY);
+        }
+        if (!StringUtils.hasText(user.getPassword()) ||
+                user.getPassword().length() < systemSetting.getMinPasswordLength()) {
+            return new Response<>(ErrorCode.INVALID_PASSWORD_LENGTH);
         }
         boolean isAlreadyExist = userRepository.existsByUsername(user.getUsername());
         if (isAlreadyExist) {

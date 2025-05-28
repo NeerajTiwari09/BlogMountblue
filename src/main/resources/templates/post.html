@@ -9,15 +9,32 @@
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <!-- Toast UI Editor CSS -->
     <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+    <style>
+        body {
+            height: 100%;
+            margin: 0;
+            padding-top: 56px;
+        }
 
+        .navbar-hidden {
+          transform: translateY(-100%);
+          transition: transform 0.3s ease-in-out;
+        }
+
+        .navbar-visible {
+          transform: translateY(0);
+          transition: transform 0.3s ease-in-out;
+        }
+    </style>
 </head>
 <body class="bg-light">
 
 <div th:replace="fragments/navbar :: navbarFragment (${unreadCount}, ${unreadNotifications})"></div>
 <div class="container-fluid mb-4 mt-4">
-    <h2 class="text-center flex-grow-1">📖 Blog Post</h2>
+    <h2 class="text-center flex-grow-1"><i class="bi bi-journal-text me-3"></i>Blog Post</h2>
     <!-- Action Buttons -->
     <div th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'')') || (#authorization.expression('hasAnyAuthority(''AUTHOR'')') && isAuthorsPost)}"
          class="text-end mb-3">

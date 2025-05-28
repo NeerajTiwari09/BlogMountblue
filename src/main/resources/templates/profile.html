@@ -9,6 +9,23 @@
     <title>User Profile</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        body {
+           height: 100%;
+           margin: 0;
+           padding-top: 56px;
+       }
+       .navbar-hidden {
+          transform: translateY(-100%);
+          transition: transform 0.3s ease-in-out;
+        }
+
+        .navbar-visible {
+          transform: translateY(0);
+          transition: transform 0.3s ease-in-out;
+        }
+    </style>
 </head>
 <body>
 <div th:replace="fragments/navbar :: navbarFragment(${unreadCount}, ${unreadNotifications})"></div>
@@ -20,22 +37,33 @@
         <a href="#" data-bs-toggle="modal" data-bs-target="#changePasswordModal"
            class="position-absolute top-0 end-0 m-2 text-decoration-none text-dark d-none d-lg-block"
            title="Change Password">
-            <i class="fa-solid fa-key fa-lg"></i>
+            <i class="bi bi-key fs-3"></i>
         </a>
         <div class="card-body">
             <!-- User Name and Image-->
             <div class="col-md-12 col-12 col-md-12 d-grid justify-content-center">
-                <img th:src="@{${user.imageUrl}}" alt="Profile Image" id="profileImage"
-                     class="rounded-circle border mx-auto"
-                     style="height: 120px; width: 120px; object-fit: cover; cursor: pointer;"
-                     data-bs-toggle="modal" data-bs-target="#imageModal"/>
-<!--                <i class="fa-solid fa-user me-2" style="height: 120px; width: 120px; object-fit: cover; cursor: pointer;"-->
-<!--                   data-bs-toggle="modal" data-bs-target="#imageModal"></i>-->
+                <th:block th:if="${currentUser != null and currentUser.imageUrl != null}">
+                    <img th:src="@{${currentUser.imageUrl}}" alt="Profile Image" id="profileImage"
+                         class="rounded-circle border mx-auto"
+                         style="height: 120px; width: 120px; object-fit: cover; cursor: pointer;"
+                         data-bs-toggle="modal" data-bs-target="#imageModal"/>
+                </th:block>
+                <th:block th:unless="${currentUser != null and currentUser.imageUrl != null}">
+                    <i class="bi bi-person-circle mx-auto d-inline-flex align-items-center justify-content-center"
+                       style="width: 120px; height: 120px; font-size: 120px;"
+                       data-bs-toggle="modal" data-bs-target="#imageModal"></i>
+                </th:block>
                 <div class="d-flex mt-3">
                     <label for="username" class="d-flex justify-content-center align-items-center me-3">
-                        <i class="fa-solid fa-user me-1"></i> Name
+                        <i class="bi bi-person me-2"></i> Name
                     </label>
-                    <input type="text" id="username" name="name" class="form-control" th:value="${user.name}" readonly/>
+                    <input type="text" id="username" name="name" class="form-control" th:value="${currentUser.name}" readonly/>
+                </div>
+                <div class="d-flex mt-3">
+                    <label for="email" class="d-flex justify-content-center align-items-center me-3">
+                        <i class="bi bi-envelope me-2"></i> Email
+                    </label>
+                    <input type="text" id="email" name="email" class="form-control" th:value="${currentUser.username}" readonly/>
                 </div>
             </div>
         </div>
@@ -63,7 +91,7 @@
                                 <i class="fa-solid fa-user me-1"></i> Name
                             </label>
                             <input type="text" id="name" name="name" class="form-control"
-                                   th:value="${user.name}"/>
+                                   th:value="${currentUser.name}"/>
                         </div>
                         <div class="d-flex my-3">
                             <label for="name" class="d-flex justify-content-center align-items-center me-3">

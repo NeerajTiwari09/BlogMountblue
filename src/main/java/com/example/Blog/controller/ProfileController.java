@@ -34,16 +34,6 @@ public class ProfileController {
     public String showProfile(Model model) {
         User user = AuthProvider.getAuthenticatedUser();
         if (Objects.nonNull(user)) {
-            UserDto userDto = new UserDto();
-            BeanUtils.copyProperties(user, userDto);
-            userDto.setImageUrl(null);
-            if (StringUtils.hasText(user.getImageKey())) {
-                byte[] imageBytes = minioService.downloadFile(user.getImageKey());
-                String base64 = Base64.getEncoder().encodeToString(imageBytes);
-                String imageUrl = "data:image/jpeg;base64," + base64;
-                userDto.setImageUrl(imageUrl);
-            }
-            model.addAttribute("user", userDto);
             return "profile";
         }
         return "redirect:/login";

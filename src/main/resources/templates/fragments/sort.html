@@ -6,7 +6,7 @@
 </head>
 <body>
 <div th:fragment="sortFragment (selectedAuthorId, selectedTagIdsForSort, selectedSortBy, selectedOrder, url)">
-    <form th:action="@{/posts}" method="get" class="d-flex flex-wrap gap-2 justify-content-md-end">
+    <form id="sortForm" th:action="@{/posts}" method="get" class="d-flex flex-wrap gap-2 justify-content-md-end">
 <!--        <label class="form-label me-2 mb-0 align-self-center">Sort by</label>-->
         <th:block th:each="entry : ${param}">
             <th:block th:if="${entry.key != 'order' and entry.key != 'sortField'}">
@@ -19,7 +19,7 @@
         </select>
         <input type="hidden" name="order" th:value="${selectedOrder == 'asc' ? 'desc' : 'asc'}" />
         <button type="submit" class="btn btn-secondary ms-2">
-            <i class="fas" th:classappend="${selectedOrder == 'asc'} ? 'fa-arrow-up' : 'fa-arrow-down'"></i>
+            <i id="sortDirection" class="fas" th:classappend="${selectedOrder == 'asc'} ? 'fa-arrow-up' : 'fa-arrow-down'"></i>
         </button>
     </form>
 </div>

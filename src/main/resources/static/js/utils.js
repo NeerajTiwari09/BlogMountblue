@@ -16,8 +16,10 @@ let page = 1;
 let loading = false;
 let hasMore = true;
 let filterChanged = false;
+let searchString = null;
 let sorting = {sortByField:'publishedAt', order:'desc'}
-let filtering = {authorId:'0', publishedAt:'', tagIds:[]}
+let filtering = {authorId:'0', publishedAt:'', tagIds:[],
+    sortByField:'publishedAt', order:'desc'}
 let previousFiltering = { ...filtering };
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -74,25 +76,36 @@ document.addEventListener("DOMContentLoaded", function () {
     if (filterForm) {
         filterForm.addEventListener("submit", function (event) {
             event.preventDefault();
+            const modalElement = document.getElementById('filterSidebar');
+            const modal = bootstrap.Modal.getInstance(modalElement);
             const formData = new FormData(filterForm);
+            const sortOrder = document.querySelector('input[name="sortOrder"]:checked')?.value;
             const selectedTagIds = Array.from(document.querySelectorAll(".tag-checkbox:checked"))
                   .map(cb => parseInt(cb.value, 10));
+                  console.log("sortField ", formData.get('sortField'))
             const newFiltering = {
                 authorId: formData.get('authorId'),
                 publishedAt: formData.get('publishedAt'),
-                tagIds: selectedTagIds
+                tagIds: selectedTagIds,
+                sortByField: formData.get('sortField'),
+                order: sortOrder
             }
+            console.log("new ", newFiltering, " pre ", previousFiltering)
+            sorting.sortByField = formData.get('sortField');
+            sorting.order = sortOrder;
             filterChanged = filtersChanged(previousFiltering, newFiltering)
             if (filterChanged) {
+                console.log("changed ...")
                 page = 0;
                 hasMore = true;
                 previousFiltering = { ...newFiltering, tagIds: [...newFiltering.tagIds] };
+            } else {
+                modal.hide();
+                return;
             }
             filtering = newFiltering;
-            loadMorePosts(loadingIndicator, lazyLoaderPostContainer);
-            const modalElement = document.getElementById('filterSidebar');
-            const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
             modal.hide();
+            loadMorePosts(loadingIndicator, lazyLoaderPostContainer);
         });
     }
 
@@ -106,11 +119,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 sorting.sortByField = formData.get('sortField');
                 sorting.order = formData.get('order');
                 if(sorting.order === 'asc') {
-                    sortDirection.classList.remove('fa-arrow-down')
-                    sortDirection.classList.add('fa-arrow-up')
+                    sortDirection.classList.remove('bi-arrow-down')
+                    sortDirection.classList.add('bi-arrow-up')
                 } else {
-                    sortDirection.classList.remove('fa-arrow-up')
-                    sortDirection.classList.add('fa-arrow-down')
+                    sortDirection.classList.remove('bi-arrow-up')
+                    sortDirection.classList.add('bi-arrow-down')
                 }
                 const sortOrderInput = sortForm.querySelector('[name="order"]');
                 const currentOrder = sortOrderInput.value;
@@ -121,6 +134,34 @@ document.addEventListener("DOMContentLoaded", function () {
                 loadMorePosts(loadingIndicator, lazyLoaderPostContainer);
             });
         }
+
+    const searchInputs = ["searchInput", "searchInput2"];
+    const searchForms = ["searchForm", "searchForm2"];
+    searchInputs.forEach(id => {
+        const searchInput = document.getElementById(id);
+        if (searchInput) {
+            searchInput.addEventListener("input", function() {
+                searchString = this.value.trim();
+                hasMore = true;
+            });
+        }
+    });
+
+    searchForms.forEach((id, index) => {
+        const searchForm = document.getElementById(id);
+        if (searchForm) {
+            searchForm.addEventListener("submit", function(e) {
+                e.preventDefault();
+                page = 0;
+                const input = document.getElementById(searchInputs[index]);
+                const query = input?.value.trim();
+                if (query.trim()) {
+                    filterChanged = true
+                    loadMorePosts(loadingIndicator, lazyLoaderPostContainer);
+                }
+            });
+        }
+    });
 
     document.querySelectorAll('.likes-count').forEach(el => {
         const rawCount = parseInt(el.dataset.rawCount);
@@ -150,11 +191,12 @@ const loadMorePosts = async (loadingIndicator, lazyLoaderPostContainer) => {
         const requestBody = {
             limit: 10,
             offset: ++page,
-            sortByField: sorting.sortByField,
-            orderBy: sorting.order,
+            sortByField: filtering.sortByField,
+            orderBy: filtering.order,
             publishedAt: filtering.publishedAt,
             authorId: filtering.authorId,
-            tagIds: filtering.tagIds
+            tagIds: filtering.tagIds,
+            searchSting: searchString
         };
         console.log(requestBody)
         const response = await fetch(`/blog/posts/api`, {
@@ -169,6 +211,10 @@ const loadMorePosts = async (loadingIndicator, lazyLoaderPostContainer) => {
             const html = await response.text();
 
             if (html.trim() === '<div></div>') {
+                if (searchString && searchString.trim() != '') {
+                    showToast("No result found for searched text.", 'bg-danger');
+                    return;
+                }
                 hasMore = false;
                 loading = false;
             } else {
@@ -186,7 +232,6 @@ const loadMorePosts = async (loadingIndicator, lazyLoaderPostContainer) => {
 //        if (!navigator.onLine) {
 //            showToast("You're offline. Please check your internet connection.", 'bg-warning');
 //        } else
-console.log(err)
         if (err.message.includes('Failed to fetch') || err.message.includes('ERR_CONNECTION_REFUSED')) {
             showToast("Cannot connect to server.", 'bg-danger');
         } else {
@@ -205,6 +250,8 @@ function filtersChanged(oldFilter, newFilter) {
         oldFilter.authorId !== newFilter.authorId ||
         oldFilter.publishedAt !== newFilter.publishedAt ||
         oldFilter.tagIds.length !== newFilter.tagIds.length ||
-        !oldFilter.tagIds.every((id, index) => id === newFilter.tagIds[index])
+        !oldFilter.tagIds.every((id, index) => id === newFilter.tagIds[index]) ||
+        oldFilter.sortByField !== newFilter.sortByField ||
+        oldFilter.order !== newFilter.order
     );
 }

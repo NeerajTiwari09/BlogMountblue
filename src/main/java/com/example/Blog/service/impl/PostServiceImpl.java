@@ -113,6 +113,9 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Page<Post> findByFilterCriteria(SearchDto searchDto) {
+        if(StringUtils.hasText(searchDto.getSearchSting())) {
+            return getBySearchString(searchDto);
+        }
         User user = userRepository.findById(searchDto.getAuthorId()).orElse(null);
         return getPostBySearchCriteria(user, searchDto);
     }

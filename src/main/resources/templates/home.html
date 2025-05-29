@@ -37,11 +37,32 @@
         }
 
         .scrollable-tags {
-            max-height: calc(100vh - 425px);
+            max-height: calc(100vh - 525px);
             overflow-y: auto;
         }
         .row.gy-4 > :first-child {
             margin-top: 0 !important;
+        }
+        .form-check-input.text-muted:checked {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+
+        .form-check-input.text-muted:focus {
+            box-shadow: 0 0 0 0.25rem rgba(108, 117, 125, 0.25);
+            border-color: #6c757d;
+        }
+        input:checked, select:checked {
+            background-color: #6c757d !important;  /* Bootstrap's text-muted color */
+            border-color: #6c757d !important;
+        }
+
+        input:focus, select:focus {
+            box-shadow: 0 0 0 0.25rem rgba(108, 117, 125, 0.25) !important;
+            border-color: #6c757d !important;
+        }
+        input, select {
+            border-color: #6c757d !important;
         }
     </style>
 </head>
@@ -56,9 +77,9 @@
         <div class="col-12 col-md-6" >
             <div th:replace="fragments/search :: searchFragment(${searchedText}, ${searchUrl != null  ? searchUrl : '/posts/search'})"></div>
         </div>
-        <div class="col-12 col-md-6 text-end">
-            <div th:replace="fragments/sort :: sortFragment(${selectedAuthorId}, ${selectedTagIdsForSort}, ${selectedSortBy}, ${selectedOrder}, ${filterSortUrl != null ? filterSortUrl : '/posts'})"></div>
-        </div>
+<!--        <div class="col-12 col-md-6 text-end">-->
+<!--            <div th:replace="fragments/sort :: sortFragment(${selectedAuthorId}, ${selectedTagIdsForSort}, ${selectedSortBy}, ${selectedOrder}, ${filterSortUrl != null ? filterSortUrl : '/posts'})"></div>-->
+<!--        </div>-->
     </div>
 
     <!-- Filter by Date, Author, Tags -->
@@ -76,16 +97,12 @@
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div th:replace="fragments/filter :: filterFragment(${users}, ${selectedAuthorId}, ${publishedAt}, ${selectedPublishedAt}, ${tags}, ${selectedTagIds}, ${'/posts'})"></div>
+                    <div th:replace="fragments/filter :: filterFragment(${users}, ${selectedAuthorId}, ${publishedAt}, ${selectedPublishedAt}, ${tags}, ${selectedTagIds}, ${selectedOrder}, ${'/posts'})"></div>
                 </div>
             </div>
         </div>
         <!-- Blog Posts Cards and Pagination -->
         <div class="col-12 col-lg-12 col-md-12 h-100">
-            <div class="bg-white p-3 rounded shadow-sm h-100 d-flex justify-content-center align-items-center"
-                 th:if="${posts.isEmpty()}">
-                No blogs available at the moment.
-            </div>
             <!-- Blog posts -->
             <div class="bg-white p-3 rounded shadow-sm d-flex flex-column align-items-center" >
                 <div class="align-self-start mb-1 d-flex w-100 justify-content-between align-items-center">
@@ -95,11 +112,18 @@
                         <i class="bi bi-filter-square"></i>
                     </button>
                 </div>
+                <div class="bg-white p-3 rounded shadow-sm h-100 d-flex justify-content-center align-items-center"
+                     th:if="${posts.isEmpty()}">
+                    No blogs available at the moment.
+                </div>
                 <div id="lazyLoaderAndContainer" class="scrollable-posts row gy-4 mt-1" th:if="${!posts.isEmpty()}">
                     <div th:replace="fragments/blogposts :: blogpostsFragment(${posts})"></div>
                 </div>
-                <div id="loadingIndicator" class="spinner-border text-primary d-none" role="status">
-                    <span class="visually-hidden">Loading...</span>
+                <div id="loadingIndicator" class="position-fixed top-0 start-0 w-100 h-100 d-none d-flex justify-content-center align-items-center bg-white bg-opacity-50">
+                    <div class="spinner-border" role="status"
+                    style="z-index: 1500;">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
                 </div>
             </div>
         </div>

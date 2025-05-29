@@ -14,20 +14,20 @@
             <a class="navbar-brand" th:href="@{'/posts'}">
                 <img th:src="@{/images/inkwell.png}" alt="Inkwell Logo" class="img-fluid" style="max-width: 90px;">
             </a>
-            <form class="d-none d-md-flex ms-3 w-100" role="search" th:action="@{/posts/search}" method="get">
-                <input class="form-control form-control-sm" type="search" name="search"
+            <form id="searchForm" class="d-none d-md-flex ms-3 w-100" role="search" th:action="@{/posts/search}" method="get">
+                <input id="searchInput" class="form-control form-control-sm" type="search" name="search"
                        placeholder="Search posts..." aria-label="Search">
             </form>
             </div>
             <div class="d-flex align-items-center">
                 <!-- Notification bell for small screens -->
-                <div class="nav-item dropdown mx-4 d-flex align-items-center" sec:authorize="isAuthenticated()">
+                <div class="nav-item text-muted dropdown mx-4 d-flex align-items-center" sec:authorize="isAuthenticated()">
                     <div class="nav-item me-4" th:classappend="${#httpServletRequest.requestURI.endsWith('/posts/new')} ? 'd-none' : 'd-block'">
-                        <a class="nav-link text-black d-flex active align-items-center" th:href="@{/posts/new}">
+                        <a class="nav-link d-flex active align-items-center" th:href="@{/posts/new}">
                             <i class="bi bi-pencil-square me-2 fs-5"></i>Write
                         </a>
                     </div>
-                    <a class="position-relative d-inline-block text-decoration-none" href="#" id="notificationDropdownMobile"
+                    <a class="position-relative d-inline-block text-decoration-none text-muted" href="#" id="notificationDropdownMobile"
                        role="button" data-bs-toggle="dropdown" aria-expanded="false" th:inline="text">
                         <i id="notificationBell" class="bi bi-bell fs-4"></i>
                         <span id="notification-badge" class="position-absolute start-100 translate-middle badge rounded-pill bg-danger fw-normal"
@@ -52,8 +52,8 @@
                 <div class="nav-item dropdown align-items-center">
                     <div th:replace="fragments/loggedInUser :: loggedInUserFragment"></div>
                 </div>
-                <div class="nav-item me-1" sec:authorize="!isAuthenticated()" th:classappend="${#httpServletRequest.requestURI.endsWith('/login')} ? 'd-none' : 'd-block'">
-                    <a class="nav-link text-black d-flex active align-items-center" th:href="@{/login}"
+                <div class="nav-item text-muted me-1" sec:authorize="!isAuthenticated()" th:classappend="${#httpServletRequest.requestURI.endsWith('/login')} ? 'd-none' : 'd-block'">
+                    <a class="nav-link d-flex active align-items-center" th:href="@{/login}"
                        th:classappend="${#httpServletRequest.requestURI.endsWith('/login')} ? ' active'">
                         <i class="bi bi-box-arrow-in-left me-1 fs-5"></i>
                         <span class="">Login</span>

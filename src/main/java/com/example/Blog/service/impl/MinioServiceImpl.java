@@ -1,6 +1,7 @@
 package com.example.Blog.service.impl;
 
 import com.example.Blog.service.MinioService;
+import org.springframework.util.CollectionUtils;
 import software.amazon.awssdk.core.ResponseBytes;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -11,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Base64;
+import java.util.Collections;
 
 @Service
 public class MinioServiceImpl implements MinioService {
@@ -32,6 +34,9 @@ public class MinioServiceImpl implements MinioService {
             return true;
         } catch (NoSuchBucketException e) {
             return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return true;
         }
     }
 
@@ -49,23 +54,27 @@ public class MinioServiceImpl implements MinioService {
 
     @Override
     public byte[] downloadFile(String key) {
-        ResponseBytes<GetObjectResponse> objectBytes = s3Client.getObjectAsBytes(
-                GetObjectRequest.builder()
-                        .bucket(bucketName)
-                        .key(key)
-                        .build());
-        return objectBytes.asByteArray();
+        try {
+            ResponseBytes<GetObjectResponse> objectBytes = s3Client.getObjectAsBytes(
+                    GetObjectRequest.builder()
+                            .bucket(bucketName)
+                            .key(key)
+                            .build());
+            return objectBytes.asByteArray();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new byte[0];
     }
 
     @Override
     public String downloadFileBase64(String key) {
-        ResponseBytes<GetObjectResponse> objectBytes = s3Client.getObjectAsBytes(
-                GetObjectRequest.builder()
-                        .bucket(bucketName)
-                        .key(key)
-                        .build());
-        String base64 = Base64.getEncoder().encodeToString(objectBytes.asByteArray());
-        return "data:image/jpeg;base64," + base64;
+        byte[] imgInByte = downloadFile(key);
+        if (imgInByte.length != 0) {
+            String base64 = Base64.getEncoder().encodeToString(imgInByte);
+            return "data:image/jpeg;base64," + base64;
+        }
+        return null;
     }
 
     @Override

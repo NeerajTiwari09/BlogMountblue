@@ -290,16 +290,6 @@ public class PostController {
 
     @PostMapping("/api")
     public String loadMorePosts(@RequestBody SearchDto searchDto, Model model) {
-//        SearchDto searchDto = new SearchDto();
-//        searchDto.setOrderBy(order);
-//        searchDto.setSortByField(sortField);
-//        searchDto.setAuthorId(authorId);
-//        searchDto.setPublishedAt(publishedAt);
-//        searchDto.setTagIds(intTagIds);
-//        searchDto.setLimit(limit);
-//        searchDto.setOffset(page);
-//        searchDto.setOrderBy("desc");
-//        searchDto.setSortByField("publishedAt");
         Page<Post> posts = postService.findByFilterCriteria(searchDto);
         if (posts.isEmpty()) {
             return "fragments/empty :: emptyFragment";

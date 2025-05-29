@@ -7,7 +7,7 @@
 <body>
 <!--<div th:fragment="filterFragment (users, selectedAuthorId, publishedAt, selectedPublishedAt, tags, selectedTagIds, url)">-->
 <div class="border p-3 bg-white rounded shadow-sm"
-     th:fragment="filterFragment (users, selectedAuthorId, publishedAt, selectedPublishedAt, tags, selectedTagIds, url)">
+     th:fragment="filterFragment (users, selectedAuthorId, publishedAt, selectedPublishedAt, tags, selectedTagIds, selectedOrder, url)">
     <div class="d-flex justify-content-between align-items-center d-none d-lg-block">
         <h5 class="mb-0">Filter Posts</h5>
     </div>
@@ -46,7 +46,27 @@
                                    th:text="${tag.name}"></label>
                         </div>
                     </div>
-<!--                    <input type="hidden" name="tagIds" id="tags-input">-->
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Sort Order:</label>
+                <div class="form-check form-check-inline">
+                    <select class="form-select w-auto" name="sortField">
+                        <option th:each="s : ${sortBy}" th:value="${s.value}" th:text="${s.key}"
+                                th:selected="${s.value == selectedSortBy}"></option>
+                    </select>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input text-muted" type="radio"
+                           name="sortOrder" id="sortAsc" value="asc"
+                           th:checked="${selectedOrder == 'acs'}">
+                    <label class="form-check-label" for="sortAsc">[A-Z]</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input text-muted" type="radio"
+                           name="sortOrder" id="sortDesc" value="desc"
+                           th:checked="${selectedOrder == 'desc'}">
+                    <label class="form-check-label" for="sortDesc">[Z-A]</label>
                 </div>
             </div>
             <button type="submit" class="btn btn-primary w-100">Apply Filter</button>

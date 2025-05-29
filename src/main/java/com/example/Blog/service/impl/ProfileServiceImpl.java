@@ -49,9 +49,7 @@ public class ProfileServiceImpl implements ProfileService {
                 UserDto userDto = new UserDto();
                 BeanUtils.copyProperties(user, userDto);
                 if (StringUtils.hasText(user.getImageKey())) {
-                    byte[] imageBytes = minioService.downloadFile(user.getImageKey());
-                    String base64 = Base64.getEncoder().encodeToString(imageBytes);
-                    String imageUrl = "data:image/jpeg;base64," + base64;
+                    String imageUrl = minioService.downloadFileBase64(user.getImageKey());
                     userDto.setImageUrl(imageUrl);
                 }
                 return new Response<>(userDto, SuccessCode.SUCCESSFUL_PROFILE_UPDATE);

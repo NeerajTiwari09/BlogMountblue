@@ -53,12 +53,20 @@ document.addEventListener("DOMContentLoaded", function () {
                     users.forEach(user => {
                         const userDiv = document.createElement('div');
                         userDiv.className = 'd-flex justify-content-between align-items-center mb-2';
-                        userDiv.innerHTML = `
-                            <img src="${user.imageUrl}" alt="Profile Image"
-                                 class="rounded-circle border"
-                                 style="height: 50px; width: 50px; object-fit: cover;" />
-                            <strong>${user.name}</strong>
-                        `;
+                        if (!user.imageUrl) {
+                            userDiv.innerHTML = `
+                                <i class="bi bi-person-circle fs-1 d-inline-flex align-items-center justify-content-center"
+                                   style="height: 50px; width: 50px; object-fit: cover;"></i>
+                                <strong>${user.name}</strong>
+                            `;
+                        } else {
+                            userDiv.innerHTML = `
+                                <img src="${user.imageUrl}" alt="Profile Image"
+                                     class="rounded-circle border"
+                                     style="height: 50px; width: 50px; object-fit: cover;" />
+                                <strong>${user.name}</strong>
+                            `;
+                        }
                         container.appendChild(userDiv);
                     });
                     const modal = new bootstrap.Modal(document.getElementById('likedByUsersModal'));

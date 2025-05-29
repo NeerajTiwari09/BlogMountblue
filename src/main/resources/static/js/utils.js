@@ -90,6 +90,9 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             filtering = newFiltering;
             loadMorePosts(loadingIndicator, lazyLoaderPostContainer);
+            const modalElement = document.getElementById('filterSidebar');
+            const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+            modal.hide();
         });
     }
 

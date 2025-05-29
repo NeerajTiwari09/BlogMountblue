@@ -8,14 +8,10 @@
 <!--<div th:fragment="filterFragment (users, selectedAuthorId, publishedAt, selectedPublishedAt, tags, selectedTagIds, url)">-->
 <div class="border p-3 bg-white rounded shadow-sm"
      th:fragment="filterFragment (users, selectedAuthorId, publishedAt, selectedPublishedAt, tags, selectedTagIds, url)">
-    <div class="d-flex justify-content-between align-items-center">
+    <div class="d-flex justify-content-between align-items-center d-none d-lg-block">
         <h5 class="mb-0">Filter Posts</h5>
-        <button class="btn btn-outline-secondary d-md-none" type="button" data-bs-toggle="collapse"
-                data-bs-target="#filterSidebar" aria-expanded="false" aria-controls="filterSidebar">
-            <i class="fas fa-filter me-1"></i>
-        </button>
     </div>
-    <div id="filterSidebar" class="collapse d-md-block mt-2">
+    <div class="d-md-block mt-lg-2">
         <form id="filterForm" th:action="@{${url}}" method="post">
             <!--            <h5 >Filter Posts</h5>-->
             <div class="mb-2">

@@ -7,16 +7,22 @@
 </head>
 <body>
 <!--<div >-->
-    <nav id="mainNavbar" class="navbar bg-white border-bottom mb-4 fixed-top navbar-visible"
+    <nav id="mainNavbar" class="navbar bg-white border-bottom border-2 border-dark mb-4 fixed-top navbar-visible"
          th:fragment="navbarFragment (unreadCount, allNotifications)">
         <div class="container-fluid">
+            <div class="d-flex">
             <a class="navbar-brand" th:href="@{'/posts'}">
                 <img th:src="@{/images/inkwell.png}" alt="Inkwell Logo" class="img-fluid" style="max-width: 90px;">
             </a>
+            <form class="d-none d-md-flex ms-3 w-100" role="search" th:action="@{/posts/search}" method="get">
+                <input class="form-control form-control-sm" type="search" name="search"
+                       placeholder="Search posts..." aria-label="Search">
+            </form>
+            </div>
             <div class="d-flex align-items-center">
                 <!-- Notification bell for small screens -->
                 <div class="nav-item dropdown mx-4 d-flex align-items-center" sec:authorize="isAuthenticated()">
-                    <div class="nav-item me-3" th:classappend="${#httpServletRequest.requestURI.endsWith('/posts/new')} ? 'd-none' : 'd-block'">
+                    <div class="nav-item me-4" th:classappend="${#httpServletRequest.requestURI.endsWith('/posts/new')} ? 'd-none' : 'd-block'">
                         <a class="nav-link text-black d-flex active align-items-center" th:href="@{/posts/new}">
                             <i class="bi bi-pencil-square me-2 fs-5"></i>Write
                         </a>

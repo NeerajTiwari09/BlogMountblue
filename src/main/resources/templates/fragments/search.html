@@ -5,14 +5,14 @@
     <title>Pagination Fragment</title>
 </head>
 <body>
-    <div th:fragment="searchFragment (searchedText, url)">
+    <div class="d-md-none" th:fragment="searchFragment (searchedText, url)">
         <form th:action="@{${url}}" >
             <div class="input-group">
-            <input type="text" name="search" class="form-control me-2" placeholder="Search"
-                   th:value="${searchedText}">
-            <button type="submit" class="btn btn-primary">
-                <i class="fas fa-search me-1"></i>Search
-            </button>
+            <input type="search" name="search" class="form-control me-2" placeholder="Search posts..."
+                   th:value="${searchedText}" aria-label="Search">
+<!--            <button type="submit" class="btn btn-primary">-->
+<!--                <i class="fas fa-search me-1"></i>Search-->
+<!--            </button>-->
             </div>
         </form>
 

@@ -63,19 +63,37 @@
 
     <!-- Filter by Date, Author, Tags -->
     <div class="row mb-4 gx-3">
-        <div class="col-12 col-md-4 mb-4 mb-md-0">
-            <div th:replace="fragments/filter :: filterFragment(${users}, ${selectedAuthorId}, ${publishedAt}, ${selectedPublishedAt}, ${tags}, ${selectedTagIds}, ${'/posts'})"></div>
+<!--        <div class="col-12 col-lg-4 mb-4 mb-md-0 d-none d-lg-block">-->
+<!--            <div th:replace="fragments/filter :: filterFragment(${users}, ${selectedAuthorId}, ${publishedAt}, ${selectedPublishedAt}, ${tags}, ${selectedTagIds}, ${'/posts'})"></div>-->
+<!--        </div>-->
+        <div class="modal fade" id="filterSidebar" tabindex="-1" aria-labelledby="filterSidebarModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="filterSidebarModalLabel">
+                            <i class="bi bi-filter-square me-2"></i> Filter Posts
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div th:replace="fragments/filter :: filterFragment(${users}, ${selectedAuthorId}, ${publishedAt}, ${selectedPublishedAt}, ${tags}, ${selectedTagIds}, ${'/posts'})"></div>
+                </div>
+            </div>
         </div>
         <!-- Blog Posts Cards and Pagination -->
-        <div class="col-12 col-md-8 h-100">
+        <div class="col-12 col-lg-12 col-md-12 h-100">
             <div class="bg-white p-3 rounded shadow-sm h-100 d-flex justify-content-center align-items-center"
                  th:if="${posts.isEmpty()}">
                 No blogs available at the moment.
             </div>
             <!-- Blog posts -->
             <div class="bg-white p-3 rounded shadow-sm d-flex flex-column align-items-center" >
-                <div class="align-self-start mb-1">
+                <div class="align-self-start mb-1 d-flex w-100 justify-content-between align-items-center">
                     <h5>Posts</h5>
+                    <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal"
+                            data-bs-target="#filterSidebar">
+                        <i class="bi bi-filter-square"></i>
+                    </button>
                 </div>
                 <div id="lazyLoaderAndContainer" class="scrollable-posts row gy-4 mt-1" th:if="${!posts.isEmpty()}">
                     <div th:replace="fragments/blogposts :: blogpostsFragment(${posts})"></div>

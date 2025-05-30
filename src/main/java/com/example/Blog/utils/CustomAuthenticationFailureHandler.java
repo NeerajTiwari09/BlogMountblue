@@ -1,15 +1,22 @@
 package com.example.Blog.utils;
 
+import com.example.Blog.service.impl.LoginAttemptService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import java.io.IOException;
 
+@Component
 public class CustomAuthenticationFailureHandler implements AuthenticationFailureHandler {
+
+    @Autowired
+    private LoginAttemptService loginAttemptService;
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request,
@@ -18,8 +25,10 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
                                         throws IOException, ServletException {
 
         String errorMessage;
+        String username = request.getParameter("username");
         if (exception instanceof BadCredentialsException) {
             errorMessage = "Invalid username or password";
+            loginAttemptService.loginFailed(username);
         } else if (exception instanceof UsernameNotFoundException) {
             errorMessage = "User does not exist";
         } else if (exception instanceof LockedException) {

@@ -11,7 +11,7 @@ import javax.persistence.*;
 })
 @Getter
 @Setter
-public class Like {
+public class Like extends AuditEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

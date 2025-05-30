@@ -73,8 +73,8 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="imageModalLabel">
-                        <i class="fa-solid fa-image me-1"></i> Update Profile
+                    <h5 class="modal-title text-muted" id="imageModalLabel">
+                        <i class="bi bi-image me-1"></i> Update Profile
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -88,14 +88,14 @@
                         <!-- Name Preview -->
                         <div class="d-flex mt-3">
                             <label for="name" class="d-flex justify-content-center align-items-center me-3 pe-1">
-                                <i class="fa-solid fa-user me-1"></i> Name
+                                <i class="bi bi-person me-1"></i> Name
                             </label>
                             <input type="text" id="name" name="name" class="form-control"
                                    th:value="${currentUser.name}"/>
                         </div>
                         <div class="d-flex my-3">
                             <label for="name" class="d-flex justify-content-center align-items-center me-3">
-                                <i class="fa-solid fa-image me-1"></i> Image
+                                <i class="bi bi-image me-1"></i> Image
                             </label>
                             <input type="file" id="modalImageInput" accept="image/*" class="form-control"
                                    onchange="previewModalImage(event)"/>

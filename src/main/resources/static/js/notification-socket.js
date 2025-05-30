@@ -48,7 +48,6 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(response => {
                 if (response.success) {
                     if (!response.data.alreadySeen) {
-                    console.log("inside already seen false")
                         let badge = document.getElementById('notification-badge');
                         if (badge) {
                             badge.innerText = parseInt(badge.innerText || '0') - 1;

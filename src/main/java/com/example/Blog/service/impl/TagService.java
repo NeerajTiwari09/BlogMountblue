@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -33,8 +32,6 @@ public class TagService {
                 if (Objects.isNull(tag)) {
                     tag = new Tag();
                     tag.setName(data);
-                    tag.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-                    tag.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
                     tag = tagRepository.save(tag);
                 }
                 tags.add(tag);

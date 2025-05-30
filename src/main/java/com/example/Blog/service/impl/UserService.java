@@ -10,6 +10,7 @@ import com.example.Blog.repository.RoleRepository;
 import com.example.Blog.repository.UserRepository;
 import com.example.Blog.utils.SystemSetting;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -33,6 +34,9 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private SystemSetting systemSetting;
+
+    @Autowired
+    private LoginAttemptService loginAttemptService;
 
     public Response<Object> registerUser(User user) {
         Response<Object> output = validateInput(user);
@@ -68,6 +72,9 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+        if (loginAttemptService.isBlocked(s)) {
+            throw new LockedException("Too many failed attempts. Account is locked for 5 minutes.");
+        }
         User user = userRepository.findByUsername(s);
         if (user == null) {
             throw new UsernameNotFoundException("Could not find user");

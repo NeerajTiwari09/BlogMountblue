@@ -1,10 +1,7 @@
 package com.example.Blog.model;
 
 import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,7 +10,7 @@ import javax.persistence.*;
 @Data
 @Entity
 @Table(name = "Posts")
-public class Post {
+public class Post extends AuditEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,13 +27,6 @@ public class Post {
     private String publishedAt;
     @Column(name = "is_published")
     private boolean isPublished;
-
-    @Column(name = "created_at")
-    @CreationTimestamp
-    private Timestamp createdAt;
-    @Column(name = "updated_at")
-    @UpdateTimestamp
-    private Timestamp updatedAt;
 
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})

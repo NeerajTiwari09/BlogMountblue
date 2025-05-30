@@ -2,11 +2,12 @@ package com.example.Blog.config;
 
 import com.example.Blog.service.impl.UserService;
 import com.example.Blog.utils.CustomAuthenticationFailureHandler;
+import com.example.Blog.utils.CustomAuthenticationSuccessHandler;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -15,7 +16,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
+@AllArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -52,8 +57,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                     .loginPage("/login")
                     .loginProcessingUrl("/authenticateUser")
-                    .failureHandler(new CustomAuthenticationFailureHandler())
-                    .defaultSuccessUrl("/posts")
+                    .failureHandler(customAuthenticationFailureHandler)
+                    .successHandler(customAuthenticationSuccessHandler)
                     .permitAll()
                 .and()
                     .logout()

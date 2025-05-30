@@ -10,15 +10,9 @@ import java.util.Set;
 @Data
 @Entity
 @Table(name = "Tags")
-public class Tag {
+public class Tag extends AuditEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
-
-    @Column(name="created_at")
-    private Timestamp createdAt;
-
-    @Column(name="updated_at")
-    private Timestamp updatedAt;
 }

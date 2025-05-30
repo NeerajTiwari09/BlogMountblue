@@ -25,7 +25,7 @@ public class HeaderController {
         User user = AuthProvider.getAuthenticatedUser();
         if (Objects.nonNull(user)) {
             List<Notification> allNotifications = notificationService.getAllNotifications(user);
-            allNotifications.sort((o1, o2) -> o2.getCreatedAt().compareTo(o1.getCreatedAt()));
+            allNotifications.sort((o1, o2) -> o2.getCreatedTime().compareTo(o1.getCreatedTime()));
             Long unread = allNotifications.stream().filter(Notification::isUnSeen).count();
             model.addAttribute("unreadNotifications", allNotifications);
             model.addAttribute("unreadCount", unread);

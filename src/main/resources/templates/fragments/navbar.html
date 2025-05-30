@@ -14,10 +14,13 @@
             <a class="navbar-brand" th:href="@{'/posts'}">
                 <img th:src="@{/images/inkwell.png}" alt="Inkwell Logo" class="img-fluid" style="max-width: 90px;">
             </a>
-            <form id="searchForm" class="d-none d-md-flex ms-3 w-100" role="search" th:action="@{/posts/search}" method="get">
-                <input id="searchInput" class="form-control form-control-sm" type="search" name="search"
-                       placeholder="Search posts..." aria-label="Search">
-            </form>
+            <div class="d-none d-md-flex ms-3 w-100 align-items-center" th:classappend="${#httpServletRequest.requestURI.endsWith('/login') || #httpServletRequest.requestURI.endsWith('/register')} ? 'd-md-none' : 'd-md-flex'"
+            >
+                <form id="searchForm" class="ms-3 w-100" role="search" th:action="@{/posts/search}" method="get">
+                    <input id="searchInput" class="form-control form-control-sm" type="search" name="search"
+                           placeholder="Search posts..." aria-label="Search">
+                </form>
+            </div>
             </div>
             <div class="d-flex align-items-center">
                 <!-- Notification bell for small screens -->

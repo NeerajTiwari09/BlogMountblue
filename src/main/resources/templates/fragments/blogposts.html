@@ -20,7 +20,7 @@
             </div>
             <h6 class="card-subtitle mb-2 text-muted">
                 <span th:text="${post.author.name}">Author</span> |
-                <span th:text="${#dates.format(post.createdAt, 'yyyy-MM-dd')}">Date</span>
+                <span th:text="${#temporals.format(post.createdTime, 'yyyy-MM-dd')}">Date</span>
             </h6>
             <div class="mb-2">
                         <span class="badge bg-secondary me-1" th:each="tag : ${post.tags}"

@@ -28,6 +28,18 @@
           transform: translateY(0);
           transition: transform 0.3s ease-in-out;
         }
+        input:checked, select:checked {
+            background-color: #6c757d !important;  /* Bootstrap's text-muted color */
+            border-color: #6c757d !important;
+        }
+
+        input:focus, select:focus {
+            box-shadow: 0 0 0 0.25rem rgba(108, 117, 125, 0.25) !important;
+            border-color: #6c757d !important;
+        }
+        input, select {
+            border-color: #6c757d !important;
+        }
     </style>
 </head>
 <body class="bg-light">
@@ -78,7 +90,7 @@
 
             <p class="text-muted mb-1">
                 By <strong th:text="${post.author.name}">Author</strong> •
-                <span th:text="${#dates.format(post.createdAt, 'yyyy-MM-dd')}">Date</span>
+                <span th:text="${#temporals.format(post.createdTime, 'yyyy-MM-dd')}">Date</span>
             </p>
             <div class="mb-2">
                 <span class="badge bg-secondary me-1" th:each="tag : ${post.tags}" th:text="${tag.name}">Tag</span>
@@ -115,7 +127,7 @@
             <div th:each="comment : ${comments}" class="mb-3 pb-2 border-bottom">
                 <div class="d-flex justify-content-between">
                     <strong th:text="${comment.name}">Name</strong>
-                    <small class="text-muted" th:text="${#dates.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}">Date</small>
+                    <small class="text-muted" th:text="${#temporals.format(comment.createdTime, 'yyyy-MM-dd HH:mm')}">Date</small>
                 </div>
                 <p class="mb-2" th:text="${comment.comment}">Comment text</p>
 

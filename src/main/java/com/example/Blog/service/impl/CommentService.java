@@ -1,8 +1,6 @@
 package com.example.Blog.service.impl;
 
 import com.example.Blog.auth.AuthProvider;
-import com.example.Blog.constant.NotificationUrl;
-import com.example.Blog.enums.NotificationMessage;
 import com.example.Blog.event.EventBuffer;
 import com.example.Blog.event.EventForAuthor;
 import com.example.Blog.model.Comment;
@@ -18,8 +16,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
-import static com.example.Blog.constant.NotificationUrl.BLOG_URL_PATTERN;
 
 @Service
 public class CommentService {
@@ -40,7 +36,7 @@ public class CommentService {
     private EventBuffer eventBuffer;
 
     public List<Comment> findAllByPostIdOrderCreatedAtDesc(Integer postId) {
-        return commentRepository.findAllByPostIdOrderByCreatedAtDesc(postId);
+        return commentRepository.findAllByPostIdOrderByIdDesc(postId);
     }
 
     public void saveOrUpdateComment(Comment comment) {

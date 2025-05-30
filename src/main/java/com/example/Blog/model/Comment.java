@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 @Data
 @Entity
 @Table(name = "Comments")
-public class Comment {
+public class Comment extends AuditEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,10 +21,4 @@ public class Comment {
 	private String comment;
 	@Column(name = "post_id")
 	private Integer postId;
-	@Column(name="created_at")
-	@CreationTimestamp
-	private Timestamp createdAt;
-	@Column(name="updated_at")
-	@UpdateTimestamp
-	private Timestamp updatedAt;
 }

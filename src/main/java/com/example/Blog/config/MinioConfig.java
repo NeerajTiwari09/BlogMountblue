@@ -1,5 +1,7 @@
 package com.example.Blog.config;
 
+import com.example.Blog.utils.SystemSetting;
+import org.springframework.beans.factory.annotation.Autowired;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
@@ -15,13 +17,16 @@ import java.net.URI;
 @Configuration
 public class MinioConfig {
 
+    @Autowired
+    private SystemSetting systemSetting;
+
     @Bean
     public S3Client s3Client() {
         return S3Client.builder()
-                .endpointOverride(URI.create("http://localhost:9000"))
-                .region(Region.US_EAST_1)
+                .endpointOverride(URI.create(systemSetting.getAwsUrl()))
+                .region(Region.of(systemSetting.getAwsRegion()))
                 .credentialsProvider(StaticCredentialsProvider.create(
-                        AwsBasicCredentials.create("admin", "admin123")))
+                        AwsBasicCredentials.create(systemSetting.getAccessKeyId(), systemSetting.getSecretAccessKey())))
                 .serviceConfiguration(S3Configuration.builder()
                         .pathStyleAccessEnabled(true)  // Important for MinIO compatibility
                         .build())

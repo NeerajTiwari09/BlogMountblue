@@ -4,6 +4,7 @@ import com.example.Blog.model.Tag;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,8 +19,8 @@ public class PostDto {
     private String author;
     private String publishedAt;
     private boolean isPublished;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
+    private LocalDateTime createdTime;
+    private LocalDateTime updatedTime;
     private List<Integer> selectedTags;
     private Set<Tag> tags = new HashSet<>();
     private String tagString;

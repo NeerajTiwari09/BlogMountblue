@@ -70,6 +70,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     });
             }
         });
+        lazyLoaderPostContainer.addEventListener("click", function (event) {
+            const savePost = event.target.closest('.save-post-link');
+            if (!savePost) return;
+            event.preventDefault();
+            savePostForUser(savePost)
+        });
     }
 
     const filterForm = document.getElementById('filterForm');
@@ -82,7 +88,6 @@ document.addEventListener("DOMContentLoaded", function () {
             const sortOrder = document.querySelector('input[name="sortOrder"]:checked')?.value;
             const selectedTagIds = Array.from(document.querySelectorAll(".tag-checkbox:checked"))
                   .map(cb => parseInt(cb.value, 10));
-                  console.log("sortField ", formData.get('sortField'))
             const newFiltering = {
                 authorId: formData.get('authorId'),
                 publishedAt: formData.get('publishedAt'),
@@ -90,12 +95,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 sortByField: formData.get('sortField'),
                 order: sortOrder
             }
-            console.log("new ", newFiltering, " pre ", previousFiltering)
             sorting.sortByField = formData.get('sortField');
             sorting.order = sortOrder;
             filterChanged = filtersChanged(previousFiltering, newFiltering)
             if (filterChanged) {
-                console.log("changed ...")
                 page = 0;
                 hasMore = true;
                 previousFiltering = { ...newFiltering, tagIds: [...newFiltering.tagIds] };
@@ -254,4 +257,77 @@ function filtersChanged(oldFilter, newFilter) {
         oldFilter.sortByField !== newFilter.sortByField ||
         oldFilter.order !== newFilter.order
     );
+}
+
+function savePostForUser (savePost) {
+    if (!savePost) return;
+    const postId = savePost.getAttribute('data-id');
+    const formData = new FormData();
+    formData.set("postId", postId);
+    let colRm;
+    let colAdd;
+    initApiCall("/blog/posts/api/save-post", {
+        method: 'POST',
+        body: formData
+    })
+    .then(data => {
+        if (data.success) {
+            if(data.data.liked){
+                colAdd = ("text-primary");
+                colRm = ("text-muted");
+            } else {
+                colRm = ("text-primary");
+                colAdd = ("text-muted");
+            }
+            document.querySelectorAll(`.save-post-link[data-id="${postId}"]`).forEach(el => {
+                el.classList.remove(colRm);
+                el.classList.add(colAdd);
+            });
+            showToast(data.message, 'bg-success');
+        } else {
+            showToast(data.message, 'bg-danger')
+        }
+    })
+    .catch(error => {showToast('Something went wrong!', 'bg-danger')});
+}
+
+const initApiCall  = async (url, {
+       method = 'GET',
+       headers = {},
+       query = {},
+       body = null
+     } = {}) => {
+    try {
+        const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+        const queryString = new URLSearchParams(query).toString();
+        const fullUrl = queryString ? `${url}?${queryString}` : url;
+        const isFormData = body instanceof FormData;
+        const effectiveMethod = isFormData && method.toUpperCase() === 'GET' ? 'POST' : method.toUpperCase();
+        const finalHeaders = isFormData
+            ? {[header]: token, ...headers}
+            : {
+              'Content-Type': 'application/json',
+              [header]: token,
+              ...headers
+            };
+        const fetchOptions = {
+              method: effectiveMethod,
+              headers: finalHeaders
+            };
+        if (body && !['GET', 'HEAD'].includes(effectiveMethod)) {
+          fetchOptions.body = isFormData ? body : JSON.stringify(body);
+        }
+        const response = await fetch(url, fetchOptions);
+        if (!response.ok) {
+          const errorBody = await response.text();
+          throw new Error(`HTTP ${response.status} - ${response.statusText}: ${errorBody}`);
+        }
+        const contentType = response.headers.get('content-type');
+        return contentType && contentType.includes('application/json')
+          ? await response.json()
+          : await response.text();
+    } catch (error) {
+        showToast(error.message, 'bg-danger');
+    }
 }

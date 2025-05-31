@@ -13,6 +13,7 @@ import com.example.Blog.model.Tag;
 import com.example.Blog.model.User;
 import com.example.Blog.service.LikeService;
 import com.example.Blog.service.PostService;
+import com.example.Blog.service.SavePostService;
 import com.example.Blog.service.impl.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,8 @@ public class PostController {
     private UserService userService;
     @Autowired
     private LikeService likeService;
+    @Autowired
+    private SavePostService savePostService;
 
     @RequestMapping("/{id}")
     public String getPostById(@PathVariable("id") int id, Model model) {
@@ -175,6 +178,7 @@ public class PostController {
         searchDto.setPublishedAt(publishedAt);
         searchDto.setTagIds(intTagIds);
         Page<Post> posts = postService.findByFilterCriteria(searchDto);
+        List<Long> postIds = savePostService.getSavedPostIdForUser();
         List<Tag> tags = tagService.findAll();
         List<User> users = userService.findAllAuthors();
         String queryString = request.getQueryString();
@@ -189,6 +193,7 @@ public class PostController {
         }
         model.addAttribute("users", users);
         model.addAttribute("posts", posts);
+        model.addAttribute("savedPostIds", postIds);
         model.addAttribute("tags", tags);
         model.addAttribute("start", start);
         model.addAttribute("currentPage", posts.getPageable().getPageNumber());
@@ -291,10 +296,73 @@ public class PostController {
     @PostMapping("/api")
     public String loadMorePosts(@RequestBody SearchDto searchDto, Model model) {
         Page<Post> posts = postService.findByFilterCriteria(searchDto);
-        if (posts.isEmpty()) {
+        List<Long> postIds = savePostService.getSavedPostIdForUser();
+        if (posts.getTotalPages() != 0 && posts.isEmpty()) {
             return "fragments/empty :: emptyFragment";
+        } else if (posts.isEmpty()) {
+            model.addAttribute("notFoundMessage", "No blog post found.");
+            return "fragments/empty :: noBlogFoundFragment";
         }
         model.addAttribute("posts", posts.getContent());
+        model.addAttribute("savedPostIds", postIds);
         return "fragments/blogposts :: blogpostsFragment";
     }
+
+    @PostMapping("/api/save-post")
+    @ResponseBody
+    public Response<Object> toggleSavePostForUser(@RequestParam Integer postId) {
+        return savePostService.toggleSavePostForUser(postId);
+    }
+
+    @GetMapping("/saved-post")
+    public String getSavedPostForUser(@RequestParam(name = "publishedAt", required = false, defaultValue = "") String publishedAt,
+                                      @RequestParam(name = "authorId", required = false, defaultValue = "0") int authorId,
+                                      @RequestParam(name = "tagIds", required = false) String tagIds,
+                                      @RequestParam(value = "start", required = false, defaultValue = "1") int start,
+                                      @RequestParam(value = "limit", required = false, defaultValue = "10") int limit,
+                                      @RequestParam(value = "sortField", required = false, defaultValue = "publishedAt") String sortField,
+                                      @RequestParam(value = "order", required = false, defaultValue = "desc") String order,
+                                      Model model, HttpServletRequest request) {
+        List<Integer> intTagIds = new ArrayList<>();
+        SearchDto searchDto = new SearchDto();
+        searchDto.setLimit(limit);
+        searchDto.setOffset(start);
+        searchDto.setOrderBy(order);
+        searchDto.setSortByField("id");
+        searchDto.setPublishedAt(publishedAt);
+        searchDto.setAuthorId(authorId);
+        searchDto.setTagIds(intTagIds);
+        User user = AuthProvider.getAuthenticatedUser();
+        if (Objects.nonNull(user)) {
+            Page<Post> posts = savePostService.getSavedPostForUser(searchDto);
+            List<Long> postIds = savePostService.getSavedPostIdForUser();
+            Map<String, Tag> tags = new HashMap<>();
+            Map<String, User> users = new HashMap<>();
+            List<Tag> authorTags = posts.getContent().stream()
+                    .flatMap(post -> post.getTags().stream())
+                    .collect(Collectors.toList());
+            authorTags.forEach(tag -> tags.put(tag.getName(), tag));
+
+            model.addAttribute("posts", posts.getContent());
+            model.addAttribute("savedPostIds", postIds);
+            model.addAttribute("users", users.values());
+            model.addAttribute("tags", tags.values());
+            model.addAttribute("currentPage", posts.getPageable().getPageNumber());
+            model.addAttribute("start", start);
+            model.addAttribute("selectedOrder", order);
+            model.addAttribute("selectedAuthorId", user.getId());
+            model.addAttribute("selectedSortBy", sortField);
+            model.addAttribute("selectedTagIds", intTagIds);
+            model.addAttribute("selectedTagIdsForSort", tagIds);
+            model.addAttribute("selectedPublishedAt", publishedAt);
+            model.addAttribute("sort", ORDER_BY);
+            model.addAttribute("sortBy", SORT_BY);
+            model.addAttribute("queryParams", "");
+            model.addAttribute("searchUrl", "/posts/my-blog/search");
+            model.addAttribute("filterSortUrl", "/posts/my-blog");
+            return "home";
+        }
+        return "/error/access-denied";
+    }
+
 }

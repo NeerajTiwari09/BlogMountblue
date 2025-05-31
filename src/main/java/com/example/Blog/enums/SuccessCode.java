@@ -1,5 +1,8 @@
 package com.example.Blog.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum SuccessCode {
     BLOG_DELETED_SUCCESSFUL("Blog deleted successfully."),
     SUCCESSFUL_PROFILE_UPDATE("Profile updated successfully."),
@@ -13,7 +16,4 @@ public enum SuccessCode {
         this.message = message;
     }
 
-    public String getMessage() {
-        return this.message;
-    }
 }

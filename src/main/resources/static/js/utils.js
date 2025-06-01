@@ -171,6 +171,7 @@ document.addEventListener("DOMContentLoaded", function () {
         el.textContent = formatLikeCount(rawCount);
     });
 
+    loadFiltersFromInputs();
 });
 
 function formatLikeCount(count) {
@@ -330,4 +331,22 @@ const initApiCall  = async (url, {
     } catch (error) {
         showToast(error.message, 'bg-danger');
     }
+}
+
+
+function loadFiltersFromInputs() {
+  const authorEl = document.querySelector('#authorId');
+  const publishedAtEl = document.querySelector('#publishedAt');
+  const sortFieldEl = document.querySelector('#sortField');
+  const sortOrderEl = document.querySelector('input[name="sortOrder"]:checked');
+  const tagElements = document.querySelectorAll('.tag-checkbox:checked');
+
+  filtering.authorId = authorEl ? authorEl.value : '0';
+  filtering.publishedAt = publishedAtEl ? publishedAtEl.value : '';
+  filtering.sortByField = sortFieldEl ? sortFieldEl.value : 'publishedAt';
+  filtering.order = sortOrderEl ? sortOrderEl.value : 'desc';
+
+  filtering.tagIds = tagElements.length > 0
+    ? Array.from(tagElements).map(cb => parseInt(cb.value, 10))
+    : [];
 }

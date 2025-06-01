@@ -16,12 +16,12 @@
             <!--            <h5 >Filter Posts</h5>-->
             <div class="mb-2">
                 <label class="form-label">Published Date</label>
-                <input type="date" name="publishedAt" class="form-control" placeholder="yyyy-mm-dd"
+                <input type="date" id="publishedAt" name="publishedAt" class="form-control" placeholder="yyyy-mm-dd"
                        th:value="${selectedPublishedAt}">
             </div>
             <div class="mb-2">
                 <label class="form-label">Author</label>
-                <select name="authorId" class="form-select">
+                <select id="authorId" name="authorId" class="form-select">
                     <option th:value="${0}" th:text="${'Select Author'}"></option>
                     <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}"
                             th:selected="${user.id == selectedAuthorId}"></option>
@@ -51,7 +51,7 @@
             <div class="mb-3">
                 <label class="form-label">Sort Order:</label>
                 <div class="form-check form-check-inline">
-                    <select class="form-select w-auto" name="sortField">
+                    <select class="form-select w-auto" id="sortField" name="sortField">
                         <option th:each="s : ${sortBy}" th:value="${s.value}" th:text="${s.key}"
                                 th:selected="${s.value == selectedSortBy}"></option>
                     </select>

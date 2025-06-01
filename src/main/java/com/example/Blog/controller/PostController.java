@@ -243,11 +243,14 @@ public class PostController {
         }
         if (Objects.nonNull(user)) {
             Page<Post> posts = postService.getAllBlogsByAuthor(user, searchDto);
+            List<Long> postIds = savePostService.getSavedPostIdForUser();
+
             Map<String, Tag> tags = new HashMap<>();
             List<Tag> authorTags = postService.getCurrentAuthorTags();
             authorTags.forEach(tag -> tags.put(tag.getName(), tag));
 
             model.addAttribute("posts", posts);
+            model.addAttribute("savedPostIds", postIds);
             model.addAttribute("users", Collections.singleton(user));
             model.addAttribute("tags", tags.values());
             model.addAttribute("currentPage", posts.getPageable().getPageNumber());

@@ -8,22 +8,9 @@
 <div class="col-12" th:fragment="blogpostsFragment (posts)" th:each="post : ${posts}">
     <div class="card border-0 shadow-sm h-100">
         <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center">
+<!--            <div class="d-flex justify-content-between align-items-center">-->
                 <h5 class="card-title" th:text="${post.title}">Post Title</h5>
-                <div class="d-flex align-items-center">
-                    <th:block th:if="${currentUser != null && savedPostIds != null}">
-                        <a class="save-post-link me-1 fs-5" th:attr="data-id=${post.id}" href="#"
-                           th:classappend="${#lists.contains(savedPostIds, post.id?.longValue())} ? 'text-primary' : 'text-muted'">
-                            <i id="postSaved" class="bi bi-bookmark-check-fill"></i>
-                        </a>
-                    </th:block>
-                    <th:block th:with="likeUserIds=${post.likes.?[user != null].![user.id]}">
-                        <i class="fa-solid fa-thumbs-up fa-lg me-1"
-                           th:classappend="${#lists.contains(likeUserIds, currentUser != null ? currentUser.id : 0)} ? 'text-primary' : 'text-muted'"></i>
-                    </th:block>
-                    <span class="likes-count text-muted" th:attr="data-raw-count=${post.likesCount}" th:text="${post.likesCount}"></span>
-                </div>
-            </div>
+<!--            </div>-->
             <h6 class="card-subtitle mb-2 text-muted">
                 <span th:text="${post.author.name}">Author</span> |
                 <span th:text="${#temporals.format(post.createdTime, 'yyyy-MM-dd')}">Date</span>
@@ -32,9 +19,20 @@
                         <span class="badge bg-secondary me-1" th:each="tag : ${post.tags}"
                               th:text="${tag.name}">Tag</span>
             </div>
-            <p class="card-text mt-2" th:text="${post.excerpt}">Post excerpt here...</p>
-            <a th:href="@{'/posts/' + ${post.id}}" class="btn btn-outline-primary btn-sm">Read
-                more</a>
+            <a th:href="@{'/posts/' + ${post.id}}" class="card-text mt-2 text-decoration-none text-black" th:text="${post.excerpt}">Post excerpt here...</a>
+            <div class="d-flex align-items-center mt-3">
+                <th:block th:if="${currentUser != null && savedPostIds != null}">
+                    <a class="save-post-link me-2 fs-5" th:attr="data-id=${post.id}" href="#"
+                       th:classappend="${#lists.contains(savedPostIds, post.id?.longValue())} ? 'text-primary' : 'text-muted'">
+                        <i id="postSaved" class="bi bi-bookmark-check-fill"></i>
+                    </a>
+                </th:block>
+                <th:block th:with="likeUserIds=${post.likes.?[user != null].![user.id]}">
+                    <i class="fa-solid fa-thumbs-up fa-lg me-2"
+                       th:classappend="${#lists.contains(likeUserIds, currentUser != null ? currentUser.id : 0)} ? 'text-primary' : 'text-muted'"></i>
+                </th:block>
+                <small class="likes-count text-muted" th:attr="data-raw-count=${post.likesCount}" th:text="${post.likesCount}"></small>
+            </div>
         </div>
     </div>
 </div>

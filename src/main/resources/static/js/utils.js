@@ -59,6 +59,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const lazyLoaderPostContainer = document.getElementById('lazyLoaderAndContainer');
     const loadingIndicator = document.getElementById('loadingIndicator');
+    const savePostContainer = document.getElementById('savePostContainer');
+    const followUnfollowLink = document.getElementById('followUnfollowLink');
 
     if (lazyLoaderPostContainer) {
         lazyLoaderPostContainer.addEventListener('scroll', function () {
@@ -75,6 +77,25 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!savePost) return;
             event.preventDefault();
             savePostForUser(savePost)
+        });
+    }
+
+    if (savePostContainer) {
+        savePostContainer.addEventListener("click", function (event) {
+            const savePost = event.target.closest('.save-post-link');
+            if (!savePost) return;
+            event.preventDefault();
+            savePostForUser(savePost)
+        });
+    }
+
+    if (followUnfollowLink) {
+        followUnfollowLink.addEventListener("click", function (event) {
+            const authorId = followUnfollowLink.dataset.id
+            if (!authorId) return;
+            event.preventDefault();
+            console.log(authorId)
+            followUnfollowUser(authorId)
         });
     }
 
@@ -273,7 +294,7 @@ function savePostForUser (savePost) {
     })
     .then(data => {
         if (data.success) {
-            if(data.data.liked){
+            if(data.data.toggled){
                 colAdd = ("text-primary");
                 colRm = ("text-muted");
             } else {
@@ -284,6 +305,37 @@ function savePostForUser (savePost) {
                 el.classList.remove(colRm);
                 el.classList.add(colAdd);
             });
+            showToast(data.message, 'bg-success');
+        } else {
+            showToast(data.message, 'bg-danger')
+        }
+    })
+    .catch(error => {showToast('Something went wrong!', 'bg-danger')});
+}
+
+function followUnfollowUser (authorId) {
+    if (!authorId) return;
+    const followLink = document.getElementById('followUnfollowLink');
+    const isFollowing = followLink.textContent.trim() === "Unfollow";
+    const formData = new FormData();
+    formData.set("authorId", authorId);
+    let colRm;
+    let colAdd;
+    initApiCall("/blog/user/toggle-follow", {
+        method: 'POST',
+        body: formData
+    })
+    .then(data => {
+        if (data.success) {
+            if(data.data.toggled) {
+                followLink.textContent = isFollowing ? "Follow" : "Unfollow";
+//                followLink.classList.toggle("btn-outline-primary");
+//                followLink.classList.toggle("btn-outline-danger");
+            } else {
+                followLink.textContent = isFollowing ? "Follow" : "Unfollow";
+//                followLink.classList.toggle("btn-outline-primary");
+//                followLink.classList.toggle("btn-outline-danger");
+            }
             showToast(data.message, 'bg-success');
         } else {
             showToast(data.message, 'bg-danger')

@@ -13,10 +13,10 @@ public enum ErrorCode {
     INVALID_POST("Doesn't find the requested post."),
     ERROR_UPDATING_PROFILE("Something went wrong while updating profile."),
     LOGIN_REQUIRED("User need to login first."),
-    FILE_SIZE_EXCEED("The field image exceeds its maximum permitted size of 1048576 bytes."),
     ALL_PASSWORD_FIELDS_MANDATORY("All password fields are mandatory."),
     INCORRECT_CURRENT_PASSWORD("Current password is incorrect."),
-    PASSWORD_NOT_MATCHED("New password does not match with the confirm password.");
+    PASSWORD_NOT_MATCHED("New password does not match with the confirm password."),
+    USER_NOT_FOUND("User does not found.");
 
     private final String errorMessage;
 

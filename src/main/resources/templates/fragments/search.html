@@ -8,7 +8,7 @@
     <div class="d-md-none" th:fragment="searchFragment (searchedText, url)">
         <form id="searchForm2" th:action="@{${url}}" >
             <div class="input-group">
-            <input id="searchInput2" type="search" name="search" class="form-control me-2" placeholder="Search posts..."
+            <input id="searchInput2" type="search" name="search" class="form-control" placeholder="Search posts..."
                    th:value="${searchedText}" aria-label="Search">
 <!--            <button type="submit" class="btn btn-primary">-->
 <!--                <i class="fas fa-search me-1"></i>Search-->

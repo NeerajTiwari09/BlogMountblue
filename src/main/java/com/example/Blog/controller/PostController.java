@@ -55,6 +55,7 @@ public class PostController {
         boolean isAuthorsPost = false;
         Post post = postService.getById(id).orElse(null);
         Integer likesCount = likeService.getLikeCountByPost(post);
+        List<Long> savedPostIds = savePostService.getSavedPostIdForUser();
         boolean likedByCurrentUser = likeService.likedByCurrentUser(post, user);
         if (Objects.nonNull(user) && Objects.nonNull(post) && post.getAuthor().getUsername().equals(user.getUsername())) {
             isAuthorsPost = true;
@@ -62,6 +63,7 @@ public class PostController {
         List<Comment> comments = commentService.findAllByPostIdOrderCreatedAtDesc(id);
         model.addAttribute("isAuthorsPost", isAuthorsPost);
         model.addAttribute("post", post);
+        model.addAttribute("savedPostIds", savedPostIds);
         model.addAttribute("newComment", newComment);
         model.addAttribute("comments", comments);
         model.addAttribute("likeForm", new LikeDto());

@@ -4,6 +4,7 @@ import com.example.Blog.constant.ToastConstant;
 import com.example.Blog.dto.output_dto.Response;
 import com.example.Blog.model.Login;
 import com.example.Blog.model.User;
+import com.example.Blog.service.FollowService;
 import com.example.Blog.service.impl.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -20,6 +21,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private FollowService followService;
 
     @GetMapping("/login")
     public String viewLoginPage(@RequestParam(value = "error", required = false, defaultValue = "") String error,
@@ -55,5 +59,11 @@ public class UserController {
         model.addAttribute(ToastConstant.TOAST_MESSAGE, output.getMessage());
         model.addAttribute(ToastConstant.TOAST_STATUS_COLOR, ToastConstant.TOAST_BG_DANGER);
         return "register";
+    }
+
+    @PostMapping("/user/toggle-follow")
+    @ResponseBody
+    public Response<Object> followUser(@RequestParam Integer authorId) {
+        return followService.toggleFollowUser(authorId);
     }
 }

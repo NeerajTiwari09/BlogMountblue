@@ -13,7 +13,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(FileSizeLimitExceededException.class)
     @ResponseBody
     public Response<Object> handleFileSizeLimitException(FileSizeLimitExceededException e) {
-//        return new Response<>(ErrorCode.FILE_SIZE_EXCEED);
+        Response<Object> response = new Response<>();
+        response.setSuccess(Boolean.FALSE);
+        response.setMessage(e.getMessage());
+        return response;
+    }
+
+
+    @ExceptionHandler(UserNotFoundException.class)
+    @ResponseBody
+    public Response<Object> handleUserNotFoundException(UserNotFoundException e) {
         Response<Object> response = new Response<>();
         response.setSuccess(Boolean.FALSE);
         response.setMessage(e.getMessage());

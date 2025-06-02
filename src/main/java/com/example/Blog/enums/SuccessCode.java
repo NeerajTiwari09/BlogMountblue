@@ -8,7 +8,9 @@ public enum SuccessCode {
     SUCCESSFUL_PROFILE_UPDATE("Profile updated successfully."),
     SUCCESSFUL_PASSWORD_CHANGED("Password changed successfully."),
     SAVED_TO_LIBRARY("Saved to your library."),
-    REMOVED_FROM_LIBRARY("Removed from your library.");
+    REMOVED_FROM_LIBRARY("Removed from your library."),
+    FOLLOW_SUCCESSFULLY("User has been followed successfully."),
+    UNFOLLOW_SUCCESSFULLY("User has been unfollowed successfully.");
 
     private final String message;
 

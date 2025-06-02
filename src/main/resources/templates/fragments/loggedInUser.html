@@ -12,10 +12,10 @@
         <th:block th:if="${currentUser != null and currentUser.imageUrl != null}">
             <img th:src="@{${currentUser.imageUrl}}" alt="User Image"
                  style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;"
-                 class="me-2 border border-secondary rounded-circle"/>
+                 class="border border-secondary rounded-circle"/>
         </th:block>
         <th:block th:unless="${currentUser != null and currentUser.imageUrl != null}">
-            <i class="bi bi-person-circle me-2 d-inline-flex align-items-center justify-content-center"
+            <i class="bi bi-person-circle d-inline-flex align-items-center justify-content-center"
                style="width: 32px; height: 32px; font-size: 32px;"></i>
         </th:block>
     </a>

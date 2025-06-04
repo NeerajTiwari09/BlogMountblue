@@ -19,7 +19,7 @@
                         <span class="badge bg-secondary me-1" th:each="tag : ${post.tags}"
                               th:text="${tag.name}">Tag</span>
             </div>
-            <a th:href="@{'/posts/' + ${post.id}}" class="card-text mt-2 text-decoration-none text-black" th:text="${post.excerpt}">Post excerpt here...</a>
+            <a th:href="@{'/posts/' + ${post.id}}" class="card-text mt-2 text-decoration-none text-black text-break text-wrap" th:text="${post.excerpt}">Post excerpt here...</a>
             <div class="d-flex align-items-center mt-3">
                 <th:block th:if="${currentUser != null && savedPostIds != null}">
                     <a class="save-post-link me-2 fs-5" th:attr="data-id=${post.id}" href="#"

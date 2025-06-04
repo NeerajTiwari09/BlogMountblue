@@ -150,11 +150,22 @@
                     </div>
                     <div th:each="comment : ${comments}" class="mb-3 pb-2 border-bottom">
                         <div class="d-flex justify-content-between">
-                            <strong th:text="${comment.name}">Name</strong>
+                            <div class="d-flex align-items-center">
+                                <th:block th:if="${comment.commenter.imageUrl != null}">
+                                    <img th:src="@{${comment.commenter.imageUrl}}" alt="User Image"
+                                         style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;"
+                                         class="border border-secondary rounded-circle me-2"/>
+                                </th:block>
+                                <th:block th:unless="${comment.commenter.imageUrl != null}">
+                                    <i class="bi bi-person-circle d-inline-flex align-items-center justify-content-center me-2"
+                                       style="width: 32px; height: 32px; font-size: 32px;"></i>
+                                </th:block>
+                                <strong th:text="${comment.name}">Name</strong>
+                            </div>
                             <small class="text-muted"
                                    th:text="${#temporals.format(comment.createdTime, 'yyyy-MM-dd HH:mm')}">Date</small>
                         </div>
-                        <p class="mb-2" th:text="${comment.comment}">Comment text</p>
+                        <p class="my-2" th:text="${comment.comment}">Comment text</p>
 
                         <!-- Comment Actions -->
                         <div th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'')') ||

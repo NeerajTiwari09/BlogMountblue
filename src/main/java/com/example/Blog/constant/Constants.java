@@ -14,4 +14,6 @@ public class Constants {
         put("Author", "author");
         put("Title", "title");
     }};
+
+    public static final String CLEAR_ALL = "ALL";
 }

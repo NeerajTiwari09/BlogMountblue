@@ -3,6 +3,7 @@ package com.example.Blog.controller;
 import com.example.Blog.auth.AuthProvider;
 import com.example.Blog.constant.ToastConstant;
 import com.example.Blog.dto.UserDto;
+import com.example.Blog.dto.input_dto.CommentDto;
 import com.example.Blog.dto.input_dto.LikeDto;
 import com.example.Blog.dto.input_dto.PostDto;
 import com.example.Blog.dto.input_dto.SearchDto;
@@ -15,6 +16,7 @@ import com.example.Blog.service.LikeService;
 import com.example.Blog.service.PostService;
 import com.example.Blog.service.SavePostService;
 import com.example.Blog.service.impl.*;
+import com.example.Blog.utils.Utils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -47,6 +49,8 @@ public class PostController {
     private LikeService likeService;
     @Autowired
     private SavePostService savePostService;
+    @Autowired
+    private Utils utils;
 
     @RequestMapping("/{id}")
     public String getPostById(@PathVariable("id") int id, Model model) {
@@ -61,11 +65,12 @@ public class PostController {
             isAuthorsPost = true;
         }
         List<Comment> comments = commentService.findAllByPostIdOrderCreatedAtDesc(id);
+        List<CommentDto> commentDtos = utils.mapToDto(comments);
         model.addAttribute("isAuthorsPost", isAuthorsPost);
         model.addAttribute("post", post);
         model.addAttribute("savedPostIds", savedPostIds);
         model.addAttribute("newComment", newComment);
-        model.addAttribute("comments", comments);
+        model.addAttribute("comments", commentDtos);
         model.addAttribute("likeForm", new LikeDto());
         model.addAttribute("likesCount", likesCount);
         model.addAttribute("isPostLikedByCurrentUser", likedByCurrentUser);

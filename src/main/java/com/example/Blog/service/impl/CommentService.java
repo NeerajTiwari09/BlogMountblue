@@ -52,7 +52,7 @@ public class CommentService {
         commentToSave.setCommenter(user);
         commentRepository.save(commentToSave);
         Optional<Post> post = postRepository.findById(comment.getPostId());
-        if (post.isPresent() && !user.getUsername().equals(post.get().getAuthor().getUsername())) {
+        if (post.isPresent() && Objects.nonNull(user) && !user.getUsername().equals(post.get().getAuthor().getUsername())) {
             eventBuffer.bufferComments(new EventForAuthor(post.get(), user, post.get().getAuthor()));
         }
     }

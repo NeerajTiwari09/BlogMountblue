@@ -16,7 +16,9 @@ public enum ErrorCode {
     ALL_PASSWORD_FIELDS_MANDATORY("All password fields are mandatory."),
     INCORRECT_CURRENT_PASSWORD("Current password is incorrect."),
     PASSWORD_NOT_MATCHED("New password does not match with the confirm password."),
-    USER_NOT_FOUND("User does not found.");
+    USER_NOT_FOUND("User does not found."),
+    RUNTIME_EXCEPTION("Something went wrong."),
+    NO_KEY_SELECTED_TO_CLEAR("Select key to clear cache or pass \"ALL\" to clear all.");
 
     private final String errorMessage;
 

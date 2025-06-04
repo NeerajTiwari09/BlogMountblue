@@ -1,14 +1,21 @@
 package com.example.Blog.model;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Cache;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
+@Setter
+@Getter
 @Entity
 @Table(name = "Users")
+@ToString
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "users")
 public class User extends AuditEntity {
 
     @Id

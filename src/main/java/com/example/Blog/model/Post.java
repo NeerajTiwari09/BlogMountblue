@@ -1,15 +1,23 @@
 package com.example.Blog.model;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.*;
 
-@Data
+import org.hibernate.annotations.Cache;
+
+@Setter
+@Getter
 @Entity
 @Table(name = "Posts")
+@ToString
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "posts")
 public class Post extends AuditEntity {
 
     @Id
@@ -38,7 +46,7 @@ public class Post extends AuditEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Like> likes = new HashSet<>();
 
-    public Integer getLikesCount(){
+    public Integer getLikesCount() {
         return this.likes.size();
     }
 }

@@ -5,28 +5,20 @@
     <title>Pagination Fragment</title>
 </head>
 <body>
-    <div class="modal fade" id="likedByUsersModal" th:fragment="userListFragment ()"
-     tabindex="-1" aria-labelledby="likedByUsersModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="likedByUsersModalLabel">
-                    <i class="fa-solid fa-thumbs-up text-primary me-2"></i> Liked By
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body d-flex flex-column" id="likedUsersContainer">
-<!--                <div class="d-flex justify-content-between align-items-center"-->
-<!--                     th:each="user: ${users}">-->
-<!--                    <img th:src="@{${user.imageUrl}}" alt="Profile Image"-->
-<!--                         class="rounded-circle border mx-auto"-->
-<!--                         style="height: 100px; width: 100px;"/>-->
-<!--                    <strong th:text="${user.name}">Author</strong>-->
-<!--                </div>-->
-            </div>
-        </div>
+<th:block th:fragment="userListFragment">
+    <div class="d-flex justify-content-between align-items-center mb-3"
+         th:each="user: ${users}">
+        <th:block th:if="${user.imageUrl != null}">
+        <img th:src="@{${user.imageUrl}}" alt="Profile Image"
+             class="rounded-circle border"
+             style="height: 50px; width: 50px; object-fit: cover;"/>
+        </th:block>
+        <th:block th:unless="${user.imageUrl != null}">
+        <i class="bi bi-person-circle fs-1 d-inline-flex align-items-center justify-content-center"
+           style="height: 50px; width: 50px; object-fit: cover;"></i>
+        </th:block>
+        <strong th:text="${user.name}">Author</strong>
     </div>
-</div>
+</th:block>
 </body>
 </html>

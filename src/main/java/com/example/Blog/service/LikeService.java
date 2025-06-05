@@ -2,6 +2,7 @@ package com.example.Blog.service;
 
 import com.example.Blog.dto.UserDto;
 import com.example.Blog.dto.input_dto.LikeDto;
+import com.example.Blog.dto.input_dto.SearchDto;
 import com.example.Blog.dto.output_dto.Response;
 import com.example.Blog.model.Post;
 import com.example.Blog.model.User;
@@ -13,4 +14,6 @@ public interface LikeService {
     Integer getLikeCountByPost(Post post);
     boolean likedByCurrentUser(Post post, User user);
     Response<LikeDto> toggleLike(Integer postId);
+
+    Response<List<UserDto>> getLazyLikes(SearchDto searchDto);
 }

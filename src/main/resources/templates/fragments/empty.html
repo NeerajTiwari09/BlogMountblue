@@ -5,7 +5,8 @@
     <title>Pagination Fragment</title>
 </head>
 <body>
-<div th:fragment="emptyFragment"></div>
+<div th:fragment="emptyFragment" id="empty-fragment"
+     th:attr="data-message=${toastMessage == null ? '' : toastMessage}"></div>
 <div th:fragment="noBlogFoundFragment" class="col-12 bg-white p-3 rounded shadow-sm h-100 d-flex justify-content-center align-items-center"
      th:if="${notFoundMessage}">
     <span th:text="${notFoundMessage}">No blogs available at the moment.</span>

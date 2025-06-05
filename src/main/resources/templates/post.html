@@ -67,21 +67,26 @@
                 <div class="">
                     <div class="d-flex justify-content-between align-items-center my-3 py-1 border-top border-bottom">
                         <div class="me-3 d-flex align-items-center">
-                            <form id="likeForm" th:action="@{/posts/like}" method="post" th:object="${likeForm}">
+                            <form id="likeForm" th:action="@{/like}" method="post" th:object="${likeForm}">
                                 <input type="hidden" name="postId" th:value="${post.id}"/>
                                 <button type="submit" class="btn btn-lg px-1 py-0">
                                     <i class="fa-solid fa-thumbs-up"
                                        th:classappend="${isPostLikedByCurrentUser} ? 'text-primary' : 'text-muted'"></i>
                                 </button>
                             </form>
-                            <form id="likedUserForm" th:action="@{/posts/liked-by}" method="post">
-                                <input type="hidden" name="postId" th:value="${post.id}"/>
-                                <button type="submit" class="btn btn-lg p-0">
-                                    <small id="likes-count" class="likes-count text-muted"
-                                           th:attr="data-raw-count=${likesCount}"
-                                    >0 likes</small>
-                                </button>
-                            </form>
+<!--                            <form id="likedUserForm" th:action="@{/posts/liked-by}" method="post">-->
+<!--                                <input type="hidden" name="postId" th:value="${post.id}"/>-->
+<!--                                <button type="submit" class="btn btn-lg p-0">-->
+<!--                                    <small id="likes-count" class="likes-count text-muted"-->
+<!--                                           th:attr="data-raw-count=${likesCount}"-->
+<!--                                    >0 likes</small>-->
+<!--                                </button>-->
+<!--                            </form>-->
+                            <button id="open-likes" class="btn btn-lg p-0" th:attr="data-post-id=${post.id}">
+                                <small id="likes-count" class="likes-count text-muted"
+                                       th:attr="data-raw-count=${likesCount}"
+                                >0 likes</small>
+                            </button>
                             <div class="mx-4">
                                 <i class="bi bi-chat fs-5"></i>
                             </div>
@@ -111,7 +116,6 @@
                             </th:block>
                         </div>
                     </div>
-                    <div th:replace="fragments/userList :: userListFragment"></div>
                     <div class="mb-2">
                         <span class="badge bg-secondary me-1" th:each="tag : ${post.tags}"
                               th:text="${tag.name}">Tag</span>
@@ -148,49 +152,32 @@
                     <div th:if="${#lists.isEmpty(comments)}">
                         <p class="text-muted">No comments yet.</p>
                     </div>
-                    <div th:each="comment : ${comments}" class="mb-3 pb-2 border-bottom">
-                        <div class="d-flex justify-content-between">
-                            <div class="d-flex align-items-center">
-                                <th:block th:if="${comment.commenter.imageUrl != null}">
-                                    <img th:src="@{${comment.commenter.imageUrl}}" alt="User Image"
-                                         style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;"
-                                         class="border border-secondary rounded-circle me-2"/>
-                                </th:block>
-                                <th:block th:unless="${comment.commenter.imageUrl != null}">
-                                    <i class="bi bi-person-circle d-inline-flex align-items-center justify-content-center me-2"
-                                       style="width: 32px; height: 32px; font-size: 32px;"></i>
-                                </th:block>
-                                <strong th:text="${comment.name}">Name</strong>
-                            </div>
-                            <small class="text-muted"
-                                   th:text="${#temporals.format(comment.createdTime, 'yyyy-MM-dd HH:mm')}">Date</small>
-                        </div>
-                        <p class="my-2" th:text="${comment.comment}">Comment text</p>
-
-                        <!-- Comment Actions -->
-                        <div th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'')') ||
-                                 (#authorization.expression('hasAnyAuthority(''AUTHOR'')') && isAuthorsPost) ||
-                                 (currentUser != null && currentUser.id == comment.commenter.id)}">
-                            <form th:action="@{/comment/update}" method="get" class="d-inline">
-                                <input type="hidden" th:value="${comment.id}" name="id">
-                                <button type="submit" class="btn btn-outline-primary btn-sm">
-                                    <i class="fa-solid fa-pen"></i>
-                                </button>
-                            </form>
-                            <form th:action="@{/comment/delete}" method="get" class="d-inline">
-                                <input type="hidden" th:value="${post.id}" name="postId">
-                                <input type="hidden" th:value="${comment.id}" name="commentId">
-                                <button type="submit" class="btn btn-outline-danger btn-sm">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
+                    <div th:replace="fragments/comment :: commentFragment"></div>
+                    <button id="open-comments" class="btn btn-sm" th:unless="${#lists.isEmpty(comments)}"
+                            th:attr="data-post-id=${post.id}">View Comments</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
+</div>
+<div class="offcanvas offcanvas-end" tabindex="-1" id="commentsPanel" aria-labelledby="commentsPanelLabel">
+    <div class="offcanvas-header">
+        <h5 id="commentsPanelLabel">Comments</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body" id="commentsPanelBody" style="overflow-y: auto; height: 100%;">
+        <div th:replace="fragments/comment :: commentFragment"></div>
+    </div>
+</div>
+<div class="offcanvas offcanvas-end" tabindex="-1" id="likesPanel" aria-labelledby="likesPanelLabel">
+    <div class="offcanvas-header">
+        <h5 id="likesPanelLabel">Likes</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body" id="likesPanelBody" style="overflow-y: auto; height: 100%;">
+        <div th:replace="fragments/userList :: userListFragment"></div>
+    </div>
 </div>
 <div th:if="${toastMessage}" th:replace="fragments/toast :: toastFragment (${toastMessage}, ${toastStatusColor})"></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -199,6 +186,7 @@
 <script th:src="@{/js/utils.js}"></script>
 <script th:src="@{/js/toast.js}"></script>
 <script th:src="@{/js/like.js}"></script>
+<script th:src="@{/js/comment.js}"></script>
 <!-- Toast UI Editor Markdown -->
 <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 <script th:src="@{/js/md-viewer.js}"></script>

@@ -3,6 +3,7 @@ package com.example.Blog.repository;
 import com.example.Blog.model.Like;
 import com.example.Blog.model.Post;
 import com.example.Blog.model.User;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import javax.transaction.Transactional;
@@ -18,4 +19,5 @@ public interface LikeRepository extends JpaRepository<Like, Integer> {
     void deleteAllByPost(Post post);
 
     List<Like> findAllUserByPost(Post post);
+    List<Like> findAllUserByPost(Post post, Pageable pageable);
 }

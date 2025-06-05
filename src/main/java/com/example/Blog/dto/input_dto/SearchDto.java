@@ -9,7 +9,7 @@ import java.util.Map;
 @Data
 public class SearchDto {
     Map<String, Object> query = new HashMap<>();
-    private int limit;
+    private int limit = 10;
     private int offset;
     private String sortByField;
     private String orderBy;

@@ -6,9 +6,7 @@ import com.example.Blog.model.Login;
 import com.example.Blog.model.User;
 import com.example.Blog.service.impl.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +29,7 @@ public class CommentController {
     }
 
     @GetMapping("/update")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_AUTHOR')")
     public String viewUpdateCommentPage(@RequestParam("id") Integer id, Model model) {
         User user = AuthProvider.getAuthenticatedUser();
         if (Objects.isNull(user)) {
@@ -44,6 +43,7 @@ public class CommentController {
     }
 
     @PostMapping("/update")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_AUTHOR')")
     public String updateComment(@ModelAttribute("updateComment") Comment comment, RedirectAttributes redirectAttributes) {
         commentService.saveOrUpdateComment(comment);
         redirectAttributes.addFlashAttribute("toastMessage", "Comment saved successfully!");
@@ -52,6 +52,7 @@ public class CommentController {
     }
 
     @GetMapping("/delete")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_AUTHOR')")
     public String deleteComment(@RequestParam("commentId") Integer commentId, @RequestParam("postId") Integer postId,
                                 RedirectAttributes redirectAttributes) {
         commentService.deleteCommentById(commentId);

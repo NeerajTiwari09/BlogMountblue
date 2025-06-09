@@ -43,7 +43,7 @@ public class UserService implements UserDetailsService {
         if (!output.isSuccess()) {
             return output;
         }
-        Role role = roleRepository.findByName(RoleName.AUTHOR);
+        Role role = roleRepository.findByName(RoleName.ROLE_AUTHOR);
         user.getRoles().add(role);
         String encode = passwordEncoder.encode(user.getPassword());
         user.setPassword(encode);

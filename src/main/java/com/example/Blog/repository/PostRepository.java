@@ -17,7 +17,7 @@ import java.util.Set;
 public interface PostRepository extends JpaRepository<Post, Integer> {
 
     @Query("select DISTINCT p from Post as p JOIN p.tags t where t.id in :tagIds or p.title like lower(CONCAT('%',:searchString,'%')) or " +
-            "p.content like lower(CONCAT('%',:searchString,'%')) or p.author like lower(CONCAT('%',:searchString,'%')) or " +
+            "p.content like lower(CONCAT('%',:searchString,'%')) or p.author.name like lower(CONCAT('%',:searchString,'%')) or " +
             "p.excerpt like lower(CONCAT('%',:searchString,'%'))")
     Page<Post> getBySearchString(@Param("searchString") String searchString, @Param("tagIds") Set<Integer> tagIds, Pageable pageable);
 

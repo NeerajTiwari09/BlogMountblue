@@ -48,7 +48,7 @@
 </head>
 <body class="bg-light">
 
-<div th:replace="fragments/navbar :: navbarFragment (${unreadCount}, ${unreadNotifications})"></div>
+<div th:replace="~{fragments/navbar :: navbarFragment (${unreadCount}, ${unreadNotifications})}"></div>
 <!-- Container for the content -->
 <div class="container-fluid mb-4 mt-4">
     <!-- Header -->
@@ -110,7 +110,7 @@
         </div>
     </div>
 </div>
-<div th:if="${toastMessage}" th:replace="fragments/toast :: toastFragment (${toastMessage}, ${toastStatusColor})"></div>
+<div th:if="${toastMessage}" th:replace="~{fragments/toast :: toastFragment (${toastMessage}, ${toastStatusColor})}"></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>

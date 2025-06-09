@@ -7,6 +7,7 @@ import com.example.Blog.model.User;
 import com.example.Blog.service.FollowService;
 import com.example.Blog.service.impl.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -63,6 +64,7 @@ public class UserController {
 
     @PostMapping("/user/toggle-follow")
     @ResponseBody
+    @PreAuthorize("isAuthenticated()")
     public Response<Object> followUser(@RequestParam Integer authorId) {
         return followService.toggleFollowUser(authorId);
     }

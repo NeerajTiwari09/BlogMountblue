@@ -1,11 +1,7 @@
 package com.example.Blog.model;
 
+import jakarta.persistence.*;
 import lombok.Data;
-
-import javax.persistence.*;
-import java.sql.Timestamp;
-import java.util.HashSet;
-import java.util.Set;
 
 @Data
 @Entity

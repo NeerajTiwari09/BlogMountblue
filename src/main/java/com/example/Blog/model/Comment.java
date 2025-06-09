@@ -1,11 +1,7 @@
 package com.example.Blog.model;
 
+import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import javax.persistence.*;
-import java.sql.Timestamp;
 
 @Data
 @Entity
@@ -18,6 +14,7 @@ public class Comment extends AuditEntity {
 	@ManyToOne
 	private User commenter;
 	private String name;
+	@Column(name = "comment", columnDefinition = "text")
 	private String comment;
 	@Column(name = "post_id")
 	private Integer postId;

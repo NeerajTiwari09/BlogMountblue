@@ -5,6 +5,7 @@ import com.example.Blog.dto.output_dto.Response;
 import com.example.Blog.model.User;
 import com.example.Blog.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ public class NotificationController {
     private NotificationService notificationService;
 
     @GetMapping("/{id}/read")
+    @PreAuthorize("isAuthenticated()")
     public Response<Object> readNotification(@PathVariable Long id) {
         User user = AuthProvider.getAuthenticatedUser();
         return notificationService.markAsRead(id, user);

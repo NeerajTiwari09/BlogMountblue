@@ -72,7 +72,6 @@ function updateProfile(profileUpdateForm) {
         }
     })
     .catch(error => {
-        console.error(error)
         showToast('Something went wrong!', 'bg-danger')
     });
 }

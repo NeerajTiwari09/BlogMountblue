@@ -4,6 +4,7 @@ import com.example.Blog.dto.UserDto;
 import com.example.Blog.model.User;
 import com.example.Blog.service.FollowService;
 import com.example.Blog.service.MinioService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -41,5 +42,10 @@ public class GlobalUserAdvice {
             return userDto;
         }
         return null;
+    }
+
+    @ModelAttribute("currentUri")
+    public String currentUri(HttpServletRequest request) {
+        return request.getRequestURI();
     }
 }

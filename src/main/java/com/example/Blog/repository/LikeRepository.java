@@ -5,7 +5,7 @@ import com.example.Blog.model.Post;
 import com.example.Blog.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 

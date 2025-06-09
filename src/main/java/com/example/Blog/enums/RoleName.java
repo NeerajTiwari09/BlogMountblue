@@ -1,7 +1,7 @@
 package com.example.Blog.enums;
 
 public enum RoleName {
-    AUTHOR,
-    USER,
-    ADMIN;
+    ROLE_AUTHOR,
+    ROLE_USER,
+    ROLE_ADMIN;
 }

@@ -94,7 +94,6 @@ document.addEventListener("DOMContentLoaded", function () {
             const authorId = followUnfollowLink.dataset.id
             if (!authorId) return;
             event.preventDefault();
-            console.log(authorId)
             followUnfollowUser(authorId)
         });
     }
@@ -223,7 +222,6 @@ const loadMorePosts = async (loadingIndicator, lazyLoaderPostContainer) => {
             tagIds: filtering.tagIds,
             searchSting: searchString
         };
-        console.log(requestBody)
         const response = await fetch(`/blog/posts/api`, {
             method: 'POST',
             body: JSON.stringify(requestBody),

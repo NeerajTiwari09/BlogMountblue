@@ -1,19 +1,17 @@
 package com.example.Blog.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.ToString;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import org.hibernate.annotations.Cache;
 
-@Setter
-@Getter
+@Data
 @Entity
 @Table(name = "Posts")
 @ToString
@@ -26,7 +24,7 @@ public class Post extends AuditEntity {
     private String title;
     private String excerpt;
     @Lob
-    @Column(name = "content")
+    @Column(name = "content", columnDefinition = "text")
     private String content;
     @ManyToOne
     private User author;

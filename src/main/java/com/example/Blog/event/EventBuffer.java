@@ -9,9 +9,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class EventBuffer {
     private final Map<Long, List<EventForAuthor>> likeBuffer = new ConcurrentHashMap<>();
     private final Map<Long, List<EventForAuthor>> commentBuffer = new ConcurrentHashMap<>();
+    private final Map<Long, List<EventForAuthor>> followBuffer = new ConcurrentHashMap<>();
 
     public void bufferLike(EventForAuthor event) {
-        likeBuffer.computeIfAbsent(Long.valueOf(event.getPost().getId()),
+        likeBuffer.computeIfAbsent(Long.valueOf(event.post().getId()),
                 k -> Collections.synchronizedList(new ArrayList<>())).add(event);
     }
 
@@ -24,7 +25,7 @@ public class EventBuffer {
     }
 
     public void bufferComments(EventForAuthor event) {
-        commentBuffer.computeIfAbsent(Long.valueOf(event.getPost().getId()),
+        commentBuffer.computeIfAbsent(Long.valueOf(event.post().getId()),
                 k -> Collections.synchronizedList(new ArrayList<>())).add(event);
     }
 
@@ -34,5 +35,18 @@ public class EventBuffer {
 
     public Map<Long, List<EventForAuthor>> getAllBufferedComments() {
         return new HashMap<>(commentBuffer);
+    }
+
+    public void bufferFollow(EventForAuthor event) {
+        followBuffer.computeIfAbsent(Long.valueOf(event.recipient().getId()),
+                k -> Collections.synchronizedList(new ArrayList<>())).add(event);
+    }
+
+    public List<EventForAuthor> flushFollows(Long recipientId) {
+        return followBuffer.remove(recipientId);
+    }
+
+    public Map<Long, List<EventForAuthor>> getAllBufferedFollows() {
+        return new HashMap<>(followBuffer);
     }
 }

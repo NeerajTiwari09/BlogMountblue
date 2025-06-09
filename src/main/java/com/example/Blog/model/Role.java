@@ -3,7 +3,7 @@ package com.example.Blog.model;
 import com.example.Blog.enums.RoleName;
 import lombok.Data;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Data
 @Entity

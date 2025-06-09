@@ -5,6 +5,8 @@ import com.example.Blog.dto.input_dto.ToggleDto;
 import com.example.Blog.dto.output_dto.Response;
 import com.example.Blog.enums.ErrorCode;
 import com.example.Blog.enums.SuccessCode;
+import com.example.Blog.event.EventBuffer;
+import com.example.Blog.event.EventForAuthor;
 import com.example.Blog.exception_handler.UserNotFoundException;
 import com.example.Blog.model.Follows;
 import com.example.Blog.model.User;
@@ -14,7 +16,7 @@ import com.example.Blog.service.FollowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -26,6 +28,8 @@ public class FollowServiceImpl implements FollowService {
     private FollowsRepository followsRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private EventBuffer eventBuffer;
 
     @Transactional
     public Response<Object> toggleFollowUser(Integer followingId) {
@@ -44,6 +48,9 @@ public class FollowServiceImpl implements FollowService {
                 follows.setFollowingId(following.getId());
                 followsRepository.save(follows);
                 toggleDto.setToggled(Boolean.TRUE);
+                if (!follower.getId().equals(following.getId())) {
+                    eventBuffer.bufferFollow(new EventForAuthor(null, follower, following));
+                }
                 return new Response<>(toggleDto, SuccessCode.FOLLOW_SUCCESSFULLY);
             }
         }

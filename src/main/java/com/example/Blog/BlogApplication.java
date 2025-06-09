@@ -10,11 +10,13 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.List;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = {
+        org.springframework.boot.autoconfigure.hazelcast.HazelcastAutoConfiguration.class
+})
 @EnableScheduling
 @EnableAsync(proxyTargetClass = true)
 @EnableJpaAuditing(auditorAwareRef = "auditorProvider")
@@ -32,11 +34,11 @@ public class BlogApplication {
         List<Role> roles = roleRepository.findAll();
         if (roles.isEmpty()) {
             Role author = new Role();
-            author.setName(RoleName.AUTHOR);
+            author.setName(RoleName.ROLE_AUTHOR);
             Role user = new Role();
-            user.setName(RoleName.USER);
+            user.setName(RoleName.ROLE_USER);
             Role admin = new Role();
-            admin.setName(RoleName.ADMIN);
+            admin.setName(RoleName.ROLE_ADMIN);
             roleRepository.saveAll(Arrays.asList(admin, author, user));
         }
     }

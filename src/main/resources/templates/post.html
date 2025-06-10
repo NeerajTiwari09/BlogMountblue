@@ -85,8 +85,13 @@
                                     >0 likes</small>
                                 </button>
                             </form>
-                            <div class="mx-4">
-                                <i class="bi bi-chat fs-5"></i>
+                            <div class="mx-4 d-flex align-items-center">
+                                <button type="submit" class="btn btn-lg p-0">
+                                    <i class="bi bi-chat fs-5"></i>
+                                    <small id="comments-count" class="likes-count text-muted"
+                                           th:attr="data-raw-count=${comments.size()}"
+                                    >0 comments</small>
+                                </button>
                             </div>
                         </div>
                         <div id="savePostContainer" class="justify-self-end d-flex align-items-center">

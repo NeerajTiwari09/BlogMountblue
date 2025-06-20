@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hazelcast-client xmlns="http://www.hazelcast.com/schema/client-config"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://www.hazelcast.com/schema/client-config
+                                      https://hazelcast.com/schema/client-config/hazelcast-client-config-5.5.xsd">
+
+    <cluster-name>dev</cluster-name>
+    <network>
+        <cluster-members>
+            <address>127.0.0.1:5701</address>
+        </cluster-members>
+        <!--        <connection-attempt-limit>10</connection-attempt-limit>-->
+        <!--        <connection-attempt-period>3000</connection-attempt-period>-->
+        <!--        <connection-timeout>5000</connection-timeout>-->
+    </network>
+
+</hazelcast-client>

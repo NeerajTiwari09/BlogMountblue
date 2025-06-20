@@ -55,7 +55,17 @@
             <h2 class="text-left flex-grow-1" th:text="${post.title}"><i class="bi bi-journal-text me-3"></i>Blog Title
             </h2>
             <p class="text-muted mb-1">
-                By <strong th:text="${post.author.name}">Author</strong> •
+                By
+                <th:block th:if="${post.author.imageUrl != null}">
+                    <img th:src="@{${post.author.imageUrl}}" alt="User Image"
+                         style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;"
+                         class="border border-secondary rounded-circle ms-2"/>
+                </th:block>
+                <th:block th:unless="${post.author.imageUrl != null}">
+                    <i class="bi bi-person-circle d-inline-flex align-items-center justify-content-center ms-2"
+                       style="width: 32px; height: 32px; font-size: 32px;"></i>
+                </th:block>
+                <strong th:text="${post.author.name}">Author</strong> •
                 <th:block th:if="${currentUser != null && currentUser.id != post.author.id}">
                     <a id="followUnfollowLink" th:attr="data-id=${post.author.id}" href="#"
                        sec:authorize="isAuthenticated()"
@@ -103,7 +113,7 @@
                             </th:block>
                             <!-- Action Buttons -->
                             <th:block
-                                    th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'')') || (#authorization.expression('hasAnyAuthority(''AUTHOR'')') && isAuthorsPost)}">
+                                    th:if="${#authorization.expression('hasAnyAuthority(''ROLE_ADMIN'')') || (#authorization.expression('hasAnyAuthority(''ROLE_AUTHOR'')') && isAuthorsPost)}">
                                 <form th:action="@{/posts/update}" method="get" class="d-inline mx-3">
                                     <input type="hidden" th:value="${post.id}" name="id">
                                     <button type="submit" class="btn btn-md text-muted p-0">
@@ -176,8 +186,8 @@
                         <p class="my-2" th:text="${comment.comment}">Comment text</p>
 
                         <!-- Comment Actions -->
-                        <div th:if="${#authorization.expression('hasAnyAuthority(''ADMIN'')') ||
-                                 (#authorization.expression('hasAnyAuthority(''AUTHOR'')') && isAuthorsPost) ||
+                        <div th:if="${#authorization.expression('hasAnyAuthority(''ROLE_ADMIN'')') ||
+                                 (#authorization.expression('hasAnyAuthority(''ROLE_AUTHOR'')') && isAuthorsPost) ||
                                  (currentUser != null && currentUser.id == comment.commenter.id)}">
                             <form th:action="@{/comment/update}" method="get" class="d-inline">
                                 <input type="hidden" th:value="${comment.id}" name="id">

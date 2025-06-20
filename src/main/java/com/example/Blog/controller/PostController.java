@@ -60,6 +60,7 @@ public class PostController {
         User user = AuthProvider.getAuthenticatedUser();
         boolean isAuthorsPost = false;
         Post post = postService.getById(id).orElse(null);
+        PostDto postDto = utils.mapPostToPostDto(Collections.singletonList(post)).getFirst();
         Integer likesCount = likeService.getLikeCountByPost(post);
         List<Long> savedPostIds = savePostService.getSavedPostIdForUser();
         boolean likedByCurrentUser = likeService.likedByCurrentUser(post, user);
@@ -69,7 +70,7 @@ public class PostController {
         List<Comment> comments = commentService.findAllByPostIdOrderCreatedAtDesc(id);
         List<CommentDto> commentDtos = utils.mapToDto(comments);
         model.addAttribute("isAuthorsPost", isAuthorsPost);
-        model.addAttribute("post", post);
+        model.addAttribute("post", postDto);
         model.addAttribute("savedPostIds", savedPostIds);
         model.addAttribute("newComment", newComment);
         model.addAttribute("comments", commentDtos);

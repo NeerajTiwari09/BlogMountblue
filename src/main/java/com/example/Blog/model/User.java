@@ -13,6 +13,7 @@ import java.util.Set;
 @Entity
 @Table(name = "Users")
 @ToString
+@Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "users")
 public class User extends AuditEntity {
 

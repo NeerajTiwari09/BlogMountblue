@@ -1,5 +1,6 @@
 package com.example.Blog.dto.input_dto;
 
+import com.example.Blog.dto.UserDto;
 import com.example.Blog.model.Tag;
 import lombok.Data;
 
@@ -15,7 +16,7 @@ public class PostDto {
     private String title;
     private String excerpt;
     private String content;
-    private String author;
+    private UserDto author;
     private String publishedAt;
     private boolean isPublished;
     private LocalDateTime createdTime;

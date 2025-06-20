@@ -2,7 +2,9 @@ package com.example.Blog.utils;
 
 import com.example.Blog.dto.UserDto;
 import com.example.Blog.dto.input_dto.CommentDto;
+import com.example.Blog.dto.input_dto.PostDto;
 import com.example.Blog.model.Comment;
+import com.example.Blog.model.Post;
 import com.example.Blog.model.User;
 import com.example.Blog.service.MinioService;
 import org.springframework.beans.BeanUtils;
@@ -34,6 +36,23 @@ public class Utils {
             BeanUtils.copyProperties(comment.getCommenter(), dto.getCommenter());
             if (StringUtils.hasText(key) && !comment.getName().equals("anonymousUser")) {
                 dto.getCommenter().setImageUrl(minioService.downloadFileBase64(key));
+            }
+            dtos.add(dto);
+        }
+        return dtos;
+    }
+
+    public List<PostDto> mapPostToPostDto(List<Post> posts) {
+        List<PostDto> dtos = new ArrayList<>();
+        for (Post post : posts) {
+            PostDto dto = new PostDto();
+            String key = post.getAuthor().getImageKey();
+            BeanUtils.copyProperties(post, dto);
+            UserDto userDto = new UserDto();
+            BeanUtils.copyProperties(post.getAuthor(), userDto);
+            dto.setAuthor(userDto);
+            if (StringUtils.hasText(key)) {
+                dto.getAuthor().setImageUrl(minioService.downloadFileBase64(key));
             }
             dtos.add(dto);
         }

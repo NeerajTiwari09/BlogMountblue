@@ -6,6 +6,7 @@ import com.example.Blog.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.hazelcast.HazelcastAutoConfiguration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -14,9 +15,7 @@ import jakarta.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.List;
 
-@SpringBootApplication(exclude = {
-        org.springframework.boot.autoconfigure.hazelcast.HazelcastAutoConfiguration.class
-})
+@SpringBootApplication(exclude = {HazelcastAutoConfiguration.class})
 @EnableScheduling
 @EnableAsync(proxyTargetClass = true)
 @EnableJpaAuditing(auditorAwareRef = "auditorProvider")

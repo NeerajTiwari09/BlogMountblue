@@ -16,6 +16,7 @@ public class AsyncConfig {
         executor.setQueueCapacity(100);
         executor.setThreadNamePrefix("AsyncNotificationExecutor-");
         executor.initialize();
+        executor.setVirtualThreads(true);
         return executor;
     }
 }

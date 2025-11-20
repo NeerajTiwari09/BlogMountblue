@@ -63,7 +63,7 @@
                 </th:block>
                 <th:block th:unless="${post.author.imageUrl != null}">
                     <i class="bi bi-person-circle d-inline-flex align-items-center justify-content-center ms-2"
-                       style="width: 32px; height: 32px; font-size: 32px;"></i>
+                       style="width: 32px; height: 32px; font-size: 32px; vertical-align:middle"></i>
                 </th:block>
                 <strong th:text="${post.author.name}">Author</strong> •
                 <th:block th:if="${currentUser != null && currentUser.id != post.author.id}">
